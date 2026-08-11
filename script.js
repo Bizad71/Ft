@@ -1,709 +1,935 @@
 const STORAGE_KEY = "center_management_data";
 
-let database = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
-centers: []
+let database = JSON.parse(
+    localStorage.getItem(STORAGE_KEY)
+) || {
+    centers: []
 };
 
 let currentRobot = "";
 let currentCenter = null;
 
+
 /* =========================
-چک لیست ربات‌ها
+   چک لیست
 ========================= */
 
 const checklists = {
 
-"4102": [
-"بررسی سیستم",
-"نصب ویندوز",
-"نصب درایورها",
-"تنظیم شبکه",
-"تنظیم IP",
-"تنظیم MAC",
-"نصب نرم‌افزارهای موردنیاز",
-"نصب نرم‌افزار ربات",
-"تنظیم ربات",
-"تست ربات",
-"تست رایت",
-"تست نهایی"
- ],
+    "4102": [
+        "بررسی سیستم",
+        "نصب ویندوز",
+        "نصب درایورها",
+        "تنظیم شبکه",
+        "تنظیم IP",
+        "تنظیم MAC",
+        "نصب نرم‌افزارهای موردنیاز",
+        "تنظیم نرم‌افزار ربات",
+        "تست ربات",
+        "تست رایت",
+        "تست نهایی"
+    ],
 
-"4202": [
-"بررسی سیستم",
-"نصب ویندوز",
-"نصب درایورها",
-"تنظیم شبکه",
-"تنظیم IP",
-"تنظیم MAC",
-"نصب نرم‌افزارهای موردنیاز",
-"نصب نرم‌افزار ربات",
-"تنظیم ربات",
-"تست ربات",
-"تست رایت",
-"تست نهایی"
- ],
+    "4202": [
+        "بررسی سیستم",
+        "نصب ویندوز",
+        "نصب درایورها",
+        "تنظیم شبکه",
+        "تنظیم IP",
+        "تنظیم MAC",
+        "نصب نرم‌افزارهای موردنیاز",
+        "تنظیم نرم‌افزار ربات",
+        "تست ربات",
+        "تست رایت",
+        "تست نهایی"
+    ],
 
-"Rimage": [
-"بررسی سیستم",
-"نصب ویندوز",
-"نصب درایورها",
-"تنظیم شبکه",
-"تنظیم IP",
-"تنظیم MAC",
-"نصب نرم‌افزارهای موردنیاز",
-"نصب نرم‌افزار Rimage",
-"تنظیم ربات",
-"تست ربات",
-"تست رایت",
-"تست نهایی"
- ]
+    "Rimage": [
+        "بررسی سیستم",
+        "نصب ویندوز",
+        "نصب درایورها",
+        "تنظیم شبکه",
+        "تنظیم IP",
+        "تنظیم MAC",
+        "نصب نرم‌افزارهای موردنیاز",
+        "نصب نرم‌افزار Rimage",
+        "تست ربات",
+        "تست رایت",
+        "تست نهایی"
+    ]
 
 };
 
+
 /* =========================
-ذخیره اطلاعات
+   ذخیره دیتابیس
 ========================= */
 
 function saveDatabase() {
 
-localStorage.setItem(
-STORAGE_KEY,
-JSON.stringify(database)
-);
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(database)
+    );
 
 }
 
+
 /* =========================
-انتخاب ربات
+   انتخاب ربات
 ========================= */
 
 function selectRobot(robot) {
 
-currentRobot = robot;
+    currentRobot = robot;
 
-document.getElementById("homePage")
-.classList.add("hidden");
+    document
+        .getElementById("homePage")
+        .classList.add("hidden");
 
-document.getElementById("centerPage")
-.classList.remove("hidden");
+    document
+        .getElementById("centerPage")
+        .classList.remove("hidden");
 
-document.getElementById("pageTitle").innerText =
-"ربات " + robot;
+    document
+        .getElementById("pageTitle")
+        .textContent = "ثبت اطلاعات مرکز - " + robot;
 
-document.getElementById("robotModel").value =
-robot;
+    document
+        .getElementById("robotModel")
+        .value = robot;
 
-createChecklist();
+    clearForm();
 
-clearForm();
+    document
+        .getElementById("robotModel")
+        .value = robot;
+
+    createChecklist();
 
 }
 
+
 /* =========================
-ساخت چک لیست
+   ساخت چک لیست
 ========================= */
 
-function createChecklist(saved = []) {
+function createChecklist(savedItems = []) {
 
-const container =
-document.getElementById("checklist");
+    const container =
+        document.getElementById("checklist");
 
-container.innerHTML = "";
+    if (!container) {
+        return;
+    }
 
-const list =
-checklists[currentRobot] || [];
+    container.innerHTML = "";
 
-list.forEach((item, index) => {
+    const list =
+        checklists[currentRobot] || [];
 
-const div =
-document.createElement("div");
+    list.forEach(function(item, index) {
 
-div.className = "check-item";
+        const row =
+            document.createElement("div");
 
-const checkbox =
-document.createElement("input");
+        row.className = "check-item";
 
-checkbox.type = "checkbox";
-checkbox.id = "check_" + index;
-checkbox.value = item;
 
-if (saved.includes(item)) {
-checkbox.checked = true;
+        const checkbox =
+            document.createElement("input");
+
+        checkbox.type = "checkbox";
+
+        checkbox.id =
+            "check_" + index;
+
+        checkbox.value = item;
+
+
+        if (savedItems.includes(item)) {
+            checkbox.checked = true;
+        }
+
+
+        const label =
+            document.createElement("label");
+
+        label.htmlFor =
+            checkbox.id;
+
+        label.textContent =
+            item;
+
+
+        row.appendChild(checkbox);
+
+        row.appendChild(label);
+
+        container.appendChild(row);
+
+    });
+
 }
 
-checkbox.addEventListener(
-"change",
-autoSaveDraft
-);
-
-const label =
-document.createElement("label");
-
-label.htmlFor =
-checkbox.id;
-
-label.textContent =
-item;
-
-div.appendChild(checkbox);
-div.appendChild(label);
-
-container.appendChild(div);
-
-});
-
-}
 
 /* =========================
-خواندن چک لیست
+   گرفتن کارهای تیک خورده
 ========================= */
 
 function getChecklistValues() {
 
-const result = [];
+    const items = [];
 
-document
-.querySelectorAll(
-"#checklist input[type='checkbox']"
-)
-.forEach(input => {
+    document
+        .querySelectorAll(
+            "#checklist input[type='checkbox']"
+        )
+        .forEach(function(checkbox) {
 
-if (input.checked) {
-result.push(input.value);
+            if (checkbox.checked) {
+                items.push(checkbox.value);
+            }
+
+        });
+
+    return items;
+
 }
 
-});
-
-return result;
-
-}
 
 /* =========================
-جمع کردن اطلاعات فرم
+   گرفتن اطلاعات فرم
 ========================= */
 
-function collectFormData() {
+function getFormData() {
 
-return {
+    return {
 
-centerName:
-document.getElementById("centerName").value.trim(),
+        centerName:
+            document
+                .getElementById("centerName")
+                .value
+                .trim(),
 
-centerPhone:
-document.getElementById("centerPhone").value.trim(),
+        centerPhone:
+            document
+                .getElementById("centerPhone")
+                .value
+                .trim(),
 
-centerAddress:
-document.getElementById("centerAddress").value.trim(),
+        centerAddress:
+            document
+                .getElementById("centerAddress")
+                .value
+                .trim(),
 
-centerManager:
-document.getElementById("centerManager").value.trim(),
+        centerManager:
+            document
+                .getElementById("centerManager")
+                .value
+                .trim(),
 
-labelLink:
-document.getElementById("labelLink").value.trim(),
+        labelLink:
+            document
+                .getElementById("labelLink")
+                .value
+                .trim(),
 
-robotModel:
-document.getElementById("robotModel").value.trim(),
+        robotModel:
+            document
+                .getElementById("robotModel")
+                .value
+                .trim(),
 
-robotSerial:
-document.getElementById("robotSerial").value.trim(),
+        robotSerial:
+            document
+                .getElementById("robotSerial")
+                .value
+                .trim(),
 
-robotIP:
-document.getElementById("robotIP").value.trim(),
+        robotIP:
+            document
+                .getElementById("robotIP")
+                .value
+                .trim(),
 
-robotMAC:
-document.getElementById("robotMAC").value.trim(),
+        robotMAC:
+            document
+                .getElementById("robotMAC")
+                .value
+                .trim(),
 
-checklist:
-getChecklistValues(),
+        checklist:
+            getChecklistValues(),
 
-extraWork:
-document.getElementById("extraWork").value.trim()
+        extraWork:
+            document
+                .getElementById("extraWork")
+                .value
+                .trim()
 
-};
+    };
 
 }
+
 
 /* =========================
-ذخیره موقت خودکار
-========================= */
-
-function autoSaveDraft() {
-
-if (!currentCenter) {
-return;
-}
-
-currentCenter.draft =
-collectFormData();
-
-saveDatabase();
-
-}
-
-/* =========================
-ذخیره مراجعه
-========================= */
-
-function saveVisit() {
-
-const data =
-collectFormData();
-
-if (!data.centerName) {
-
-alert("لطفاً نام مرکز را وارد کنید.");
-
-return;
-
-}
-
-let center =
-database.centers.find(
-center =>
-center.name.trim().toLowerCase() ===
-data.centerName.trim().toLowerCase()
-);
-
-/* مرکز جدید */
-
-if (!center) {
-
-center = {
-
-id: Date.now(),
-
-name: data.centerName,
-
-phone: data.centerPhone,
-
-address: data.centerAddress,
-
-manager: data.centerManager,
-
-labelLink: data.labelLink,
-
-robots: {},
-
-visits: []
-
-};
-
-database.centers.push(center);
-
-}
-
-/* بروزرسانی اطلاعات مرکز */
-
-else {
-
-center.name =
-data.centerName;
-
-center.phone =
-data.centerPhone;
-
-center.address =
-data.centerAddress;
-
-center.manager =
-data.centerManager;
-
-center.labelLink =
-data.labelLink;
-
-}
-
-if (!center.robots) {
-center.robots = {};
-}
-
-center.robots[currentRobot] = {
-
-serial: data.robotSerial,
-
-ip: data.robotIP,
-
-mac: data.robotMAC
-
-};
-
-/* ایجاد سابقه مراجعه */
-
-const visit = {
-
-id: Date.now(),
-
-date:
-new Date().toLocaleString("fa-IR"),
-
-robot: currentRobot,
-
-checklist:
-data.checklist,
-
-extraWork:
-data.extraWork,
-
-robotInfo: {
-
-serial:
-data.robotSerial,
-
-ip:
-data.robotIP,
-
-mac:
-data.robotMAC
-
-}
-
-};
-
-if (!center.visits) {
-center.visits = [];
-}
-
-center.visits.unshift(visit);
-
-center.draft = null;
-
-saveDatabase();
-
-currentCenter = center;
-
-renderHistory();
-
-alert(
-"مراجعه با موفقیت ذخیره شد."
-);
-
-}
-
-/* =========================
-پاک کردن فرم
+   پاک کردن فرم
 ========================= */
 
 function clearForm() {
 
-document.getElementById("centerName").value = "";
+    document.getElementById("centerName").value = "";
 
-document.getElementById("centerPhone").value = "";
+    document.getElementById("centerPhone").value = "";
 
-document.getElementById("centerAddress").value = "";
+    document.getElementById("centerAddress").value = "";
 
-document.getElementById("centerManager").value = "";
+    document.getElementById("centerManager").value = "";
 
-document.getElementById("labelLink").value = "";
+    document.getElementById("labelLink").value = "";
 
-document.getElementById("robotSerial").value = "";
+    document.getElementById("robotSerial").value = "";
 
-document.getElementById("robotIP").value = "";
+    document.getElementById("robotIP").value = "";
 
-document.getElementById("robotMAC").value = "";
+    document.getElementById("robotMAC").value = "";
 
-document.getElementById("extraWork").value = "";
+    document.getElementById("extraWork").value = "";
 
-createChecklist();
+    document.getElementById("history").innerHTML = "";
 
-currentCenter = null;
-
-document.getElementById("history").innerHTML = "";
+    createChecklist();
 
 }
 
+
 /* =========================
-مرکز جدید
+   ذخیره مراجعه
 ========================= */
 
-function newCenter() {
+function saveVisit() {
 
-clearForm();
+    const data = getFormData();
+
+
+    if (!data.centerName) {
+
+        alert("لطفاً نام مرکز را وارد کنید.");
+
+        return;
+
+    }
+
+
+    /*
+       پیدا کردن مرکز
+    */
+
+    let center =
+        database.centers.find(function(item) {
+
+            return item.name
+                .trim()
+                .toLowerCase() ===
+                data.centerName
+                    .trim()
+                    .toLowerCase();
+
+        });
+
+
+    /*
+       اگر مرکز وجود نداشت
+    */
+
+    if (!center) {
+
+        center = {
+
+            id: Date.now(),
+
+            name: data.centerName,
+
+            phone: data.centerPhone,
+
+            address: data.centerAddress,
+
+            manager: data.centerManager,
+
+            labelLink: data.labelLink,
+
+            robots: {},
+
+            visits: []
+
+        };
+
+        database.centers.push(center);
+
+    }
+
+
+    /*
+       بروزرسانی اطلاعات عمومی مرکز
+    */
+
+    center.name =
+        data.centerName;
+
+    center.phone =
+        data.centerPhone;
+
+    center.address =
+        data.centerAddress;
+
+    center.manager =
+        data.centerManager;
+
+    center.labelLink =
+        data.labelLink;
+
+
+    /*
+       اطلاعات ربات
+    */
+
+    if (!center.robots) {
+        center.robots = {};
+    }
+
+
+    center.robots[currentRobot] = {
+
+        serial:
+            data.robotSerial,
+
+        ip:
+            data.robotIP,
+
+        mac:
+            data.robotMAC
+
+    };
+
+
+    /*
+       ایجاد سابقه جدید
+    */
+
+    if (!center.visits) {
+        center.visits = [];
+    }
+
+
+    const visit = {
+
+        id: Date.now(),
+
+        date:
+            new Date()
+                .toLocaleString("fa-IR"),
+
+        robot:
+            currentRobot,
+
+        checklist:
+            data.checklist,
+
+        extraWork:
+            data.extraWork,
+
+        robotInfo: {
+
+            serial:
+                data.robotSerial,
+
+            ip:
+                data.robotIP,
+
+            mac:
+                data.robotMAC
+
+        }
+
+    };
+
+
+    center.visits.unshift(visit);
+
+
+    /*
+       ذخیره
+    */
+
+    saveDatabase();
+
+
+    currentCenter = center;
+
+
+    renderHistory();
+
+
+    alert(
+        "اطلاعات مرکز و گزارش مراجعه ذخیره شد."
+    );
 
 }
+
 
 /* =========================
-باز کردن مرکز
-========================= */
-
-function openCenter(center) {
-
-currentCenter = center;
-
-document.getElementById("homePage")
-.classList.add("hidden");
-
-document.getElementById("centerPage")
-.classList.remove("hidden");
-
-document.getElementById("pageTitle").innerText =
-center.name;
-
-document.getElementById("centerName").value =
-center.name || "";
-
-document.getElementById("centerPhone").value =
-center.phone || "";
-
-document.getElementById("centerAddress").value =
-center.address || "";
-
-document.getElementById("centerManager").value =
-center.manager || "";
-
-document.getElementById("labelLink").value =
-center.labelLink || "";
-
-document.getElementById("robotModel").value =
-currentRobot;
-
-const robot =
-center.robots &&
-center.robots[currentRobot];
-
-if (robot) {
-
-document.getElementById("robotSerial").value =
-robot.serial || "";
-
-document.getElementById("robotIP").value =
-robot.ip || "";
-
-document.getElementById("robotMAC").value =
-robot.mac || "";
-
-}
-
-createChecklist();
-
-renderHistory();
-
-}
-
-/* =========================
-جستجوی مراکز
+   جستجوی مرکز
 ========================= */
 
 function searchCenters() {
 
-const query =
-document
-.getElementById("searchCenter")
-.value
-.trim()
-.toLowerCase();
+    const input =
+        document.getElementById(
+            "searchCenter"
+        );
 
-const results =
-document.getElementById("searchResults");
+    const results =
+        document.getElementById(
+            "searchResults"
+        );
 
-results.innerHTML = "";
 
-if (!query) {
-return;
+    const query =
+        input.value
+            .trim()
+            .toLowerCase();
+
+
+    results.innerHTML = "";
+
+
+    if (!query) {
+        return;
+    }
+
+
+    const matches =
+        database.centers.filter(
+            function(center) {
+
+                return center.name
+                    .toLowerCase()
+                    .includes(query);
+
+            }
+        );
+
+
+    if (!matches.length) {
+
+        results.innerHTML =
+            "<p>مرکزی پیدا نشد.</p>";
+
+        return;
+
+    }
+
+
+    matches.forEach(
+        function(center) {
+
+            const row =
+                document.createElement("div");
+
+            row.className =
+                "search-result";
+
+
+            const name =
+                document.createElement("strong");
+
+            name.textContent =
+                center.name;
+
+
+            const button =
+                document.createElement("button");
+
+            button.type = "button";
+
+            button.className =
+                "btn btn-blue";
+
+            button.textContent =
+                "باز کردن";
+
+
+            button.addEventListener(
+                "click",
+                function() {
+
+                    openCenter(center);
+
+                }
+            );
+
+
+            row.appendChild(name);
+
+            row.appendChild(button);
+
+            results.appendChild(row);
+
+        }
+    );
+
 }
 
-database.centers
-.filter(center =>
-center.name
-.toLowerCase()
-.includes(query)
-)
-.forEach(center => {
-
-const div =
-document.createElement("div");
-
-div.className =
-"search-result";
-
-const name =
-document.createElement("strong");
-
-name.textContent =
-center.name;
-
-const button =
-document.createElement("button");
-
-button.type = "button";
-
-button.className =
-"btn btn-blue";
-
-button.textContent =
-"باز کردن";
-
-button.addEventListener(
-"click",
-function () {
-
-openCenter(center);
-
-}
-);
-
-div.appendChild(name);
-
-div.appendChild(button);
-
-results.appendChild(div);
-
-});
-
-}
 
 /* =========================
-نمایش سوابق
+   باز کردن مرکز قبلی
+========================= */
+
+function openCenter(center) {
+
+    currentCenter = center;
+
+
+    document
+        .getElementById("homePage")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("centerPage")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("pageTitle")
+        .textContent =
+        center.name;
+
+
+    document
+        .getElementById("centerName")
+        .value =
+        center.name || "";
+
+
+    document
+        .getElementById("centerPhone")
+        .value =
+        center.phone || "";
+
+
+    document
+        .getElementById("centerAddress")
+        .value =
+        center.address || "";
+
+
+    document
+        .getElementById("centerManager")
+        .value =
+        center.manager || "";
+
+
+    document
+        .getElementById("labelLink")
+        .value =
+        center.labelLink || "";
+
+
+    document
+        .getElementById("robotModel")
+        .value =
+        currentRobot;
+
+
+    const robot =
+        center.robots &&
+        center.robots[currentRobot];
+
+
+    if (robot) {
+
+        document
+            .getElementById("robotSerial")
+            .value =
+            robot.serial || "";
+
+
+        document
+            .getElementById("robotIP")
+            .value =
+            robot.ip || "";
+
+
+        document
+            .getElementById("robotMAC")
+            .value =
+            robot.mac || "";
+
+    } else {
+
+        document
+            .getElementById("robotSerial")
+            .value = "";
+
+        document
+            .getElementById("robotIP")
+            .value = "";
+
+        document
+            .getElementById("robotMAC")
+            .value = "";
+
+    }
+
+
+    createChecklist();
+
+    renderHistory();
+
+}
+
+
+/* =========================
+   نمایش سوابق
 ========================= */
 
 function renderHistory() {
 
-const history =
-document.getElementById("history");
+    const history =
+        document.getElementById(
+            "history"
+        );
 
-history.innerHTML = "";
 
-if (!currentCenter) {
-return;
+    history.innerHTML = "";
+
+
+    if (!currentCenter) {
+        return;
+    }
+
+
+    const visits =
+        currentCenter.visits || [];
+
+
+    if (!visits.length) {
+
+        history.innerHTML =
+            "<p>هنوز مراجعه‌ای ثبت نشده است.</p>";
+
+        return;
+
+    }
+
+
+    visits.forEach(
+        function(visit) {
+
+            const box =
+                document.createElement("div");
+
+            box.className =
+                "history-item";
+
+
+            const title =
+                document.createElement("h3");
+
+            title.textContent =
+                "📅 " +
+                visit.date;
+
+
+            box.appendChild(title);
+
+
+            const robot =
+                document.createElement("p");
+
+            robot.innerHTML =
+                "<strong>ربات:</strong> " +
+                escapeHTML(
+                    visit.robot
+                );
+
+
+            box.appendChild(robot);
+
+
+            const workTitle =
+                document.createElement("p");
+
+            workTitle.innerHTML =
+                "<strong>کارهای انجام‌شده:</strong>";
+
+            box.appendChild(workTitle);
+
+
+            const list =
+                document.createElement("ul");
+
+
+            (visit.checklist || [])
+                .forEach(
+                    function(item) {
+
+                        const li =
+                            document.createElement("li");
+
+                        li.textContent =
+                            item;
+
+                        list.appendChild(li);
+
+                    }
+                );
+
+
+            box.appendChild(list);
+
+
+            if (visit.extraWork) {
+
+                const extra =
+                    document.createElement("p");
+
+                extra.innerHTML =
+                    "<strong>کار متفرقه:</strong><br>" +
+                    escapeHTML(
+                        visit.extraWork
+                    );
+
+                box.appendChild(extra);
+
+            }
+
+
+            history.appendChild(box);
+
+        }
+    );
+
 }
 
-const visits =
-currentCenter.visits || [];
-
-if (!visits.length) {
-
-history.innerHTML =
-"<p>هنوز سابقه‌ای ثبت نشده است.</p>";
-
-return;
-
-}
-
-visits.forEach(visit => {
-
-const div =
-document.createElement("div");
-
-div.className =
-"history-item";
-
-const title =
-document.createElement("h3");
-
-title.textContent =
-"مراجعه: " + visit.date;
-
-const status =
-document.createElement("span");
-
-status.className =
-"status";
-
-status.textContent =
-"ربات " + visit.robot;
-
-div.appendChild(title);
-
-div.appendChild(status);
-
-const workTitle =
-document.createElement("p");
-
-workTitle.innerHTML =
-"<strong>کارهای انجام‌شده:</strong>";
-
-div.appendChild(workTitle);
-
-const list =
-document.createElement("ul");
-
-(visit.checklist || [])
-.forEach(item => {
-
-const li =
-document.createElement("li");
-
-li.textContent =
-item;
-
-list.appendChild(li);
-
-});
-
-div.appendChild(list);
-
-if (visit.extraWork) {
-
-const extra =
-document.createElement("p");
-
-extra.innerHTML =
-"<strong>کارهای متفرقه:</strong><br>";
-
-const extraText =
-document.createElement("span");
-
-extraText.textContent =
-visit.extraWork;
-
-extra.appendChild(extraText);
-
-div.appendChild(extra);
-
-}
-
-history.appendChild(div);
-
-});
-
-}
 
 /* =========================
-گزارش چاپی / PDF
+   برگشت صفحه اصلی
+========================= */
+
+function goHome() {
+
+    document
+        .getElementById("centerPage")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("homePage")
+        .classList.remove("hidden");
+
+
+    currentCenter = null;
+
+    currentRobot = "";
+
+
+    document
+        .getElementById("searchCenter")
+        .value = "";
+
+
+    document
+        .getElementById("searchResults")
+        .innerHTML = "";
+
+}
+
+
+/* =========================
+   مرکز جدید
+========================= */
+
+function newCenter() {
+
+    clearForm();
+
+    currentCenter = null;
+
+    document
+        .getElementById("centerName")
+        .focus();
+
+}
+
+
+/* =========================
+   گزارش PDF
 ========================= */
 
 function printReport() {
 
-const data =
-collectFormData();
+    const data =
+        getFormData();
 
-if (!data.centerName) {
 
-alert(
-"ابتدا نام مرکز را وارد کنید."
-);
+    if (!data.centerName) {
 
-return;
+        alert(
+            "ابتدا نام مرکز را وارد کنید."
+        );
 
-}
+        return;
 
-const reportWindow =
-window.open(
-"",
-"_blank"
-);
+    }
 
-if (!reportWindow) {
 
-alert(
-"مرورگر پنجره جدید را مسدود کرده است."
-);
+    const report =
+        window.open(
+            "",
+            "_blank"
+        );
 
-return;
 
-}
+    if (!report) {
 
-const checklistHTML =
-data.checklist.length
-?
-data.checklist
-.map(item =>
-<li&gt;☑ ${escapeHTML(item)}</li>`
-)
-.join("")
-:
-"<li>هیچ کاری ثبت نشده است.</li>";
+        alert(
+            "مرورگر اجازه باز کردن پنجره گزارش را نداده است."
+        );
 
-reportWindow.document.write(`
+        return;
+
+    }
+
+
+    const checklistHTML =
+        data.checklist.length
+
+        ?
+
+        data.checklist
+            .map(
+                function(item) {
+
+                    return (
+                        "<li>☑ " +
+                        escapeHTML(item) +
+                        "</li>"
+                    );
+
+                }
+            )
+            .join("")
+
+        :
+
+        "<li>موردی ثبت نشده است.</li>";
+
+
+    report.document.write(`
 
 <!DOCTYPE html>
 
@@ -713,60 +939,41 @@ reportWindow.document.write(`
 
 <meta charset="UTF-8">
 
-<title>
-گزارش کار - `${escapeHTML(data.centerName)}
-</title>
+<title>گزارش کار</title>
 
 <style>
 
 body {
-font-family: Tahoma, Arial, sans-serif;
-direction: rtl;
-padding: 30px;
-line-height: 2;
-color: #111;
+    font-family: Tahoma, Arial, sans-serif;
+    direction: rtl;
+    padding: 30px;
+    color: #111;
 }
 
 h1 {
-text-align: center;
-border-bottom: 2px solid #333;
-padding-bottom: 15px;
-}
-
-h2 {
-border-bottom: 1px solid #999;
-padding-bottom: 5px;
+    text-align: center;
+    margin-bottom: 30px;
 }
 
 .box {
-border: 1px solid #999;
-padding: 15px;
-margin: 20px 0;
-border-radius: 8px;
+    border: 1px solid #888;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
 }
 
 table {
-width: 100%;
-border-collapse: collapse;
+    width: 100%;
+    border-collapse: collapse;
 }
 
-td,
-th {
-border: 1px solid #999;
-padding: 8px;
-text-align: right;
+td {
+    border: 1px solid #999;
+    padding: 8px;
 }
 
 ul {
-padding-right: 25px;
-}
-
-.extra {
-white-space: pre-wrap;
-}
-
-a {
-color: #0645ad;
+    line-height: 2;
 }
 
 </style>
@@ -789,32 +996,33 @@ color: #0645ad;
 
 <tr>
 <td>نام مرکز</td>
-<td>$`{escapeHTML(data.centerName)}</td>
+<td>${escapeHTML(data.centerName)}</td>
 </tr>
 
 <tr>
 <td>شماره تماس</td>
-<td>`${escapeHTML(data.centerPhone)}</td>
+<td>${escapeHTML(data.centerPhone)}</td>
 </tr>
 
 <tr>
 <td>مسئول</td>
-<td>$`{escapeHTML(data.centerManager)}</td>
+<td>${escapeHTML(data.centerManager)}</td>
 </tr>
 
 <tr>
 <td>آدرس</td>
-<td>`${escapeHTML(data.centerAddress)}</td>
+<td>${escapeHTML(data.centerAddress)}</td>
 </tr>
 
 <tr>
 <td>تاریخ</td>
-<td>$`{new Date().toLocaleString("fa-IR")}</td>
+<td>${new Date().toLocaleString("fa-IR")}</td>
 </tr>
 
 </table>
 
 </div>
+
 
 <div class="box">
 
@@ -826,27 +1034,28 @@ color: #0645ad;
 
 <tr>
 <td>مدل</td>
-<td>`${escapeHTML(data.robotModel)}</td>
+<td>${escapeHTML(data.robotModel)}</td>
 </tr>
 
 <tr>
 <td>Serial Number</td>
-<td>$`{escapeHTML(data.robotSerial)}</td>
+<td>${escapeHTML(data.robotSerial)}</td>
 </tr>
 
 <tr>
 <td>IP Address</td>
-<td>`${escapeHTML(data.robotIP)}</td>
+<td>${escapeHTML(data.robotIP)}</td>
 </tr>
 
 <tr>
 <td>MAC Address</td>
-<td>$`{escapeHTML(data.robotMAC)}</td>
+<td>${escapeHTML(data.robotMAC)}</td>
 </tr>
 
 </table>
 
 </div>
+
 
 <div class="box">
 
@@ -856,11 +1065,12 @@ color: #0645ad;
 
 <ul>
 
-`${checklistHTML}
+${checklistHTML}
 
 </ul>
 
 </div>
+
 
 <div class="box">
 
@@ -868,16 +1078,15 @@ color: #0645ad;
 کارهای متفرقه
 </h2>
 
-<div class="extra">
-
-$`{escapeHTML(
-data.extraWork ||
-"موردی ثبت نشده است."
+<p>
+${escapeHTML(
+    data.extraWork ||
+    "موردی ثبت نشده است."
 )}
+</p>
 
 </div>
 
-</div>
 
 <div class="box">
 
@@ -885,16 +1094,23 @@ data.extraWork ||
 فایل لیبل
 </h2>
 
-${ data.labelLink ?
-<a
-href="${escapeHTML(data.labelLink)}"
-target="_blank"
->
-مشاهده / دانلود فایل لیبل
-</a>
-`
-:
-"لینک لیبل ثبت نشده است."
+${
+    data.labelLink
+
+    ?
+
+    `
+    <a
+        href="${escapeHTML(data.labelLink)}"
+        target="_blank"
+    >
+        مشاهده / دانلود فایل لیبل
+    </a>
+    `
+
+    :
+
+    "لینک فایل لیبل ثبت نشده است."
 }
 
 </div>
@@ -903,217 +1119,175 @@ target="_blank"
 
 </html>
 
-`);
+    `);
 
-reportWindow.document.close();
 
-setTimeout(
-function () {
+    report.document.close();
 
-reportWindow.print();
 
-},
-500
-);
+    setTimeout(
+        function() {
+
+            report.print();
+
+        },
+        500
+    );
 
 }
+
 
 /* =========================
-برگشت به صفحه اصلی
-========================= */
-
-function goHome() {
-
-document.getElementById("centerPage")
-.classList.add("hidden");
-
-document.getElementById("homePage")
-.classList.remove("hidden");
-
-const search =
-document.getElementById(
-"searchCenter"
-);
-
-const results =
-document.getElementById(
-"searchResults"
-);
-
-if (search) {
-search.value = "";
-}
-
-if (results) {
-results.innerHTML = "";
-}
-
-currentCenter = null;
-
-}
-
-/* =========================
-جلوگیری از HTML تزریقی
+   امنیت HTML
 ========================= */
 
 function escapeHTML(value) {
 
-if (!value) {
-return "";
+    if (!value) {
+        return "";
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
 }
 
-return String(value)
-
-.replace(
-/&/g,
-"&"
-)
-
-.replace(
-/</g,
-"<"
-)
-
-.replace(
-/>/g,
-">"
-)
-
-.replace(
-/"/g,
-"""
-)
-
-.replace(
-/'/g,
-"'"
-);
-
-}
 
 /* =========================
-اتصال دکمه‌ها
+   اتصال دکمه‌ها
 ========================= */
 
 document.addEventListener(
-"DOMContentLoaded",
-function () {
+    "DOMContentLoaded",
+    function() {
 
-/* انتخاب ربات */
 
-document
-.querySelectorAll(
-".robot-card"
-)
-.forEach(card => {
+        /*
+           دکمه‌های ربات
+        */
 
-card.addEventListener(
-"click",
-function () {
+        const robotCards =
+            document.querySelectorAll(
+                ".robot-card"
+            );
 
-const robot =
-this.dataset.robot;
 
-selectRobot(robot);
+        robotCards.forEach(
+            function(card) {
 
-}
-);
+                card.addEventListener(
+                    "click",
+                    function() {
 
-});
+                        selectRobot(
+                            this.dataset.robot
+                        );
 
-/* جستجو */
+                    }
+                );
 
-const searchBtn =
-document.getElementById(
-"searchBtn"
-);
+            }
+        );
 
-const searchInput =
-document.getElementById(
-"searchCenter"
-);
 
-if (searchBtn) {
+        /*
+           جستجو
+        */
 
-searchBtn.addEventListener(
-"click",
-searchCenters
-);
+        document
+            .getElementById("searchBtn")
+            .addEventListener(
+                "click",
+                searchCenters
+            );
 
-}
 
-if (searchInput) {
+        document
+            .getElementById("searchCenter")
+            .addEventListener(
+                "input",
+                searchCenters
+            );
 
-searchInput.addEventListener(
-"input",
-searchCenters
-);
 
-}
+        /*
+           برگشت
+        */
 
-/* برگشت */
+        document
+            .getElementById("backHomeBtn")
+            .addEventListener(
+                "click",
+                goHome
+            );
 
-const backHomeBtn =
-document.getElementById(
-"backHomeBtn"
-);
 
-if (backHomeBtn) {
+        /*
+           ذخیره
+        */
 
-backHomeBtn.addEventListener(
-"click",
-goHome
-);
+        document
+            .getElementById("saveVisitBtn")
+            .addEventListener(
+                "click",
+                saveVisit
+            );
 
-}
 
-/* ذخیره مراجعه */
+        /*
+           PDF
+        */
 
-const saveVisitBtn =
-document.getElementById(
-"saveVisitBtn"
-);
+        document
+            .getElementById("printReportBtn")
+            .addEventListener(
+                "click",
+                printReport
+            );
 
-if (saveVisitBtn) {
 
-saveVisitBtn.addEventListener(
-"click",
-saveVisit
-);
+        /*
+           مرکز جدید
+        */
 
-}
+        document
+            .getElementById("newCenterBtn")
+            .addEventListener(
+                "click",
+                newCenter
+            );
 
-/* گزارش */
 
-const printReportBtn =
-document.getElementById(
-"printReportBtn"
-);
+        /*
+           ساخت چک لیست اولیه
+        */
 
-if (printReportBtn) {
+        createChecklist();
 
-printReportBtn.addEventListener(
-"click",
-printReport
-);
-
-}
-
-/* مرکز جدید */
-
-const newCenterBtn =
-document.getElementById(
-"newCenterBtn"
-);
-
-if (newCenterBtn) {
-
-newCenterBtn.addEventListener(
-"click",
-newCenter
-);
-
-}
-
-}
+    }
 );
