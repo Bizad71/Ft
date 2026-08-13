@@ -8,11 +8,12 @@ let database = JSON.parse(
 
 let currentRobot = "";
 let currentCenter = null;
+let editingVisitId = null;
 
 
-/* =========================
-   چک لیست
-========================= */
+/* =========================================================
+   چک لیست‌ها
+========================================================= */
 
 const checklists = {
 
@@ -61,9 +62,9 @@ const checklists = {
 };
 
 
-/* =========================
+/* =========================================================
    ذخیره دیتابیس
-========================= */
+========================================================= */
 
 function saveDatabase() {
 
@@ -75,13 +76,32 @@ function saveDatabase() {
 }
 
 
-/* =========================
+/* =========================================================
+   ساخت ID
+========================================================= */
+
+function createId() {
+
+    return Date.now().toString() +
+        "_" +
+        Math.random()
+            .toString(36)
+            .substring(2, 10);
+
+}
+
+
+/* =========================================================
    انتخاب ربات
-========================= */
+========================================================= */
 
 function selectRobot(robot) {
 
     currentRobot = robot;
+
+    currentCenter = null;
+
+    editingVisitId = null;
 
     document
         .getElementById("homePage")
@@ -93,13 +113,14 @@ function selectRobot(robot) {
 
     document
         .getElementById("pageTitle")
-        .textContent = "ثبت اطلاعات مرکز - " + robot;
+        .textContent =
+        "ثبت اطلاعات مرکز - " + robot;
 
     document
         .getElementById("robotModel")
         .value = robot;
 
-    clearForm();
+    clearCenterForm();
 
     document
         .getElementById("robotModel")
@@ -107,12 +128,14 @@ function selectRobot(robot) {
 
     createChecklist();
 
+    updateVisitStatus("مراجعه جدید");
+
 }
 
 
-/* =========================
+/* =========================================================
    ساخت چک لیست
-========================= */
+========================================================= */
 
 function createChecklist(savedItems = []) {
 
@@ -173,9 +196,9 @@ function createChecklist(savedItems = []) {
 }
 
 
-/* =========================
+/* =========================================================
    گرفتن کارهای تیک خورده
-========================= */
+========================================================= */
 
 function getChecklistValues() {
 
@@ -188,7 +211,11 @@ function getChecklistValues() {
         .forEach(function(checkbox) {
 
             if (checkbox.checked) {
-                items.push(checkbox.value);
+
+                items.push(
+                    checkbox.value
+                );
+
             }
 
         });
@@ -198,9 +225,9 @@ function getChecklistValues() {
 }
 
 
-/* =========================
+/* =========================================================
    گرفتن اطلاعات فرم
-========================= */
+========================================================= */
 
 function getFormData() {
 
@@ -274,40 +301,80 @@ function getFormData() {
 }
 
 
-/* =========================
-   پاک کردن فرم
-========================= */
+/* =========================================================
+   پاک کردن فقط فرم مراجعه
+========================================================= */
 
-function clearForm() {
+function clearVisitForm() {
 
-    document.getElementById("centerName").value = "";
+    document
+        .getElementById("robotSerial")
+        .value = "";
 
-    document.getElementById("centerPhone").value = "";
+    document
+        .getElementById("robotIP")
+        .value = "";
 
-    document.getElementById("centerAddress").value = "";
+    document
+        .getElementById("robotMAC")
+        .value = "";
 
-    document.getElementById("centerManager").value = "";
-
-    document.getElementById("labelLink").value = "";
-
-    document.getElementById("robotSerial").value = "";
-
-    document.getElementById("robotIP").value = "";
-
-    document.getElementById("robotMAC").value = "";
-
-    document.getElementById("extraWork").value = "";
-
-    document.getElementById("history").innerHTML = "";
+    document
+        .getElementById("extraWork")
+        .value = "";
 
     createChecklist();
+
+    editingVisitId = null;
+
+    document
+        .getElementById("saveVisitBtn")
+        .textContent =
+        "💾 ذخیره مراجعه";
+
+    updateVisitStatus("مراجعه جدید");
 
 }
 
 
-/* =========================
+/* =========================================================
+   پاک کردن فرم مرکز
+========================================================= */
+
+function clearCenterForm() {
+
+    document
+        .getElementById("centerName")
+        .value = "";
+
+    document
+        .getElementById("centerPhone")
+        .value = "";
+
+    document
+        .getElementById("centerAddress")
+        .value = "";
+
+    document
+        .getElementById("centerManager")
+        .value = "";
+
+    document
+        .getElementById("labelLink")
+        .value = "";
+
+    clearVisitForm();
+
+    document
+        .getElementById("history")
+        .innerHTML = "";
+
+}
+
+
+/* =========================================================
    ذخیره مراجعه
-========================= */
+========================================================= */
 
 function saveVisit() {
 
@@ -316,7 +383,9 @@ function saveVisit() {
 
     if (!data.centerName) {
 
-        alert("لطفاً نام مرکز را وارد کنید.");
+        alert(
+            "لطفاً نام مرکز را وارد کنید."
+        );
 
         return;
 
@@ -324,31 +393,47 @@ function saveVisit() {
 
 
     /*
-       پیدا کردن مرکز
+       اگر مرکز فعلی وجود دارد،
+       از همان استفاده می‌کنیم.
     */
 
-    let center =
-        database.centers.find(function(item) {
-
-            return item.name
-                .trim()
-                .toLowerCase() ===
-                data.centerName
-                    .trim()
-                    .toLowerCase();
-
-        });
+    let center = currentCenter;
 
 
     /*
-       اگر مرکز وجود نداشت
+       اگر مرکز فعلی نداریم،
+       دنبال مرکز همنام می‌گردیم.
+    */
+
+    if (!center) {
+
+        center =
+            database.centers.find(
+                function(item) {
+
+                    return item.name
+                        .trim()
+                        .toLowerCase() ===
+                        data.centerName
+                            .trim()
+                            .toLowerCase();
+
+                }
+            );
+
+    }
+
+
+    /*
+       اگر مرکز اصلاً وجود نداشت،
+       مرکز جدید ایجاد می‌شود.
     */
 
     if (!center) {
 
         center = {
 
-            id: Date.now(),
+            id: createId(),
 
             name: data.centerName,
 
@@ -372,7 +457,7 @@ function saveVisit() {
 
 
     /*
-       بروزرسانی اطلاعات عمومی مرکز
+       اطلاعات ثابت مرکز
     */
 
     center.name =
@@ -392,7 +477,7 @@ function saveVisit() {
 
 
     /*
-       اطلاعات ربات
+       ربات‌های مرکز
     */
 
     if (!center.robots) {
@@ -415,21 +500,91 @@ function saveVisit() {
 
 
     /*
-       ایجاد سابقه جدید
+       اطمینان از وجود visits
     */
 
-    if (!center.visits) {
+    if (!Array.isArray(center.visits)) {
         center.visits = [];
     }
 
 
+    /* =====================================================
+       اگر داریم گزارش قبلی را ویرایش می‌کنیم
+    ===================================================== */
+
+    if (editingVisitId) {
+
+        const visit =
+            center.visits.find(
+                function(item) {
+
+                    return item.id ===
+                        editingVisitId;
+
+                }
+            );
+
+
+        if (visit) {
+
+            visit.robot =
+                currentRobot;
+
+            visit.checklist =
+                data.checklist;
+
+            visit.extraWork =
+                data.extraWork;
+
+            visit.robotInfo = {
+
+                serial:
+                    data.robotSerial,
+
+                ip:
+                    data.robotIP,
+
+                mac:
+                    data.robotMAC
+
+            };
+
+
+            saveDatabase();
+
+            currentCenter = center;
+
+            renderHistory();
+
+            clearVisitForm();
+
+            alert(
+                "گزارش قبلی با موفقیت ویرایش شد."
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       ایجاد مراجعه کاملاً جدید
+    ===================================================== */
+
     const visit = {
 
-        id: Date.now(),
+        id: createId(),
 
         date:
             new Date()
-                .toLocaleString("fa-IR"),
+                .toLocaleString(
+                    "fa-IR"
+                ),
+
+        timestamp:
+            Date.now(),
 
         robot:
             currentRobot,
@@ -456,15 +611,18 @@ function saveVisit() {
     };
 
 
-    center.visits.unshift(visit);
-
-
     /*
-       ذخیره
+       مهم:
+       اینجا push / unshift می‌کنیم.
+       یعنی گزارش قبلی حذف یا جایگزین نمی‌شود.
     */
 
-    saveDatabase();
+    center.visits.unshift(
+        visit
+    );
 
+
+    saveDatabase();
 
     currentCenter = center;
 
@@ -472,16 +630,25 @@ function saveVisit() {
     renderHistory();
 
 
+    /*
+       بعد از ذخیره،
+       فرم مراجعه کاملاً جدید می‌شود
+       ولی اطلاعات مرکز باقی می‌ماند.
+    */
+
+    clearVisitForm();
+
+
     alert(
-        "اطلاعات مرکز و گزارش مراجعه ذخیره شد."
+        "مراجعه با موفقیت ذخیره شد."
     );
 
 }
 
 
-/* =========================
+/* =========================================================
    جستجوی مرکز
-========================= */
+========================================================= */
 
 function searchCenters() {
 
@@ -514,9 +681,11 @@ function searchCenters() {
         database.centers.filter(
             function(center) {
 
-                return center.name
-                    .toLowerCase()
-                    .includes(query);
+                return (
+                    center.name || ""
+                )
+                .toLowerCase()
+                .includes(query);
 
             }
         );
@@ -536,23 +705,56 @@ function searchCenters() {
         function(center) {
 
             const row =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             row.className =
                 "search-result";
 
 
+            const info =
+                document.createElement(
+                    "div"
+                );
+
+
             const name =
-                document.createElement("strong");
+                document.createElement(
+                    "strong"
+                );
 
             name.textContent =
                 center.name;
 
 
-            const button =
-                document.createElement("button");
+            info.appendChild(name);
 
-            button.type = "button";
+
+            const details =
+                document.createElement(
+                    "small"
+                );
+
+            details.textContent =
+                "تعداد مراجعات: " +
+                (
+                    center.visits
+                        ? center.visits.length
+                        : 0
+                );
+
+
+            info.appendChild(details);
+
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+            button.type =
+                "button";
 
             button.className =
                 "btn btn-blue";
@@ -571,7 +773,7 @@ function searchCenters() {
             );
 
 
-            row.appendChild(name);
+            row.appendChild(info);
 
             row.appendChild(button);
 
@@ -583,13 +785,46 @@ function searchCenters() {
 }
 
 
-/* =========================
+/* =========================================================
    باز کردن مرکز قبلی
-========================= */
+========================================================= */
 
 function openCenter(center) {
 
     currentCenter = center;
+
+    editingVisitId = null;
+
+
+    /*
+       اگر مرکز قبلی چند ربات دارد،
+       ربات انتخاب‌شده فعلی را حفظ می‌کنیم.
+
+       اگر چیزی انتخاب نشده باشد،
+       اولین ربات مرکز را انتخاب می‌کنیم.
+    */
+
+    if (
+        !currentRobot ||
+        !center.robots ||
+        !center.robots[currentRobot]
+    ) {
+
+        const robotKeys =
+            center.robots
+                ? Object.keys(
+                    center.robots
+                )
+                : [];
+
+        if (robotKeys.length) {
+
+            currentRobot =
+                robotKeys[0];
+
+        }
+
+    }
 
 
     document
@@ -641,60 +876,61 @@ function openCenter(center) {
     document
         .getElementById("robotModel")
         .value =
-        currentRobot;
+        currentRobot || "";
 
 
-    const robot =
-        center.robots &&
-        center.robots[currentRobot];
+    /*
+       اطلاعات ربات را برای فرم مراجعه
+       جدید نشان نمی‌دهیم.
 
+       این قسمت مهم است:
+       مراجعه جدید باید فرم خالی داشته باشد.
+    */
 
-    if (robot) {
+    clearVisitForm();
 
-        document
-            .getElementById("robotSerial")
-            .value =
-            robot.serial || "";
-
-
-        document
-            .getElementById("robotIP")
-            .value =
-            robot.ip || "";
-
-
-        document
-            .getElementById("robotMAC")
-            .value =
-            robot.mac || "";
-
-    } else {
-
-        document
-            .getElementById("robotSerial")
-            .value = "";
-
-        document
-            .getElementById("robotIP")
-            .value = "";
-
-        document
-            .getElementById("robotMAC")
-            .value = "";
-
-    }
-
-
-    createChecklist();
 
     renderHistory();
 
 }
 
 
-/* =========================
+/* =========================================================
+   ثبت مراجعه جدید
+========================================================= */
+
+function newVisit() {
+
+    if (!currentCenter) {
+
+        alert(
+            "ابتدا یک مرکز را باز کنید."
+        );
+
+        return;
+
+    }
+
+
+    clearVisitForm();
+
+
+    document
+        .getElementById("robotModel")
+        .value =
+        currentRobot;
+
+
+    document
+        .getElementById("robotSerial")
+        .focus();
+
+}
+
+
+/* =========================================================
    نمایش سوابق
-========================= */
+========================================================= */
 
 function renderHistory() {
 
@@ -708,18 +944,30 @@ function renderHistory() {
 
 
     if (!currentCenter) {
+
+        history.innerHTML =
+            "<p>هنوز مرکزی انتخاب نشده است.</p>";
+
         return;
+
     }
 
 
     const visits =
-        currentCenter.visits || [];
+        Array.isArray(
+            currentCenter.visits
+        )
+            ? currentCenter.visits
+            : [];
 
 
     if (!visits.length) {
 
-        history.innerHTML =
-            "<p>هنوز مراجعه‌ای ثبت نشده است.</p>";
+        history.innerHTML = `
+            <div class="empty-history">
+                هنوز هیچ مراجعه‌ای برای این مرکز ثبت نشده است.
+            </div>
+        `;
 
         return;
 
@@ -727,75 +975,256 @@ function renderHistory() {
 
 
     visits.forEach(
-        function(visit) {
+        function(visit, index) {
 
             const box =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             box.className =
                 "history-item";
 
 
+            const header =
+                document.createElement(
+                    "div"
+                );
+
+            header.className =
+                "history-header";
+
+
             const title =
-                document.createElement("h3");
+                document.createElement(
+                    "h3"
+                );
 
             title.textContent =
-                "📅 " +
+                "📅 مراجعه " +
+                (visits.length - index) +
+                " - " +
                 visit.date;
 
 
-            box.appendChild(title);
+            header.appendChild(title);
 
 
-            const robot =
-                document.createElement("p");
-
-            robot.innerHTML =
-                "<strong>ربات:</strong> " +
-                escapeHTML(
-                    visit.robot
+            const buttons =
+                document.createElement(
+                    "div"
                 );
 
+            buttons.className =
+                "history-buttons";
 
-            box.appendChild(robot);
 
+            const editButton =
+                document.createElement(
+                    "button"
+                );
+
+            editButton.type =
+                "button";
+
+            editButton.className =
+                "btn btn-blue btn-small";
+
+            editButton.textContent =
+                "ویرایش";
+
+
+            editButton.addEventListener(
+                "click",
+                function() {
+
+                    editVisit(
+                        visit.id
+                    );
+
+                }
+            );
+
+
+            const deleteButton =
+                document.createElement(
+                    "button"
+                );
+
+            deleteButton.type =
+                "button";
+
+            deleteButton.className =
+                "btn btn-red btn-small";
+
+            deleteButton.textContent =
+                "حذف";
+
+
+            deleteButton.addEventListener(
+                "click",
+                function() {
+
+                    deleteVisit(
+                        visit.id
+                    );
+
+                }
+            );
+
+
+            buttons.appendChild(
+                editButton
+            );
+
+            buttons.appendChild(
+                deleteButton
+            );
+
+
+            header.appendChild(
+                buttons
+            );
+
+
+            box.appendChild(
+                header
+            );
+
+
+            /*
+               اطلاعات ربات
+            */
+
+            const robotInfo =
+                document.createElement(
+                    "div"
+                );
+
+            robotInfo.className =
+                "history-robot";
+
+
+            robotInfo.innerHTML = `
+
+                <div>
+                    <strong>ربات:</strong>
+                    ${escapeHTML(
+                        visit.robot || "-"
+                    )}
+                </div>
+
+                <div>
+                    <strong>Serial:</strong>
+                    ${escapeHTML(
+                        visit.robotInfo?.serial || "-"
+                    )}
+                </div>
+
+                <div>
+                    <strong>IP:</strong>
+                    ${escapeHTML(
+                        visit.robotInfo?.ip || "-"
+                    )}
+                </div>
+
+                <div>
+                    <strong>MAC:</strong>
+                    ${escapeHTML(
+                        visit.robotInfo?.mac || "-"
+                    )}
+                </div>
+
+            `;
+
+
+            box.appendChild(
+                robotInfo
+            );
+
+
+            /*
+               کارهای انجام‌شده
+            */
 
             const workTitle =
-                document.createElement("p");
+                document.createElement(
+                    "p"
+                );
 
             workTitle.innerHTML =
                 "<strong>کارهای انجام‌شده:</strong>";
 
-            box.appendChild(workTitle);
+            box.appendChild(
+                workTitle
+            );
 
 
             const list =
-                document.createElement("ul");
+                document.createElement(
+                    "ul"
+                );
 
 
-            (visit.checklist || [])
-                .forEach(
+            if (
+                visit.checklist &&
+                visit.checklist.length
+            ) {
+
+                visit.checklist.forEach(
                     function(item) {
 
                         const li =
-                            document.createElement("li");
+                            document.createElement(
+                                "li"
+                            );
 
                         li.textContent =
-                            item;
+                            "✓ " + item;
 
-                        list.appendChild(li);
+                        list.appendChild(
+                            li
+                        );
 
                     }
                 );
 
+            } else {
 
-            box.appendChild(list);
+                const li =
+                    document.createElement(
+                        "li"
+                    );
 
+                li.textContent =
+                    "موردی ثبت نشده است.";
+
+                list.appendChild(
+                    li
+                );
+
+            }
+
+
+            box.appendChild(
+                list
+            );
+
+
+            /*
+               کار متفرقه
+            */
 
             if (visit.extraWork) {
 
                 const extra =
-                    document.createElement("p");
+                    document.createElement(
+                        "div"
+                    );
+
+                extra.className =
+                    "history-extra";
+
 
                 extra.innerHTML =
                     "<strong>کار متفرقه:</strong><br>" +
@@ -803,12 +1232,17 @@ function renderHistory() {
                         visit.extraWork
                     );
 
-                box.appendChild(extra);
+
+                box.appendChild(
+                    extra
+                );
 
             }
 
 
-            history.appendChild(box);
+            history.appendChild(
+                box
+            );
 
         }
     );
@@ -816,9 +1250,164 @@ function renderHistory() {
 }
 
 
-/* =========================
+/* =========================================================
+   ویرایش گزارش
+========================================================= */
+
+function editVisit(visitId) {
+
+    if (!currentCenter) {
+        return;
+    }
+
+
+    const visit =
+        currentCenter.visits.find(
+            function(item) {
+
+                return item.id ===
+                    visitId;
+
+            }
+        );
+
+
+    if (!visit) {
+        return;
+    }
+
+
+    currentRobot =
+        visit.robot;
+
+
+    document
+        .getElementById("robotModel")
+        .value =
+        currentRobot;
+
+
+    document
+        .getElementById("robotSerial")
+        .value =
+        visit.robotInfo?.serial || "";
+
+
+    document
+        .getElementById("robotIP")
+        .value =
+        visit.robotInfo?.ip || "";
+
+
+    document
+        .getElementById("robotMAC")
+        .value =
+        visit.robotInfo?.mac || "";
+
+
+    document
+        .getElementById("extraWork")
+        .value =
+        visit.extraWork || "";
+
+
+    createChecklist(
+        visit.checklist || []
+    );
+
+
+    editingVisitId =
+        visit.id;
+
+
+    document
+        .getElementById("saveVisitBtn")
+        .textContent =
+        "💾 ذخیره تغییرات";
+
+
+    updateVisitStatus(
+        "در حال ویرایش گزارش"
+    );
+
+
+    document
+        .getElementById("robotSerial")
+        .focus();
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================================
+   حذف گزارش
+========================================================= */
+
+function deleteVisit(visitId) {
+
+    if (!currentCenter) {
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            "آیا از حذف این گزارش مطمئن هستید؟"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    currentCenter.visits =
+        currentCenter.visits.filter(
+            function(visit) {
+
+                return visit.id !==
+                    visitId;
+
+            }
+        );
+
+
+    saveDatabase();
+
+    renderHistory();
+
+}
+
+
+/* =========================================================
+   وضعیت فرم مراجعه
+========================================================= */
+
+function updateVisitStatus(text) {
+
+    const status =
+        document.getElementById(
+            "visitStatus"
+        );
+
+    if (status) {
+
+        status.textContent =
+            text;
+
+    }
+
+}
+
+
+/* =========================================================
    برگشت صفحه اصلی
-========================= */
+========================================================= */
 
 function goHome() {
 
@@ -836,6 +1425,8 @@ function goHome() {
 
     currentRobot = "";
 
+    editingVisitId = null;
+
 
     document
         .getElementById("searchCenter")
@@ -849,15 +1440,36 @@ function goHome() {
 }
 
 
-/* =========================
+/* =========================================================
    مرکز جدید
-========================= */
+========================================================= */
 
 function newCenter() {
 
-    clearForm();
-
     currentCenter = null;
+
+    editingVisitId = null;
+
+
+    /*
+       مدل ربات انتخاب‌شده حفظ می‌شود.
+    */
+
+    clearCenterForm();
+
+
+    document
+        .getElementById("robotModel")
+        .value =
+        currentRobot;
+
+
+    document
+        .getElementById("pageTitle")
+        .textContent =
+        "مرکز جدید - " +
+        currentRobot;
+
 
     document
         .getElementById("centerName")
@@ -866,9 +1478,9 @@ function newCenter() {
 }
 
 
-/* =========================
-   گزارش PDF
-========================= */
+/* =========================================================
+   PDF
+========================================================= */
 
 function printReport() {
 
@@ -908,25 +1520,25 @@ function printReport() {
     const checklistHTML =
         data.checklist.length
 
-        ?
+            ?
 
-        data.checklist
-            .map(
-                function(item) {
+            data.checklist
+                .map(
+                    function(item) {
 
-                    return (
-                        "<li>☑ " +
-                        escapeHTML(item) +
-                        "</li>"
-                    );
+                        return (
+                            "<li>☑ " +
+                            escapeHTML(item) +
+                            "</li>"
+                        );
 
-                }
-            )
-            .join("")
+                    }
+                )
+                .join("")
 
-        :
+            :
 
-        "<li>موردی ثبت نشده است.</li>";
+            "<li>موردی ثبت نشده است.</li>";
 
 
     report.document.write(`
@@ -1097,20 +1709,20 @@ ${escapeHTML(
 ${
     data.labelLink
 
-    ?
+        ?
 
-    `
-    <a
-        href="${escapeHTML(data.labelLink)}"
-        target="_blank"
-    >
-        مشاهده / دانلود فایل لیبل
-    </a>
-    `
+        `
+        <a
+            href="${escapeHTML(data.labelLink)}"
+            target="_blank"
+        >
+            مشاهده / دانلود فایل لیبل
+        </a>
+        `
 
-    :
+        :
 
-    "لینک فایل لیبل ثبت نشده است."
+        "لینک فایل لیبل ثبت نشده است."
 }
 
 </div>
@@ -1137,13 +1749,16 @@ ${
 }
 
 
-/* =========================
+/* =========================================================
    امنیت HTML
-========================= */
+========================================================= */
 
 function escapeHTML(value) {
 
-    if (!value) {
+    if (
+        value === null ||
+        value === undefined
+    ) {
         return "";
     }
 
@@ -1178,9 +1793,9 @@ function escapeHTML(value) {
 }
 
 
-/* =========================
+/* =========================================================
    اتصال دکمه‌ها
-========================= */
+========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -1188,31 +1803,29 @@ document.addEventListener(
 
 
         /*
-           دکمه‌های ربات
+           ربات‌ها
         */
 
-        const robotCards =
-            document.querySelectorAll(
+        document
+            .querySelectorAll(
                 ".robot-card"
+            )
+            .forEach(
+                function(card) {
+
+                    card.addEventListener(
+                        "click",
+                        function() {
+
+                            selectRobot(
+                                this.dataset.robot
+                            );
+
+                        }
+                    );
+
+                }
             );
-
-
-        robotCards.forEach(
-            function(card) {
-
-                card.addEventListener(
-                    "click",
-                    function() {
-
-                        selectRobot(
-                            this.dataset.robot
-                        );
-
-                    }
-                );
-
-            }
-        );
 
 
         /*
@@ -1248,7 +1861,7 @@ document.addEventListener(
 
 
         /*
-           ذخیره
+           ذخیره مراجعه
         */
 
         document
@@ -1256,6 +1869,18 @@ document.addEventListener(
             .addEventListener(
                 "click",
                 saveVisit
+            );
+
+
+        /*
+           مراجعه جدید
+        */
+
+        document
+            .getElementById("newVisitBtn")
+            .addEventListener(
+                "click",
+                newVisit
             );
 
 
@@ -1284,7 +1909,7 @@ document.addEventListener(
 
 
         /*
-           ساخت چک لیست اولیه
+           چک لیست اولیه
         */
 
         createChecklist();
