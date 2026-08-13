@@ -1,6 +1,15 @@
+/* =========================
+   Reset
+========================= */
+
 * {
     box-sizing: border-box;
 }
+
+
+/* =========================
+   General
+========================= */
 
 html {
     direction: rtl;
@@ -17,6 +26,8 @@ body {
 
     background: #0d1117;
     color: #ffffff;
+
+    min-height: 100vh;
 }
 
 button,
@@ -41,7 +52,9 @@ button {
 
 .header {
     width: 100%;
-    padding: 25px 20px;
+
+    padding: 28px 20px;
+
     text-align: center;
 
     background: #161b22;
@@ -51,10 +64,19 @@ button {
 }
 
 .header h1 {
+    margin: 0 0 10px;
+
+    font-size: 28px;
+
+    font-weight: bold;
+}
+
+.header p {
     margin: 0;
 
-    font-size: 26px;
-    font-weight: bold;
+    color: #8b949e;
+
+    font-size: 15px;
 }
 
 
@@ -64,9 +86,11 @@ button {
 
 .container {
     width: 100%;
-    max-width: 1100px;
+
+    max-width: 1200px;
 
     margin: 0 auto;
+
     padding: 25px;
 }
 
@@ -81,167 +105,175 @@ button {
     border:
         1px solid #30363d;
 
-    border-radius: 16px;
+    border-radius: 18px;
 
-    padding: 20px;
+    padding: 25px;
 
     margin-bottom: 20px;
 }
 
 .card h2 {
     margin-top: 0;
+
     margin-bottom: 10px;
 }
 
-.card p {
-    color: #c9d1d9;
+.section-description {
+    color: #8b949e;
+
+    margin-top: 0;
 }
 
 
 /* =========================
-   Robot Cards
+   Map Card
 ========================= */
 
-.robot-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 20px;
-
-    margin: 25px 0;
+.map-card {
+    text-align: center;
 }
 
-.robot-card {
-    min-height: 220px;
+.map-card h2 {
+    font-size: 24px;
+}
 
-    border:
-        1px solid #30363d;
 
-    border-radius: 20px;
+/* =========================
+   Iran Map
+========================= */
 
-    background: #161b22;
+.iran-map {
+    width: 100%;
 
-    color: #ffffff;
+    max-width: 950px;
+
+    min-height: 600px;
+
+    margin: 30px auto 10px;
+
+    position: relative;
 
     display: flex;
 
     align-items: center;
+
     justify-content: center;
-
-    transition:
-        transform 0.2s ease,
-        border-color 0.2s ease,
-        background 0.2s ease;
-}
-
-.robot-card:hover {
-    transform: translateY(-4px);
-
-    border-color: #58a6ff;
-
-    background: #1c2128;
-}
-
-.robot-card:active {
-    transform: scale(0.98);
-}
-
-.robot-card span {
-    font-size: 40px;
-    font-weight: bold;
-}
-
-
-/* =========================
-   Search
-========================= */
-
-.search-box {
-    display: flex;
-
-    gap: 10px;
-
-    margin-top: 15px;
-}
-
-.search-box input {
-    flex: 1;
-}
-
-
-/* =========================
-   Inputs
-========================= */
-
-input,
-textarea {
-    width: 100%;
-
-    padding: 12px 14px;
 
     background: #0d1117;
 
-    color: #ffffff;
+    border-radius: 18px;
 
-    border:
-        1px solid #30363d;
-
-    border-radius: 10px;
-
-    outline: none;
-
-    font-size: 15px;
+    overflow: hidden;
 }
 
-input:focus,
-textarea:focus {
-    border-color: #58a6ff;
-}
 
-input[readonly] {
-    opacity: 0.8;
-}
+/*
+   تصویر / نقشه واقعی ایران
+   بعداً توسط JavaScript قرار می‌گیرد.
+*/
 
-textarea {
-    min-height: 130px;
+.iran-map svg {
+    width: 100%;
 
-    resize: vertical;
+    max-width: 900px;
+
+    height: auto;
+
+    display: block;
 }
 
 
 /* =========================
-   Form Grid
+   Map Province
 ========================= */
 
-.form-grid {
-    display: grid;
+.province {
+    cursor: pointer;
 
-    grid-template-columns:
-        repeat(2, 1fr);
+    fill: #21262d;
 
-    gap: 18px;
+    stroke: #8b949e;
+
+    stroke-width: 1;
+
+    transition:
+        fill 0.2s ease,
+        transform 0.2s ease;
 }
 
-.field {
+.province:hover {
+    fill: #238636;
+
+    stroke: #ffffff;
+}
+
+.province.selected {
+    fill: #2ea043;
+
+    stroke: #ffffff;
+}
+
+
+/* =========================
+   Map Loading
+========================= */
+
+.map-loading {
+    color: #8b949e;
+
+    font-size: 18px;
+
+    padding: 50px;
+}
+
+
+/* =========================
+   Province Page
+========================= */
+
+#provincePage {
+    animation:
+        pageFade 0.25s ease;
+}
+
+@keyframes pageFade {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+/* =========================
+   Page Toolbar
+========================= */
+
+.page-toolbar {
     display: flex;
 
-    flex-direction: column;
+    align-items: center;
 
-    gap: 8px;
+    gap: 20px;
+
+    margin-bottom: 25px;
 }
 
-.field.full {
-    grid-column: 1 / -1;
-}
+.page-toolbar h2 {
+    margin: 0;
 
-.field label {
-    color: #c9d1d9;
+    flex: 1;
 
-    font-size: 14px;
-
-    font-weight: bold;
+    font-size: 24px;
 }
 
 
@@ -257,380 +289,163 @@ textarea {
     padding:
         11px 18px;
 
-    font-size: 14px;
+    font-size: 15px;
 
     color: #ffffff;
 
     transition:
-        opacity 0.2s ease,
+        background 0.2s ease,
         transform 0.15s ease;
 }
 
-.btn:hover {
-    opacity: 0.88;
-}
-
 .btn:active {
-    transform: scale(0.97);
+    transform:
+        scale(0.97);
 }
 
-.btn-primary {
-    background: #238636;
+
+/* Gray */
+
+.btn-gray {
+    background: #30363d;
 }
 
-.btn-green {
-    background: #1f883d;
+.btn-gray:hover {
+    background: #484f58;
 }
+
+
+/* Blue */
 
 .btn-blue {
     background: #1f6feb;
 }
 
-.btn-gray {
-    background: #484f58;
-}
-
-.btn-red {
-    background: #da3633;
-}
-
-.btn-small {
-    padding:
-        7px 12px;
-
-    font-size: 12px;
+.btn-blue:hover {
+    background: #388bfd;
 }
 
 
-/* =========================
-   Page Toolbar
-========================= */
+/* Green */
 
-.page-toolbar {
-    display: flex;
-
-    align-items: center;
-
-    gap: 20px;
-}
-
-.page-toolbar h2 {
-    flex: 1;
-
-    text-align: center;
-
-    margin: 0;
-}
-
-
-/* =========================
-   New Visit
-========================= */
-
-.new-visit-card {
-    border-color: #388bfd;
-}
-
-.new-visit-title {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 20px;
-
-    margin-bottom: 20px;
-}
-
-.new-visit-title h2 {
-    margin-bottom: 5px;
-}
-
-.section-description {
-    margin-top: 5px;
-
-    color: #8b949e !important;
-
-    font-size: 14px;
-
-    line-height: 1.8;
-}
-
-.visit-status {
-    display: inline-block;
-
-    padding:
-        7px 13px;
-
-    border-radius: 20px;
-
+.btn-primary {
     background: #238636;
+}
 
-    color: #ffffff;
-
-    white-space: nowrap;
-
-    font-size: 13px;
+.btn-primary:hover {
+    background: #2ea043;
 }
 
 
 /* =========================
-   Sub Card
+   Center List
 ========================= */
 
-.sub-card {
+.center-list {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 18px;
+
+    margin-top: 20px;
+}
+
+
+/* =========================
+   Center Card
+========================= */
+
+.center-card {
     background: #0d1117;
 
     border:
         1px solid #30363d;
 
-    border-radius: 12px;
+    border-radius: 16px;
 
-    padding: 18px;
+    min-height: 150px;
 
-    margin-bottom: 18px;
-}
+    padding: 20px;
 
-.sub-card h3 {
-    margin-top: 0;
-
-    margin-bottom: 15px;
-}
-
-
-/* =========================
-   Checklist
-========================= */
-
-.checklist {
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, 1fr);
-
-    gap: 10px;
-}
-
-.check-item {
     display: flex;
+
+    flex-direction: column;
 
     align-items: center;
 
-    gap: 10px;
+    justify-content: center;
 
-    padding: 11px;
+    text-align: center;
 
-    background: #161b22;
-
-    border:
-        1px solid #30363d;
-
-    border-radius: 9px;
+    cursor: pointer;
 
     transition:
+        transform 0.2s ease,
         border-color 0.2s ease,
         background 0.2s ease;
 }
 
-.check-item:hover {
-    border-color: #58a6ff;
+.center-card:hover {
+    transform:
+        translateY(-4px);
+
+    border-color:
+        #1f6feb;
+
+    background:
+        #161b22;
 }
 
-.check-item input {
-    width: 18px;
-    height: 18px;
+.center-card-icon {
+    font-size: 42px;
 
-    accent-color: #238636;
+    margin-bottom: 12px;
 }
 
-.check-item label {
-    cursor: pointer;
+.center-card-name {
+    font-size: 18px;
 
-    flex: 1;
-
-    color: #c9d1d9;
-
-    font-size: 14px;
-}
-
-
-/* =========================
-   Action Card
-========================= */
-
-.action-card {
-    display: flex;
-
-    flex-wrap: wrap;
-
-    gap: 10px;
-
-    padding-top: 5px;
-}
-
-
-/* =========================
-   Search Results
-========================= */
-
-.search-results {
-    margin-top: 15px;
-}
-
-.search-result {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 15px;
-
-    padding: 15px;
-
-    margin-bottom: 10px;
-
-    background: #0d1117;
-
-    border:
-        1px solid #30363d;
-
-    border-radius: 10px;
-}
-
-.search-result > div {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 5px;
-}
-
-.search-result strong {
-    font-size: 16px;
-}
-
-.search-result small {
-    color: #8b949e;
-}
-
-
-/* =========================
-   History
-========================= */
-
-.history {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 15px;
-}
-
-.history-item {
-    background: #0d1117;
-
-    border:
-        1px solid #30363d;
-
-    border-radius: 12px;
-
-    padding: 18px;
-}
-
-.history-header {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 15px;
-
-    margin-bottom: 15px;
-
-    padding-bottom: 12px;
-
-    border-bottom:
-        1px solid #30363d;
-}
-
-.history-header h3 {
-    margin: 0;
-
-    font-size: 15px;
+    font-weight: bold;
 
     color: #ffffff;
 }
 
-.history-buttons {
-    display: flex;
 
-    gap: 7px;
-}
+/* =========================
+   Empty Centers
+========================= */
 
-.history-robot {
-    display: grid;
+.empty-centers {
+    grid-column:
+        1 / -1;
 
-    grid-template-columns:
-        repeat(2, 1fr);
-
-    gap: 8px;
-
-    margin-bottom: 15px;
-}
-
-.history-robot div {
-    background: #161b22;
-
-    padding: 9px;
-
-    border-radius: 7px;
-
-    color: #c9d1d9;
-
-    font-size: 13px;
-}
-
-.history-item ul {
-    margin-top: 8px;
-
-    line-height: 2;
-
-    color: #c9d1d9;
-}
-
-.history-extra {
-    margin-top: 15px;
-
-    padding: 12px;
-
-    background: #161b22;
-
-    border-radius: 8px;
-
-    line-height: 1.9;
-
-    color: #c9d1d9;
-}
-
-.empty-history {
     text-align: center;
 
-    padding: 25px;
+    padding: 50px 20px;
 
     color: #8b949e;
 
     border:
         1px dashed #30363d;
 
-    border-radius: 10px;
+    border-radius: 15px;
+}
+
+.empty-centers .icon {
+    font-size: 50px;
+
+    margin-bottom: 15px;
+}
+
+.empty-centers p {
+    margin: 5px 0;
 }
 
 
 /* =========================
-   Responsive
+   Mobile
 ========================= */
 
 @media (max-width: 800px) {
@@ -639,132 +454,66 @@ textarea {
         padding: 15px;
     }
 
-    .robot-grid {
+    .header {
+        padding:
+            22px 15px;
+    }
+
+    .header h1 {
+        font-size: 22px;
+    }
+
+    .iran-map {
+        min-height: 400px;
+    }
+
+    .center-list {
         grid-template-columns:
-            1fr;
-    }
-
-    .robot-card {
-        min-height: 130px;
-    }
-
-    .robot-card span {
-        font-size: 32px;
-    }
-
-    .form-grid {
-        grid-template-columns:
-            1fr;
-    }
-
-    .field.full {
-        grid-column: auto;
-    }
-
-    .checklist {
-        grid-template-columns:
-            1fr;
-    }
-
-    .history-robot {
-        grid-template-columns:
-            1fr;
-    }
-
-    .new-visit-title {
-        flex-direction: column;
-
-        align-items: stretch;
-    }
-
-    .visit-status {
-        text-align: center;
-    }
-
-    .search-box {
-        flex-direction: column;
-    }
-
-    .search-result {
-        flex-direction: column;
-
-        align-items: stretch;
-    }
-
-    .search-result .btn {
-        width: 100%;
+            repeat(2, 1fr);
     }
 
     .page-toolbar {
-        flex-direction: column;
-
         align-items: stretch;
+
+        flex-direction: column;
     }
 
     .page-toolbar h2 {
-        text-align: center;
-    }
-
-    .action-card {
-        flex-direction: column;
-    }
-
-    .action-card .btn {
-        width: 100%;
-    }
-
-    .history-header {
-        flex-direction: column;
-
-        align-items: stretch;
-    }
-
-    .history-buttons {
-        width: 100%;
-    }
-
-    .history-buttons .btn {
-        flex: 1;
+        order: -1;
     }
 
 }
 
 
 /* =========================
-   Very Small Screens
+   Small Mobile
 ========================= */
 
-@media (max-width: 450px) {
-
-    .header {
-        padding: 18px 12px;
-    }
-
-    .header h1 {
-        font-size: 20px;
-    }
-
-    .container {
-        padding: 10px;
-    }
+@media (max-width: 500px) {
 
     .card {
-        padding: 14px;
+        padding: 15px;
 
-        border-radius: 12px;
+        border-radius: 14px;
     }
 
-    .robot-card {
-        min-height: 110px;
+    .iran-map {
+        min-height: 300px;
+
+        margin-top: 20px;
     }
 
-    .robot-card span {
-        font-size: 28px;
+    .center-list {
+        grid-template-columns:
+            1fr;
     }
 
-    input,
-    textarea {
-        font-size: 14px;
+    .center-card {
+        min-height: 120px;
     }
 
-  }
+    .center-card-icon {
+        font-size: 36px;
+    }
+
+}
