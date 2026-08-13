@@ -3,24 +3,19 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <meta
-        name="theme-color"
-        content="#0d1117"
-    >
+<title>مدیریت مراکز و ربات‌ها</title>
 
-    <title>مدیریت مراکز و ربات‌ها</title>
-
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+<link
+    rel="stylesheet"
+    href="style.css"
+>
 
 </head>
 
@@ -28,19 +23,11 @@
 <body>
 
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
-
 <header class="header">
 
     <h1>
-        🏥 مدیریت مراکز و ربات‌ها
+        مدیریت مراکز و ربات‌ها
     </h1>
-
-    <p>
-        انتخاب استان و مدیریت مراکز
-    </p>
 
 </header>
 
@@ -53,42 +40,320 @@
      صفحه نقشه ایران
 ===================================================== -->
 
-<section
-    id="mapPage"
-    class="page"
->
+<section id="mapPage">
+
 
     <div class="card intro-card">
 
         <h2>
-            🗺️ انتخاب استان
+            🇮🇷 انتخاب استان
         </h2>
 
         <p>
-            برای مشاهده مراکز، استان موردنظر را از روی نقشه انتخاب کنید.
+            برای مشاهده مراکز، استان موردنظر را انتخاب کنید.
         </p>
 
     </div>
 
 
-    <!-- نقشه ایران -->
+    <!--
+        نقشه اصلی ایران
 
-    <div class="card map-card">
+        هر استان با class="province"
+        و data-province مشخص شده است.
 
-        <div
-            id="iranMap"
-            class="iran-map"
-        >
+        در صورت داشتن فایل SVG واقعی نقشه،
+        می‌توان همین قسمت را با SVG جایگزین کرد.
+    -->
 
-            <div class="map-loading">
+    <div class="iran-map-container">
 
-                در حال بارگذاری نقشه ایران...
+        <div class="iran-map">
 
-            </div>
+
+            <button
+                type="button"
+                class="province"
+                data-province="آذربایجان شرقی"
+            >
+                آذربایجان شرقی
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="آذربایجان غربی"
+            >
+                آذربایجان غربی
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="اردبیل"
+            >
+                اردبیل
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="اصفهان"
+            >
+                اصفهان
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="البرز"
+            >
+                البرز
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="ایلام"
+            >
+                ایلام
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="بوشهر"
+            >
+                بوشهر
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="تهران"
+            >
+                تهران
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="چهارمحال و بختیاری"
+            >
+                چهارمحال و بختیاری
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="خراسان جنوبی"
+            >
+                خراسان جنوبی
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="خراسان رضوی"
+            >
+                خراسان رضوی
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="خراسان شمالی"
+            >
+                خراسان شمالی
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="خوزستان"
+            >
+                خوزستان
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="زنجان"
+            >
+                زنجان
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="سمنان"
+            >
+                سمنان
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="سیستان و بلوچستان"
+            >
+                سیستان و بلوچستان
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="فارس"
+            >
+                فارس
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="قزوین"
+            >
+                قزوین
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="قم"
+            >
+                قم
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="کردستان"
+            >
+                کردستان
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="کرمان"
+            >
+                کرمان
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="کرمانشاه"
+            >
+                کرمانشاه
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="کهگیلویه و بویراحمد"
+            >
+                کهگیلویه و بویراحمد
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="گلستان"
+            >
+                گلستان
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="گیلان"
+            >
+                گیلان
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="لرستان"
+            >
+                لرستان
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="مازندران"
+            >
+                مازندران
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="مرکزی"
+            >
+                مرکزی
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="هرمزگان"
+            >
+                هرمزگان
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="همدان"
+            >
+                همدان
+            </button>
+
+
+            <button
+                type="button"
+                class="province"
+                data-province="یزد"
+            >
+                یزد
+            </button>
+
 
         </div>
 
     </div>
+
 
 </section>
 
@@ -100,17 +365,16 @@
 
 <section
     id="provincePage"
-    class="page hidden"
+    class="hidden"
 >
 
 
-    <!-- نوار بالای صفحه -->
-
     <div class="card page-toolbar">
+
 
         <button
             type="button"
-            id="backToMapBtn"
+            id="backMapBtn"
             class="btn btn-gray"
         >
             ← نقشه ایران
@@ -121,32 +385,79 @@
             مراکز استان
         </h2>
 
+
     </div>
 
 
 
-    <!-- دکمه افزودن مرکز -->
+    <!-- جستجوی مرکز -->
 
-    <div class="province-actions">
+    <section class="card province-search">
+
+
+        <h2>
+            🔎 جستجوی مرکز
+        </h2>
+
+
+        <input
+            type="search"
+            id="provinceCenterSearch"
+            placeholder="نام مرکز را وارد کنید..."
+            autocomplete="off"
+        >
+
+
+    </section>
+
+
+
+    <!-- مرکز جدید -->
+
+    <section class="card new-center-card">
+
+
+        <h2>
+            ➕ ثبت مرکز جدید
+        </h2>
+
+
+        <p>
+            اگر این مرکز برای اولین بار ثبت می‌شود،
+            از این قسمت اطلاعات آن را وارد کنید.
+        </p>
+
 
         <button
             type="button"
-            id="addCenterBtn"
-            class="btn btn-primary add-center-btn"
+            id="newCenterBtn"
+            class="btn btn-primary"
         >
-            ➕ افزودن مرکز جدید
+            ➕ مرکز جدید
         </button>
 
-    </div>
+
+    </section>
 
 
 
     <!-- لیست مراکز -->
 
-    <div
-        id="centerList"
-        class="center-list"
-    ></div>
+    <section class="card">
+
+
+        <h2>
+            🏥 مراکز ثبت‌شده
+        </h2>
+
+
+        <div
+            id="centersGrid"
+            class="centers-grid"
+        ></div>
+
+
+    </section>
 
 
 </section>
@@ -154,37 +465,42 @@
 
 
 <!-- =====================================================
-     صفحه ثبت مرکز جدید
+     صفحه ثبت / ویرایش مرکز
 ===================================================== -->
 
 <section
-    id="centerFormPage"
-    class="page hidden"
+    id="centerPage"
+    class="hidden"
 >
 
 
     <div class="card page-toolbar">
 
+
         <button
             type="button"
-            id="backToProvinceBtn"
+            id="backProvinceBtn"
             class="btn btn-gray"
         >
-            ← بازگشت
+            ← بازگشت به مراکز
         </button>
 
 
-        <h2>
-            ➕ ثبت مرکز جدید
+        <h2 id="pageTitle">
+            ثبت اطلاعات مرکز
         </h2>
+
 
     </div>
 
 
 
-    <!-- فرم مرکز -->
+    <!-- =================================================
+         اطلاعات مرکز
+    ================================================= -->
 
     <section class="card">
+
 
         <h2>
             🏢 اطلاعات مرکز
@@ -194,36 +510,15 @@
         <div class="form-grid">
 
 
-            <!-- استان -->
-
             <div class="field">
 
-                <label for="newCenterProvince">
-                    استان
-                </label>
-
-                <input
-                    type="text"
-                    id="newCenterProvince"
-                    readonly
-                >
-
-            </div>
-
-
-
-            <!-- نام مرکز -->
-
-            <div class="field">
-
-                <label for="newCenterName">
+                <label for="centerName">
                     نام مرکز
                 </label>
 
                 <input
                     type="text"
-                    id="newCenterName"
-                    placeholder="نام بیمارستان / مرکز"
+                    id="centerName"
                     autocomplete="off"
                 >
 
@@ -231,18 +526,15 @@
 
 
 
-            <!-- شماره تماس -->
-
             <div class="field">
 
-                <label for="newCenterPhone">
+                <label for="centerPhone">
                     شماره تماس
                 </label>
 
                 <input
                     type="tel"
-                    id="newCenterPhone"
-                    placeholder="شماره تماس"
+                    id="centerPhone"
                     autocomplete="off"
                 >
 
@@ -250,18 +542,31 @@
 
 
 
-            <!-- نام مسئول -->
+            <div class="field full">
+
+                <label for="centerAddress">
+                    آدرس
+                </label>
+
+                <input
+                    type="text"
+                    id="centerAddress"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
 
             <div class="field">
 
-                <label for="newCenterManager">
+                <label for="centerManager">
                     نام مسئول
                 </label>
 
                 <input
                     type="text"
-                    id="newCenterManager"
-                    placeholder="نام مسئول مرکز"
+                    id="centerManager"
                     autocomplete="off"
                 >
 
@@ -269,35 +574,15 @@
 
 
 
-            <!-- آدرس -->
+            <div class="field">
 
-            <div class="field full">
-
-                <label for="newCenterAddress">
-                    آدرس
-                </label>
-
-                <textarea
-                    id="newCenterAddress"
-                    placeholder="آدرس مرکز"
-                    rows="3"
-                ></textarea>
-
-            </div>
-
-
-
-            <!-- لینک لیبل -->
-
-            <div class="field full">
-
-                <label for="newCenterLabelLink">
+                <label for="labelLink">
                     لینک فایل لیبل
                 </label>
 
                 <input
                     type="url"
-                    id="newCenterLabelLink"
+                    id="labelLink"
                     placeholder="https://github.com/..."
                     autocomplete="off"
                 >
@@ -311,98 +596,16 @@
 
 
 
-    <!-- دکمه‌ها -->
-
-    <section class="card action-card">
-
-
-        <button
-            type="button"
-            id="saveNewCenterBtn"
-            class="btn btn-primary"
-        >
-            💾 ذخیره مرکز
-        </button>
-
-
-        <button
-            type="button"
-            id="cancelNewCenterBtn"
-            class="btn btn-gray"
-        >
-            ❌ انصراف
-        </button>
-
-
-    </section>
-
-
-</section>
-
-
-
-<!-- =====================================================
-     صفحه اطلاعات مرکز
-===================================================== -->
-
-<section
-    id="centerPage"
-    class="page hidden"
->
-
-
-    <!-- نوار بالا -->
-
-    <div class="card page-toolbar">
-
-        <button
-            type="button"
-            id="backToCentersBtn"
-            class="btn btn-gray"
-        >
-            ← مراکز استان
-        </button>
-
-
-        <h2 id="centerPageTitle">
-            مرکز
-        </h2>
-
-    </div>
-
-
-
-    <!-- اطلاعات مرکز -->
-
-    <section class="card">
-
-        <h2>
-            🏢 اطلاعات مرکز
-        </h2>
-
-
-        <div
-            id="centerInfo"
-            class="center-info"
-        ></div>
-
-    </section>
-
-
-
     <!-- =================================================
          انتخاب ربات
     ================================================= -->
 
     <section class="card">
 
+
         <h2>
             🤖 انتخاب ربات
         </h2>
-
-        <p class="section-description">
-            نوع ربات موردنظر را انتخاب کنید.
-        </p>
 
 
         <div class="robot-grid">
@@ -421,6 +624,7 @@
             </button>
 
 
+
             <button
                 type="button"
                 class="robot-card"
@@ -432,6 +636,7 @@
                 </span>
 
             </button>
+
 
 
             <button
@@ -449,6 +654,7 @@
 
         </div>
 
+
     </section>
 
 
@@ -457,13 +663,11 @@
          اطلاعات ربات
     ================================================= -->
 
-    <section
-        id="robotSection"
-        class="card hidden"
-    >
+    <section class="card">
+
 
         <h2>
-            🤖 اطلاعات ربات
+            ⚙️ اطلاعات ربات
         </h2>
 
 
@@ -543,14 +747,13 @@
          چک لیست
     ================================================= -->
 
-    <section
-        id="checklistSection"
-        class="card hidden"
-    >
+    <section class="card">
+
 
         <h2>
             ✅ کارهای ثابت
         </h2>
+
 
         <p class="section-description">
             کارهای انجام‌شده را تیک بزنید.
@@ -562,6 +765,7 @@
             class="checklist"
         ></div>
 
+
     </section>
 
 
@@ -570,10 +774,8 @@
          کارهای متفرقه
     ================================================= -->
 
-    <section
-        id="extraWorkSection"
-        class="card hidden"
-    >
+    <section class="card">
+
 
         <h2>
             📝 کارهای متفرقه
@@ -582,6 +784,7 @@
 
         <div class="field">
 
+
             <label for="extraWork">
                 کارهایی که جزو موارد ثابت نبود
             </label>
@@ -589,24 +792,22 @@
 
             <textarea
                 id="extraWork"
-                rows="5"
                 placeholder="هر کار دیگری که انجام شد اینجا بنویسید..."
             ></textarea>
 
+
         </div>
+
 
     </section>
 
 
 
     <!-- =================================================
-         عملیات
+         دکمه‌ها
     ================================================= -->
 
-    <section
-        id="robotActions"
-        class="card action-card hidden"
-    >
+    <section class="card action-card">
 
 
         <button
@@ -637,6 +838,7 @@
 
     <section class="card">
 
+
         <h2>
             📚 سوابق مراجعه
         </h2>
@@ -653,6 +855,7 @@
             class="history"
         ></div>
 
+
     </section>
 
 
@@ -663,15 +866,9 @@
 
 
 
-<!-- =====================================================
-     JAVASCRIPT
-===================================================== -->
-
-<script
-    src="script.js"
-></script>
+<script src="script.js"></script>
 
 
 </body>
 
-                    </html>
+    </html>
