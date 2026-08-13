@@ -7,20 +7,15 @@
 }
 
 
-/* =========================================================
-   GENERAL
-========================================================= */
-
 html {
     direction: rtl;
     scroll-behavior: smooth;
 }
 
+
 body {
     margin: 0;
     padding: 0;
-
-    min-height: 100vh;
 
     font-family:
         Tahoma,
@@ -28,8 +23,16 @@ body {
         sans-serif;
 
     background: #0d1117;
+
     color: #ffffff;
+
+    min-height: 100vh;
 }
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
 
 button,
 input,
@@ -38,9 +41,61 @@ select {
     font-family: inherit;
 }
 
+
 button {
     cursor: pointer;
 }
+
+
+input,
+textarea {
+    width: 100%;
+
+    border: 1px solid #30363d;
+
+    border-radius: 10px;
+
+    background: #0d1117;
+
+    color: #ffffff;
+
+    padding: 12px 14px;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+input:focus,
+textarea:focus {
+    border-color: #58a6ff;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(88, 166, 255, 0.12);
+}
+
+
+textarea {
+    resize: vertical;
+
+    min-height: 100px;
+}
+
+
+input[readonly] {
+    background: #161b22;
+
+    color: #8b949e;
+
+    cursor: not-allowed;
+}
+
 
 .hidden {
     display: none !important;
@@ -54,7 +109,7 @@ button {
 .header {
     width: 100%;
 
-    padding: 28px 20px;
+    padding: 25px 20px;
 
     text-align: center;
 
@@ -64,20 +119,23 @@ button {
         1px solid #30363d;
 }
 
-.header h1 {
-    margin: 0 0 10px;
 
-    font-size: 28px;
+.header h1 {
+    margin: 0;
+
+    font-size: 27px;
 
     font-weight: bold;
 }
 
+
 .header p {
-    margin: 0;
+    margin:
+        10px 0 0;
 
     color: #8b949e;
 
-    font-size: 15px;
+    font-size: 14px;
 }
 
 
@@ -88,11 +146,12 @@ button {
 .container {
     width: 100%;
 
-    max-width: 1200px;
+    max-width: 1150px;
 
     margin: 0 auto;
 
-    padding: 25px;
+    padding:
+        25px 20px 50px;
 }
 
 
@@ -108,191 +167,104 @@ button {
     border:
         1px solid #30363d;
 
-    border-radius: 18px;
+    border-radius: 16px;
 
-    padding: 22px;
+    padding: 20px;
 
     margin-bottom: 20px;
 }
 
+
 .card h2 {
     margin:
-        0 0 12px;
+        0 0 10px;
+
+    font-size: 20px;
 }
 
-.section-description {
-    margin:
-        0 0 20px;
 
-    color: #8b949e;
+.card p {
+    color: #c9d1d9;
 
     line-height: 1.8;
 }
 
 
-/* =========================================================
-   PAGE
-========================================================= */
-
-.page {
-    width: 100%;
-
-    animation:
-        pageIn 0.25s ease;
-}
-
-@keyframes pageIn {
-
-    from {
-        opacity: 0;
-
-        transform:
-            translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-
-        transform:
-            translateY(0);
-    }
-}
-
-
-/* =========================================================
-   MAP
-========================================================= */
-
-.map-card {
+.intro-card {
     text-align: center;
+
+    padding:
+        25px 20px;
 }
 
-.map-card h2 {
-    font-size: 25px;
-}
 
-.iran-map {
-    width: 100%;
-
-    min-height: 600px;
-
-    margin:
-        20px auto 0;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    position: relative;
-
-    overflow: hidden;
-
-    border-radius: 18px;
-
-    background:
-        #0d1117;
-
-    border:
-        1px solid #30363d;
-
-    padding: 20px;
+.intro-card h2 {
+    font-size: 23px;
 }
 
 
 /* =========================================================
-   SVG MAP
+   BUTTONS
 ========================================================= */
 
-.iran-map svg {
-    display: block;
+.btn {
+    border: none;
 
-    width: 100%;
+    border-radius: 10px;
 
-    max-width: 950px;
+    padding:
+        11px 18px;
 
-    height: auto;
+    font-size: 15px;
 
-    max-height: 650px;
-}
-
-
-/*
-    هر استان داخل فایل SVG باید
-    کلاس province داشته باشد.
-*/
-
-.iran-map .province {
-    fill: #21262d;
-
-    stroke: #8b949e;
-
-    stroke-width: 1;
-
-    cursor: pointer;
+    font-weight: bold;
 
     transition:
-        fill 0.2s ease,
-        stroke 0.2s ease,
-        transform 0.2s ease;
-}
-
-.iran-map .province:hover {
-    fill: #238636;
-
-    stroke: #ffffff;
-
-    stroke-width: 1.5;
-}
-
-.iran-map .province.selected {
-    fill: #2ea043;
-
-    stroke: #ffffff;
+        transform 0.15s ease,
+        opacity 0.15s ease,
+        background 0.15s ease;
 }
 
 
-/* =========================================================
-   MAP LABEL
-========================================================= */
+.btn:hover {
+    opacity: 0.9;
 
-.map-province-label {
-    pointer-events: none;
-
-    fill: #ffffff;
-
-    font-size: 12px;
-
-    font-family:
-        Tahoma,
-        Arial,
-        sans-serif;
-
-    text-anchor: middle;
-
-    dominant-baseline: middle;
+    transform:
+        translateY(-1px);
 }
 
 
-/* =========================================================
-   MAP LOADING
-========================================================= */
+.btn:active {
+    transform:
+        translateY(0);
+}
 
-.map-loading {
-    width: 100%;
 
-    min-height: 250px;
+.btn-primary {
+    background: #238636;
 
-    display: flex;
+    color: #ffffff;
+}
 
-    align-items: center;
 
-    justify-content: center;
+.btn-blue {
+    background: #1f6feb;
 
-    color: #8b949e;
+    color: #ffffff;
+}
 
-    font-size: 18px;
+
+.btn-gray {
+    background: #30363d;
+
+    color: #ffffff;
+}
+
+
+.btn-danger {
+    background: #da3633;
+
+    color: #ffffff;
 }
 
 
@@ -305,104 +277,132 @@ button {
 
     align-items: center;
 
-    gap: 18px;
+    gap: 15px;
+
+    min-height: 70px;
 }
+
 
 .page-toolbar h2 {
-    flex: 1;
+    margin:
+        0 auto 0 0;
 
-    margin: 0;
-
-    font-size: 24px;
+    font-size: 22px;
 }
 
 
 /* =========================================================
-   BUTTONS
+   MAP
 ========================================================= */
 
-.btn {
-    border: 0;
+.map-card {
+    padding: 15px;
 
-    border-radius: 10px;
-
-    padding:
-        11px 18px;
-
-    font-size: 15px;
-
-    font-weight: bold;
-
-    color: #ffffff;
-
-    transition:
-        background 0.2s ease,
-        transform 0.15s ease,
-        opacity 0.2s ease;
-}
-
-.btn:hover {
-    opacity: 0.92;
-}
-
-.btn:active {
-    transform:
-        scale(0.97);
+    overflow: hidden;
 }
 
 
-/* Gray */
+.iran-map {
+    width: 100%;
 
-.btn-gray {
-    background: #30363d;
-}
+    min-height: 500px;
 
-.btn-gray:hover {
-    background: #484f58;
-}
-
-
-/* Blue */
-
-.btn-blue {
-    background: #1f6feb;
-}
-
-.btn-blue:hover {
-    background: #388bfd;
-}
-
-
-/* Green */
-
-.btn-primary {
-    background: #238636;
-}
-
-.btn-primary:hover {
-    background: #2ea043;
-}
-
-
-/* =========================================================
-   ADD CENTER
-========================================================= */
-
-.add-center-card {
     display: flex;
+
+    align-items: center;
 
     justify-content: center;
 
-    align-items: center;
+    overflow: hidden;
+
+    border-radius: 12px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #161b22 0%,
+            #0d1117 75%
+        );
 }
 
-.add-center-btn {
-    min-width: 230px;
+
+.iran-map svg {
+    display: block;
+
+    width: 100%;
+
+    max-width: 850px;
+
+    height: auto;
+
+    max-height: 750px;
+}
+
+
+/* =========================================================
+   استان‌ها
+========================================================= */
+
+.iran-map .province {
+    cursor: pointer;
+
+    transition:
+        opacity 0.15s ease,
+        filter 0.15s ease,
+        transform 0.15s ease;
+}
+
+
+.iran-map .province:hover {
+    opacity: 0.78;
+
+    filter:
+        brightness(1.3)
+        drop-shadow(
+            0 0 7px
+            rgba(88, 166, 255, 0.7)
+        );
+}
+
+
+/* =========================================================
+   MAP LOADING
+========================================================= */
+
+.map-loading {
+    width: 100%;
+
+    min-height: 450px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    color: #8b949e;
 
     font-size: 16px;
+}
 
-    padding:
-        14px 22px;
+
+/* =========================================================
+   PROVINCE ACTIONS
+========================================================= */
+
+.province-actions {
+    display: flex;
+
+    justify-content: flex-start;
+
+    margin-bottom: 20px;
+}
+
+
+.add-center-btn {
+    min-width: 190px;
 }
 
 
@@ -417,8 +417,6 @@ button {
         repeat(3, minmax(0, 1fr));
 
     gap: 18px;
-
-    margin-top: 20px;
 }
 
 
@@ -427,9 +425,7 @@ button {
 ========================================================= */
 
 .center-card {
-    min-height: 160px;
-
-    padding: 20px;
+    min-height: 180px;
 
     display: flex;
 
@@ -441,7 +437,9 @@ button {
 
     text-align: center;
 
-    background: #0d1117;
+    padding: 20px;
+
+    background: #161b22;
 
     border:
         1px solid #30363d;
@@ -453,55 +451,81 @@ button {
     transition:
         transform 0.2s ease,
         border-color 0.2s ease,
-        background 0.2s ease;
+        background 0.2s ease,
+        box-shadow 0.2s ease;
 }
+
 
 .center-card:hover {
     transform:
         translateY(-4px);
 
-    background: #161b22;
-
     border-color:
-        #1f6feb;
+        #58a6ff;
+
+    background:
+        #1c2128;
+
+    box-shadow:
+        0 8px 25px
+        rgba(0, 0, 0, 0.25);
 }
+
 
 .center-card-icon {
-    font-size: 45px;
+    width: 65px;
 
-    margin-bottom: 12px;
+    height: 65px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        rgba(31, 111, 235, 0.15);
+
+    font-size: 32px;
+
+    margin-bottom: 14px;
 }
 
-.center-card-name {
-    color: #ffffff;
 
+.center-card-name {
     font-size: 18px;
 
     font-weight: bold;
 
-    line-height: 1.7;
+    color: #ffffff;
+
+    line-height: 1.6;
 }
 
 
 /* =========================================================
-   EMPTY CENTER
+   EMPTY CENTERS
 ========================================================= */
 
 .empty-centers {
     grid-column:
         1 / -1;
 
-    padding: 55px 20px;
-
     text-align: center;
 
-    color: #8b949e;
+    padding: 60px 20px;
 
     border:
         1px dashed #30363d;
 
     border-radius: 16px;
+
+    background:
+        rgba(22, 27, 34, 0.7);
 }
+
 
 .empty-centers .icon {
     font-size: 50px;
@@ -509,11 +533,12 @@ button {
     margin-bottom: 15px;
 }
 
+
 .empty-centers p {
     margin:
-        6px 0;
+        8px 0;
 
-    line-height: 1.8;
+    color: #8b949e;
 }
 
 
@@ -530,79 +555,28 @@ button {
     gap: 18px;
 }
 
+
 .field {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 8px;
+    width: 100%;
 }
+
 
 .field.full {
     grid-column:
         1 / -1;
 }
 
+
 .field label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #c9d1d9;
+
     font-size: 14px;
 
     font-weight: bold;
-
-    color: #c9d1d9;
-}
-
-.field input,
-.field textarea {
-    width: 100%;
-
-    border:
-        1px solid #30363d;
-
-    border-radius: 10px;
-
-    background: #0d1117;
-
-    color: #ffffff;
-
-    padding:
-        12px 14px;
-
-    font-size: 15px;
-
-    outline: none;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.field input {
-    height: 46px;
-}
-
-.field textarea {
-    min-height: 120px;
-
-    resize: vertical;
-
-    line-height: 1.8;
-}
-
-.field input:focus,
-.field textarea:focus {
-    border-color:
-        #1f6feb;
-
-    box-shadow:
-        0 0 0 3px
-        rgba(31, 111, 235, 0.15);
-}
-
-.field input[readonly] {
-    color: #8b949e;
-
-    background:
-        #161b22;
 }
 
 
@@ -613,9 +587,11 @@ button {
 .action-card {
     display: flex;
 
+    flex-wrap: wrap;
+
     gap: 12px;
 
-    flex-wrap: wrap;
+    align-items: center;
 }
 
 
@@ -632,9 +608,131 @@ button {
     gap: 12px;
 }
 
+
 .info-row {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+    padding: 14px;
+
+    background: #0d1117;
+
+    border:
+        1px solid #30363d;
+
+    border-radius: 10px;
+}
+
+
+.info-label {
+    color: #8b949e;
+
+    font-size: 13px;
+
+    font-weight: bold;
+}
+
+
+.info-value {
+    color: #ffffff;
+
+    line-height: 1.7;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   ROBOT GRID
+========================================================= */
+
+.robot-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-top: 20px;
+}
+
+
+.robot-card {
+    min-height: 160px;
+
+    border:
+        1px solid #30363d;
+
+    border-radius: 16px;
+
+    background: #0d1117;
+
+    color: #ffffff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.robot-card:hover {
+    transform:
+        translateY(-4px);
+
+    border-color:
+        #58a6ff;
+
+    background:
+        #1c2128;
+
+    box-shadow:
+        0 8px 25px
+        rgba(0, 0, 0, 0.25);
+}
+
+
+.robot-card span {
+    font-size: 32px;
+
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   CHECKLIST
+========================================================= */
+
+.checklist {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+
+.check-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
     padding:
-        14px;
+        12px 14px;
 
     border:
         1px solid #30363d;
@@ -644,124 +742,327 @@ button {
     background: #0d1117;
 }
 
-.info-label {
-    display: block;
 
-    color: #8b949e;
+.check-item input {
+    width: 18px;
 
-    font-size: 13px;
+    height: 18px;
 
-    margin-bottom: 6px;
+    margin: 0;
+
+    accent-color: #238636;
+
+    cursor: pointer;
 }
 
-.info-value {
-    color: #ffffff;
 
-    font-size: 15px;
+.check-item label {
+    color: #c9d1d9;
 
-    line-height: 1.7;
+    cursor: pointer;
+
+    line-height: 1.6;
 }
 
 
 /* =========================================================
-   MOBILE
+   HISTORY
 ========================================================= */
 
-@media (max-width: 800px) {
+.history {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+
+.history-item {
+    background: #0d1117;
+
+    border:
+        1px solid #30363d;
+
+    border-radius: 12px;
+
+    padding: 18px;
+}
+
+
+.history-item h3 {
+    margin:
+        0 0 12px;
+
+    color: #58a6ff;
+
+    font-size: 17px;
+}
+
+
+.history-item p {
+    margin:
+        8px 0;
+
+    color: #c9d1d9;
+}
+
+
+.history-item ul {
+    margin:
+        10px 0;
+
+    padding-right: 25px;
+
+    line-height: 2;
+}
+
+
+.history-item li {
+    color: #c9d1d9;
+}
+
+
+/* =========================================================
+   SECTION DESCRIPTION
+========================================================= */
+
+.section-description {
+    margin-top: 0;
+
+    color: #8b949e !important;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+========================================================= */
+
+@media (max-width: 850px) {
 
     .container {
-        padding: 15px;
-    }
-
-    .header {
         padding:
-            22px 15px;
+            20px 15px 40px;
     }
 
-    .header h1 {
-        font-size: 22px;
-    }
-
-    .iran-map {
-        min-height: 450px;
-
-        padding: 10px;
-    }
 
     .center-list {
         grid-template-columns:
             repeat(2, minmax(0, 1fr));
     }
 
-    .page-toolbar {
-        flex-direction: column;
 
-        align-items: stretch;
-    }
-
-    .page-toolbar h2 {
-        order: -1;
-
-        text-align: center;
-    }
-
-    .form-grid {
+    .robot-grid {
         grid-template-columns:
-            1fr;
+            repeat(2, minmax(0, 1fr));
     }
 
-    .field.full {
-        grid-column:
-            auto;
-    }
 
     .center-info {
         grid-template-columns:
             1fr;
     }
 
+
+    .iran-map {
+        min-height: 400px;
+    }
+
 }
 
 
 /* =========================================================
-   SMALL MOBILE
+   RESPONSIVE - MOBILE
 ========================================================= */
 
-@media (max-width: 500px) {
+@media (max-width: 600px) {
+
+    .header {
+        padding:
+            20px 15px;
+    }
+
+
+    .header h1 {
+        font-size: 21px;
+    }
+
+
+    .container {
+        padding:
+            15px 10px 35px;
+    }
+
 
     .card {
         padding: 15px;
 
-        border-radius: 14px;
+        border-radius: 13px;
     }
 
-    .iran-map {
-        min-height: 320px;
+
+    .card h2 {
+        font-size: 18px;
     }
+
+
+    .page-toolbar {
+        flex-wrap: wrap;
+
+        min-height: auto;
+
+        gap: 10px;
+    }
+
+
+    .page-toolbar h2 {
+        width: 100%;
+
+        margin: 5px 0 0;
+
+        font-size: 19px;
+    }
+
+
+    .province-actions {
+        width: 100%;
+    }
+
+
+    .add-center-btn {
+        width: 100%;
+    }
+
 
     .center-list {
         grid-template-columns:
             1fr;
+
+        gap: 12px;
     }
+
 
     .center-card {
-        min-height: 125px;
+        min-height: 150px;
     }
 
-    .center-card-icon {
-        font-size: 38px;
+
+    .form-grid {
+        grid-template-columns:
+            1fr;
+
+        gap: 14px;
     }
 
-    .center-card-name {
-        font-size: 16px;
+
+    .field.full {
+        grid-column:
+            auto;
     }
+
+
+    .robot-grid {
+        grid-template-columns:
+            1fr;
+
+        gap: 12px;
+    }
+
+
+    .robot-card {
+        min-height: 110px;
+    }
+
+
+    .robot-card span {
+        font-size: 28px;
+    }
+
+
+    .checklist {
+        grid-template-columns:
+            1fr;
+    }
+
 
     .action-card {
         flex-direction: column;
     }
 
+
     .action-card .btn {
         width: 100%;
+    }
+
+
+    .iran-map {
+        min-height: 350px;
+
+        padding: 5px;
+    }
+
+
+    .iran-map svg {
+        width: 100%;
+
+        max-height: 500px;
+    }
+
+
+    .map-loading {
+        min-height: 320px;
+
+        font-size: 14px;
+    }
+
+
+    .info-row {
+        padding: 12px;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 380px) {
+
+    .header h1 {
+        font-size: 19px;
+    }
+
+
+    .container {
+        padding:
+            10px 7px 30px;
+    }
+
+
+    .card {
+        padding: 12px;
+    }
+
+
+    .center-card-name {
+        font-size: 16px;
+    }
+
+
+    input,
+    textarea {
+        font-size: 14px;
+    }
+
+
+    .btn {
+        width: 100%;
+
+        padding:
+            12px 14px;
     }
 
    }
