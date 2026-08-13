@@ -10,7 +10,12 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>مدیریت مراکز و بیمارستان‌ها</title>
+    <meta
+        name="theme-color"
+        content="#0d1117"
+    >
+
+    <title>مدیریت مراکز و ربات‌ها</title>
 
     <link
         rel="stylesheet"
@@ -23,402 +28,650 @@
 <body>
 
 
-    <!-- =========================
-         Header
-    ========================== -->
+<!-- =====================================================
+     HEADER
+===================================================== -->
 
-    <header class="header">
+<header class="header">
 
-        <h1>
-            مدیریت مراکز و بیمارستان‌ها
-        </h1>
+    <h1>
+        🏥 مدیریت مراکز و ربات‌ها
+    </h1>
+
+    <p>
+        انتخاب استان و مدیریت مراکز
+    </p>
+
+</header>
+
+
+
+<main class="container">
+
+
+<!-- =====================================================
+     صفحه نقشه ایران
+===================================================== -->
+
+<section
+    id="mapPage"
+    class="page"
+>
+
+    <div class="card intro-card">
+
+        <h2>
+            🗺️ انتخاب استان
+        </h2>
 
         <p>
-            استان موردنظر را از روی نقشه انتخاب کنید.
+            برای مشاهده مراکز، استان موردنظر را از روی نقشه انتخاب کنید.
         </p>
 
-    </header>
+    </div>
 
 
+    <!-- نقشه ایران -->
 
-    <!-- =========================
-         Main
-    ========================== -->
+    <div class="card map-card">
 
-    <main class="container">
-
-
-        <!-- =========================
-             صفحه نقشه ایران
-        ========================== -->
-
-        <section
-            id="mapPage"
-            class="page"
+        <div
+            id="iranMap"
+            class="iran-map"
         >
 
-            <div class="card map-card">
+            <div class="map-loading">
 
-                <h2>
-                    🗺️ نقشه ایران
-                </h2>
-
-                <p class="section-description">
-                    برای مشاهده مراکز، روی استان موردنظر کلیک کنید.
-                </p>
-
-
-                <!-- نقشه واقعی ایران -->
-
-                <div
-                    id="iranMap"
-                    class="iran-map"
-                >
-
-                    <div class="map-loading">
-                        در حال بارگذاری نقشه...
-                    </div>
-
-                </div>
+                در حال بارگذاری نقشه ایران...
 
             </div>
 
-        </section>
+        </div>
+
+    </div>
+
+</section>
 
 
 
-        <!-- =========================
-             صفحه مراکز استان
-        ========================== -->
+<!-- =====================================================
+     صفحه مراکز استان
+===================================================== -->
 
-        <section
-            id="provincePage"
-            class="page hidden"
+<section
+    id="provincePage"
+    class="page hidden"
+>
+
+
+    <!-- نوار بالای صفحه -->
+
+    <div class="card page-toolbar">
+
+        <button
+            type="button"
+            id="backToMapBtn"
+            class="btn btn-gray"
         >
-
-            <div class="card">
-
-                <div class="page-toolbar">
-
-                    <button
-                        type="button"
-                        id="backToMapBtn"
-                        class="btn btn-gray"
-                    >
-                        ← بازگشت به نقشه
-                    </button>
+            ← نقشه ایران
+        </button>
 
 
-                    <h2 id="provinceTitle">
-                        مراکز استان
-                    </h2>
+        <h2 id="provinceTitle">
+            مراکز استان
+        </h2>
 
-                </div>
-
-            </div>
+    </div>
 
 
 
-            <!-- =========================
-                 افزودن مرکز
-            ========================== -->
+    <!-- دکمه افزودن مرکز -->
 
-            <div class="card add-center-card">
+    <div class="province-actions">
 
-                <button
-                    type="button"
-                    id="addCenterBtn"
-                    class="btn btn-primary add-center-btn"
-                >
-                    ➕ افزودن مرکز جدید
-                </button>
-
-            </div>
-
-
-
-            <!-- =========================
-                 لیست مراکز
-            ========================== -->
-
-            <div class="card">
-
-                <h2>
-                    🏥 مراکز این استان
-                </h2>
-
-                <p class="section-description">
-                    مراکزی که قبلاً ثبت کرده‌اید در این قسمت نمایش داده می‌شوند.
-                </p>
-
-
-                <div
-                    id="centerList"
-                    class="center-list"
-                >
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =========================
-             صفحه ثبت مرکز
-        ========================== -->
-
-        <section
-            id="centerFormPage"
-            class="page hidden"
+        <button
+            type="button"
+            id="addCenterBtn"
+            class="btn btn-primary add-center-btn"
         >
+            ➕ افزودن مرکز جدید
+        </button>
 
-            <div class="card">
+    </div>
 
-                <div class="page-toolbar">
 
-                    <button
-                        type="button"
-                        id="backToProvinceBtn"
-                        class="btn btn-gray"
-                    >
-                        ← بازگشت
-                    </button>
 
-                    <h2>
-                        ➕ ثبت مرکز جدید
-                    </h2>
+    <!-- لیست مراکز -->
 
-                </div>
+    <div
+        id="centerList"
+        class="center-list"
+    ></div>
 
-            </div>
 
+</section>
 
 
-            <!-- =========================
-                 اطلاعات مرکز
-            ========================== -->
 
-            <div class="card">
+<!-- =====================================================
+     صفحه ثبت مرکز جدید
+===================================================== -->
 
-                <h2>
-                    🏢 اطلاعات مرکز
-                </h2>
+<section
+    id="centerFormPage"
+    class="page hidden"
+>
 
 
-                <div class="form-grid">
+    <div class="card page-toolbar">
 
-
-                    <!-- استان -->
-
-                    <div class="field">
-
-                        <label>
-                            استان
-                        </label>
-
-                        <input
-                            type="text"
-                            id="newCenterProvince"
-                            readonly
-                        >
-
-                    </div>
-
-
-
-                    <!-- نام مرکز -->
-
-                    <div class="field">
-
-                        <label for="newCenterName">
-                            نام مرکز / بیمارستان
-                        </label>
-
-                        <input
-                            type="text"
-                            id="newCenterName"
-                            placeholder="نام مرکز را وارد کنید..."
-                            autocomplete="off"
-                        >
-
-                    </div>
-
-
-
-                    <!-- شماره تماس -->
-
-                    <div class="field">
-
-                        <label for="newCenterPhone">
-                            شماره تماس
-                        </label>
-
-                        <input
-                            type="tel"
-                            id="newCenterPhone"
-                            autocomplete="off"
-                        >
-
-                    </div>
-
-
-
-                    <!-- مسئول -->
-
-                    <div class="field">
-
-                        <label for="newCenterManager">
-                            نام مسئول
-                        </label>
-
-                        <input
-                            type="text"
-                            id="newCenterManager"
-                            autocomplete="off"
-                        >
-
-                    </div>
-
-
-
-                    <!-- آدرس -->
-
-                    <div class="field full">
-
-                        <label for="newCenterAddress">
-                            آدرس
-                        </label>
-
-                        <textarea
-                            id="newCenterAddress"
-                            placeholder="آدرس مرکز..."
-                        ></textarea>
-
-                    </div>
-
-
-
-                    <!-- لینک لیبل -->
-
-                    <div class="field full">
-
-                        <label for="newCenterLabelLink">
-                            لینک فایل لیبل
-                        </label>
-
-                        <input
-                            type="url"
-                            id="newCenterLabelLink"
-                            placeholder="https://..."
-                            autocomplete="off"
-                        >
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-
-
-            <!-- =========================
-                 ذخیره مرکز
-            ========================== -->
-
-            <div class="card action-card">
-
-                <button
-                    type="button"
-                    id="saveNewCenterBtn"
-                    class="btn btn-primary"
-                >
-                    💾 ذخیره مرکز
-                </button>
-
-                <button
-                    type="button"
-                    id="cancelNewCenterBtn"
-                    class="btn btn-gray"
-                >
-                    انصراف
-                </button>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =========================
-             صفحه اطلاعات مرکز
-        ========================== -->
-
-        <section
-            id="centerPage"
-            class="page hidden"
+        <button
+            type="button"
+            id="backToProvinceBtn"
+            class="btn btn-gray"
         >
+            ← بازگشت
+        </button>
 
-            <div class="card">
 
-                <div class="page-toolbar">
+        <h2>
+            ➕ ثبت مرکز جدید
+        </h2>
 
-                    <button
-                        type="button"
-                        id="backToCentersBtn"
-                        class="btn btn-gray"
-                    >
-                        ← مراکز استان
-                    </button>
+    </div>
 
-                    <h2 id="centerPageTitle">
-                        مرکز
-                    </h2>
 
-                </div>
+
+    <!-- فرم مرکز -->
+
+    <section class="card">
+
+        <h2>
+            🏢 اطلاعات مرکز
+        </h2>
+
+
+        <div class="form-grid">
+
+
+            <!-- استان -->
+
+            <div class="field">
+
+                <label for="newCenterProvince">
+                    استان
+                </label>
+
+                <input
+                    type="text"
+                    id="newCenterProvince"
+                    readonly
+                >
+
+            </div>
+
+
+
+            <!-- نام مرکز -->
+
+            <div class="field">
+
+                <label for="newCenterName">
+                    نام مرکز
+                </label>
+
+                <input
+                    type="text"
+                    id="newCenterName"
+                    placeholder="نام بیمارستان / مرکز"
+                    autocomplete="off"
+                >
 
             </div>
 
 
-            <div class="card center-info-preview">
 
-                <h2>
-                    🏢 اطلاعات مرکز
-                </h2>
+            <!-- شماره تماس -->
 
-                <div id="centerInfo"></div>
+            <div class="field">
+
+                <label for="newCenterPhone">
+                    شماره تماس
+                </label>
+
+                <input
+                    type="tel"
+                    id="newCenterPhone"
+                    placeholder="شماره تماس"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+
+            <!-- نام مسئول -->
+
+            <div class="field">
+
+                <label for="newCenterManager">
+                    نام مسئول
+                </label>
+
+                <input
+                    type="text"
+                    id="newCenterManager"
+                    placeholder="نام مسئول مرکز"
+                    autocomplete="off"
+                >
 
             </div>
 
 
-            <div class="card">
 
-                <h2>
-                    🤖 ربات‌ها
-                </h2>
+            <!-- آدرس -->
 
-                <p class="section-description">
-                    در مرحله بعد، اطلاعات ربات‌های 4102، 4202 و Rimage را اینجا اضافه می‌کنیم.
-                </p>
+            <div class="field full">
+
+                <label for="newCenterAddress">
+                    آدرس
+                </label>
+
+                <textarea
+                    id="newCenterAddress"
+                    placeholder="آدرس مرکز"
+                    rows="3"
+                ></textarea>
 
             </div>
 
-        </section>
 
 
-    </main>
+            <!-- لینک لیبل -->
+
+            <div class="field full">
+
+                <label for="newCenterLabelLink">
+                    لینک فایل لیبل
+                </label>
+
+                <input
+                    type="url"
+                    id="newCenterLabelLink"
+                    placeholder="https://github.com/..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+        </div>
+
+    </section>
 
 
 
-    <!-- =========================
-         JavaScript
-    ========================== -->
+    <!-- دکمه‌ها -->
 
-    <script src="script.js"></script>
+    <section class="card action-card">
+
+
+        <button
+            type="button"
+            id="saveNewCenterBtn"
+            class="btn btn-primary"
+        >
+            💾 ذخیره مرکز
+        </button>
+
+
+        <button
+            type="button"
+            id="cancelNewCenterBtn"
+            class="btn btn-gray"
+        >
+            ❌ انصراف
+        </button>
+
+
+    </section>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     صفحه اطلاعات مرکز
+===================================================== -->
+
+<section
+    id="centerPage"
+    class="page hidden"
+>
+
+
+    <!-- نوار بالا -->
+
+    <div class="card page-toolbar">
+
+        <button
+            type="button"
+            id="backToCentersBtn"
+            class="btn btn-gray"
+        >
+            ← مراکز استان
+        </button>
+
+
+        <h2 id="centerPageTitle">
+            مرکز
+        </h2>
+
+    </div>
+
+
+
+    <!-- اطلاعات مرکز -->
+
+    <section class="card">
+
+        <h2>
+            🏢 اطلاعات مرکز
+        </h2>
+
+
+        <div
+            id="centerInfo"
+            class="center-info"
+        ></div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         انتخاب ربات
+    ================================================= -->
+
+    <section class="card">
+
+        <h2>
+            🤖 انتخاب ربات
+        </h2>
+
+        <p class="section-description">
+            نوع ربات موردنظر را انتخاب کنید.
+        </p>
+
+
+        <div class="robot-grid">
+
+
+            <button
+                type="button"
+                class="robot-card"
+                data-robot="4102"
+            >
+
+                <span>
+                    4102
+                </span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="robot-card"
+                data-robot="4202"
+            >
+
+                <span>
+                    4202
+                </span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="robot-card"
+                data-robot="Rimage"
+            >
+
+                <span>
+                    Rimage
+                </span>
+
+            </button>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         اطلاعات ربات
+    ================================================= -->
+
+    <section
+        id="robotSection"
+        class="card hidden"
+    >
+
+        <h2>
+            🤖 اطلاعات ربات
+        </h2>
+
+
+        <div class="form-grid">
+
+
+            <div class="field">
+
+                <label for="robotModel">
+                    مدل ربات
+                </label>
+
+                <input
+                    type="text"
+                    id="robotModel"
+                    readonly
+                >
+
+            </div>
+
+
+
+            <div class="field">
+
+                <label for="robotSerial">
+                    Serial Number
+                </label>
+
+                <input
+                    type="text"
+                    id="robotSerial"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+
+            <div class="field">
+
+                <label for="robotIP">
+                    IP Address
+                </label>
+
+                <input
+                    type="text"
+                    id="robotIP"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+
+            <div class="field">
+
+                <label for="robotMAC">
+                    MAC Address
+                </label>
+
+                <input
+                    type="text"
+                    id="robotMAC"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         چک لیست
+    ================================================= -->
+
+    <section
+        id="checklistSection"
+        class="card hidden"
+    >
+
+        <h2>
+            ✅ کارهای ثابت
+        </h2>
+
+        <p class="section-description">
+            کارهای انجام‌شده را تیک بزنید.
+        </p>
+
+
+        <div
+            id="checklist"
+            class="checklist"
+        ></div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         کارهای متفرقه
+    ================================================= -->
+
+    <section
+        id="extraWorkSection"
+        class="card hidden"
+    >
+
+        <h2>
+            📝 کارهای متفرقه
+        </h2>
+
+
+        <div class="field">
+
+            <label for="extraWork">
+                کارهایی که جزو موارد ثابت نبود
+            </label>
+
+
+            <textarea
+                id="extraWork"
+                rows="5"
+                placeholder="هر کار دیگری که انجام شد اینجا بنویسید..."
+            ></textarea>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         عملیات
+    ================================================= -->
+
+    <section
+        id="robotActions"
+        class="card action-card hidden"
+    >
+
+
+        <button
+            type="button"
+            id="saveVisitBtn"
+            class="btn btn-primary"
+        >
+            💾 ذخیره مراجعه
+        </button>
+
+
+        <button
+            type="button"
+            id="printReportBtn"
+            class="btn btn-blue"
+        >
+            🖨️ گزارش کار / PDF
+        </button>
+
+
+    </section>
+
+
+
+    <!-- =================================================
+         سوابق
+    ================================================= -->
+
+    <section class="card">
+
+        <h2>
+            📚 سوابق مراجعه
+        </h2>
+
+
+        <p class="section-description">
+            تمام مراجعات قبلی این مرکز همراه با تاریخ
+            و کارهای انجام‌شده نمایش داده می‌شود.
+        </p>
+
+
+        <div
+            id="history"
+            class="history"
+        ></div>
+
+    </section>
+
+
+</section>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script
+    src="script.js"
+></script>
 
 
 </body>
 
-</html>
+                    </html>
