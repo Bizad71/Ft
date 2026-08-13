@@ -2,432 +2,129 @@
 <html lang="fa" dir="rtl">
 
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>مدیریت مراکز و ربات‌ها</title>
+    <title>مدیریت مراکز</title>
 
-<link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header class="header">
-    <h1>مدیریت مراکز و ربات‌ها</h1>
-</header>
-
-<main class="container">
-
-<!-- =========================
-     صفحه اصلی
-========================= -->
-
-<section id="homePage">
-
-    <div class="card intro-card">
-        <h2>انتخاب ربات</h2>
-        <p>نوع ربات موردنظر را انتخاب کنید.</p>
-    </div>
-
-    <div class="robot-grid">
-
-        <button
-            type="button"
-            class="robot-card"
-            data-robot="4102"
-        >
-            <span>4102</span>
-        </button>
-
-        <button
-            type="button"
-            class="robot-card"
-            data-robot="4202"
-        >
-            <span>4202</span>
-        </button>
-
-        <button
-            type="button"
-            class="robot-card"
-            data-robot="Rimage"
-        >
-            <span>Rimage</span>
-        </button>
-
-    </div>
-
-
     <!-- =========================
-         جستجوی مرکز
-    ========================= -->
+         Header
+    ========================== -->
 
-    <section class="card center-search-card">
+    <header class="header">
 
-        <h2>🔎 جستجوی مرکز</h2>
+        <h1>
+            مدیریت مراکز و بیمارستان‌ها
+        </h1>
 
-        <div class="search-box">
-
-            <input
-                type="search"
-                id="searchCenter"
-                placeholder="نام مرکز را وارد کنید..."
-                autocomplete="off"
-            >
-
-            <button
-                type="button"
-                id="searchBtn"
-                class="btn btn-blue"
-            >
-                جستجو
-            </button>
-
-        </div>
-
-        <div
-            id="searchResults"
-            class="search-results"
-        ></div>
-
-    </section>
-
-</section>
-
-
-<!-- =========================
-     صفحه مرکز
-========================= -->
-
-<section
-    id="centerPage"
-    class="hidden"
->
-
-    <div class="card page-toolbar">
-
-        <button
-            type="button"
-            id="backHomeBtn"
-            class="btn btn-gray"
-        >
-            ← صفحه اصلی
-        </button>
-
-        <h2 id="pageTitle">
-            مرکز
-        </h2>
-
-    </div>
-
-
-    <!-- =========================
-         اطلاعات مرکز
-    ========================= -->
-
-    <section class="card">
-
-        <h2>🏢 اطلاعات مرکز</h2>
-
-        <div class="form-grid">
-
-            <div class="field">
-
-                <label for="centerName">
-                    نام مرکز
-                </label>
-
-                <input
-                    type="text"
-                    id="centerName"
-                    autocomplete="off"
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label for="centerPhone">
-                    شماره تماس
-                </label>
-
-                <input
-                    type="tel"
-                    id="centerPhone"
-                    autocomplete="off"
-                >
-
-            </div>
-
-
-            <div class="field full">
-
-                <label for="centerAddress">
-                    آدرس
-                </label>
-
-                <input
-                    type="text"
-                    id="centerAddress"
-                    autocomplete="off"
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label for="centerManager">
-                    نام مسئول
-                </label>
-
-                <input
-                    type="text"
-                    id="centerManager"
-                    autocomplete="off"
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label for="labelLink">
-                    لینک فایل لیبل
-                </label>
-
-                <input
-                    type="url"
-                    id="labelLink"
-                    placeholder="https://github.com/..."
-                    autocomplete="off"
-                >
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         مراجعه جدید
-    ========================= -->
-
-    <section class="card new-visit-card">
-
-        <div class="new-visit-title">
-
-            <div>
-
-                <h2>📝 ثبت مراجعه جدید</h2>
-
-                <p class="section-description">
-                    اطلاعات این قسمت مربوط به مراجعه فعلی است.
-                    با هر بار ذخیره، یک سابقه جدید ایجاد می‌شود.
-                </p>
-
-            </div>
-
-            <span
-                id="visitStatus"
-                class="visit-status"
-            >
-                مراجعه جدید
-            </span>
-
-        </div>
-
-
-        <!-- =========================
-             اطلاعات ربات
-        ========================= -->
-
-        <div class="sub-card">
-
-            <h3>🤖 اطلاعات ربات</h3>
-
-            <div class="form-grid">
-
-                <div class="field">
-
-                    <label for="robotModel">
-                        مدل ربات
-                    </label>
-
-                    <input
-                        type="text"
-                        id="robotModel"
-                        readonly
-                    >
-
-                </div>
-
-
-                <div class="field">
-
-                    <label for="robotSerial">
-                        Serial Number
-                    </label>
-
-                    <input
-                        type="text"
-                        id="robotSerial"
-                        autocomplete="off"
-                    >
-
-                </div>
-
-
-                <div class="field">
-
-                    <label for="robotIP">
-                        IP Address
-                    </label>
-
-                    <input
-                        type="text"
-                        id="robotIP"
-                        autocomplete="off"
-                    >
-
-                </div>
-
-
-                <div class="field">
-
-                    <label for="robotMAC">
-                        MAC Address
-                    </label>
-
-                    <input
-                        type="text"
-                        id="robotMAC"
-                        autocomplete="off"
-                    >
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- =========================
-             چک لیست
-        ========================= -->
-
-        <div class="sub-card">
-
-            <h3>✅ کارهای ثابت</h3>
-
-            <p class="section-description">
-                کارهای انجام‌شده در این مراجعه را تیک بزنید.
-            </p>
-
-            <div
-                id="checklist"
-                class="checklist"
-            ></div>
-
-        </div>
-
-
-        <!-- =========================
-             کار متفرقه
-        ========================= -->
-
-        <div class="sub-card">
-
-            <h3>📝 کارهای متفرقه</h3>
-
-            <div class="field">
-
-                <label for="extraWork">
-                    کارهایی که جزو موارد ثابت نبود
-                </label>
-
-                <textarea
-                    id="extraWork"
-                    placeholder="هر کار دیگری که انجام شد اینجا بنویسید..."
-                ></textarea>
-
-            </div>
-
-        </div>
-
-
-        <!-- =========================
-             دکمه‌ها
-        ========================= -->
-
-        <div class="action-card">
-
-            <button
-                type="button"
-                id="saveVisitBtn"
-                class="btn btn-primary"
-            >
-                💾 ذخیره مراجعه
-            </button>
-
-            <button
-                type="button"
-                id="newVisitBtn"
-                class="btn btn-green"
-            >
-                ➕ ثبت مراجعه جدید
-            </button>
-
-            <button
-                type="button"
-                id="printReportBtn"
-                class="btn btn-blue"
-            >
-                🖨️ گزارش کار / PDF
-            </button>
-
-            <button
-                type="button"
-                id="newCenterBtn"
-                class="btn btn-gray"
-            >
-                ➕ مرکز جدید
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         سوابق
-    ========================= -->
-
-    <section class="card">
-
-        <h2>📚 سوابق مراجعه</h2>
-
-        <p class="section-description">
-            تمام مراجعات قبلی این مرکز همراه با تاریخ،
-            اطلاعات ربات و کارهای انجام‌شده نمایش داده می‌شود.
+        <p>
+            برای مشاهده مراکز، استان موردنظر را انتخاب کنید.
         </p>
 
-        <div
-            id="history"
-            class="history"
-        ></div>
+    </header>
 
-    </section>
 
-</section>
+    <!-- =========================
+         Main
+    ========================== -->
 
-</main>
+    <main class="container">
 
-<script src="script.js"></script>
+        <section class="card map-card">
+
+            <h2>
+                🗺️ نقشه ایران
+            </h2>
+
+            <p class="section-description">
+                روی استان موردنظر کلیک کنید.
+            </p>
+
+
+            <!--
+                نقشه ایران در این قسمت
+                توسط JavaScript ساخته می‌شود.
+            -->
+
+            <div
+                id="iranMap"
+                class="iran-map"
+            >
+
+                <div class="map-loading">
+                    در حال آماده‌سازی نقشه...
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             نام استان انتخاب شده
+        ========================== -->
+
+        <section
+            id="provincePage"
+            class="card hidden"
+        >
+
+            <div class="page-toolbar">
+
+                <button
+                    type="button"
+                    id="backToMapBtn"
+                    class="btn btn-gray"
+                >
+                    ← بازگشت به نقشه
+                </button>
+
+                <h2 id="provinceTitle">
+                    استان
+                </h2>
+
+            </div>
+
+
+            <!-- =========================
+                 لیست مراکز
+            ========================== -->
+
+            <div class="province-content">
+
+                <h3>
+                    🏥 مراکز این استان
+                </h3>
+
+                <div
+                    id="centerList"
+                    class="center-list"
+                >
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         JavaScript
+    ========================== -->
+
+    <script src="script.js"></script>
 
 </body>
 
-              </html>
+</html>
