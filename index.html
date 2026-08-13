@@ -4,10 +4,7 @@
 <head>
 <meta charset="UTF-8">
 
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>مدیریت مراکز و ربات‌ها</title>
 
@@ -17,323 +14,413 @@ content="width=device-width, initial-scale=1.0"
 <body>
 
 <header class="header">
-<h1>مدیریت مراکز و ربات‌ها</h1>
+    <h1>مدیریت مراکز و ربات‌ها</h1>
 </header>
 
 <main class="container">
 
+<!-- =========================
+     صفحه اصلی
+========================= -->
+
 <section id="homePage">
 
-<div class="card intro-card">
-<h2>انتخاب ربات</h2>
-<p>نوع ربات موردنظر را انتخاب کنید.</p>
-</div>
+    <div class="card intro-card">
+        <h2>انتخاب ربات</h2>
+        <p>نوع ربات موردنظر را انتخاب کنید.</p>
+    </div>
 
-<div class="robot-grid">
+    <div class="robot-grid">
 
-<button
-type="button"
-class="robot-card"
-data-robot="4102"
->
-<span>4102</span>
-</button>
+        <button
+            type="button"
+            class="robot-card"
+            data-robot="4102"
+        >
+            <span>4102</span>
+        </button>
 
-<button
-type="button"
-class="robot-card"
-data-robot="4202"
->
-<span>4202</span>
-</button>
+        <button
+            type="button"
+            class="robot-card"
+            data-robot="4202"
+        >
+            <span>4202</span>
+        </button>
 
-<button
-type="button"
-class="robot-card"
-data-robot="Rimage"
->
-<span>Rimage</span>
-</button>
+        <button
+            type="button"
+            class="robot-card"
+            data-robot="Rimage"
+        >
+            <span>Rimage</span>
+        </button>
 
-</div>
+    </div>
 
-<section class="card center-search-card">
 
-<h2>جستجوی مرکز</h2>
+    <!-- =========================
+         جستجوی مرکز
+    ========================= -->
 
-<div class="search-box">
+    <section class="card center-search-card">
 
-<input
-type="search"
-id="searchCenter"
-placeholder="نام مرکز را وارد کنید..."
-autocomplete="off"
->
+        <h2>🔎 جستجوی مرکز</h2>
 
-<button
-type="button"
-id="searchBtn"
-class="btn btn-blue"
->
-جستجو
-</button>
+        <div class="search-box">
 
-</div>
+            <input
+                type="search"
+                id="searchCenter"
+                placeholder="نام مرکز را وارد کنید..."
+                autocomplete="off"
+            >
 
-<div
-id="searchResults"
-class="search-results"
-></div>
+            <button
+                type="button"
+                id="searchBtn"
+                class="btn btn-blue"
+            >
+                جستجو
+            </button>
+
+        </div>
+
+        <div
+            id="searchResults"
+            class="search-results"
+        ></div>
+
+    </section>
 
 </section>
 
-</section>
+
+<!-- =========================
+     صفحه مرکز
+========================= -->
 
 <section
-id="centerPage"
-class="hidden"
+    id="centerPage"
+    class="hidden"
 >
 
-<div class="card page-toolbar">
+    <div class="card page-toolbar">
 
-<button
-type="button"
-id="backHomeBtn"
-class="btn btn-gray"
->
-← صفحه اصلی
-</button>
+        <button
+            type="button"
+            id="backHomeBtn"
+            class="btn btn-gray"
+        >
+            ← صفحه اصلی
+        </button>
 
-<h2 id="pageTitle">
-مرکز
-</h2>
+        <h2 id="pageTitle">
+            مرکز
+        </h2>
 
-</div>
+    </div>
 
-<section class="card">
 
-<h2>🏢 اطلاعات مرکز</h2>
+    <!-- =========================
+         اطلاعات مرکز
+    ========================= -->
 
-<div class="form-grid">
+    <section class="card">
 
-<div class="field">
+        <h2>🏢 اطلاعات مرکز</h2>
 
-<label for="centerName">
-نام مرکز
-</label>
+        <div class="form-grid">
 
-<input
-type="text"
-id="centerName"
-autocomplete="off"
->
+            <div class="field">
 
-</div>
+                <label for="centerName">
+                    نام مرکز
+                </label>
 
-<div class="field">
+                <input
+                    type="text"
+                    id="centerName"
+                    autocomplete="off"
+                >
 
-<label for="centerPhone">
-شماره تماس
-</label>
+            </div>
 
-<input
-type="tel"
-id="centerPhone"
-autocomplete="off"
->
 
-</div>
+            <div class="field">
 
-<div class="field full">
+                <label for="centerPhone">
+                    شماره تماس
+                </label>
 
-<label for="centerAddress">
-آدرس
-</label>
+                <input
+                    type="tel"
+                    id="centerPhone"
+                    autocomplete="off"
+                >
 
-<input
-type="text"
-id="centerAddress"
-autocomplete="off"
->
+            </div>
 
-</div>
 
-<div class="field">
+            <div class="field full">
 
-<label for="centerManager">
-نام مسئول
-</label>
+                <label for="centerAddress">
+                    آدرس
+                </label>
 
-<input
-type="text"
-id="centerManager"
-autocomplete="off"
->
+                <input
+                    type="text"
+                    id="centerAddress"
+                    autocomplete="off"
+                >
 
-</div>
+            </div>
 
-<div class="field">
 
-<label for="labelLink">
-لینک فایل لیبل
-</label>
+            <div class="field">
 
-<input
-type="url"
-id="labelLink"
-placeholder="https://github.com/..."
-autocomplete="off"
->
+                <label for="centerManager">
+                    نام مسئول
+                </label>
 
-</div>
+                <input
+                    type="text"
+                    id="centerManager"
+                    autocomplete="off"
+                >
 
-</div>
+            </div>
 
-</section>
 
-<section class="card">
+            <div class="field">
 
-<h2>🤖 اطلاعات ربات</h2>
+                <label for="labelLink">
+                    لینک فایل لیبل
+                </label>
 
-<div class="form-grid">
+                <input
+                    type="url"
+                    id="labelLink"
+                    placeholder="https://github.com/..."
+                    autocomplete="off"
+                >
 
-<div class="field">
+            </div>
 
-<label for="robotModel">
-مدل ربات
-</label>
+        </div>
 
-<input
-type="text"
-id="robotModel"
-readonly
->
+    </section>
 
-</div>
 
-<div class="field">
+    <!-- =========================
+         مراجعه جدید
+    ========================= -->
 
-<label for="robotSerial">
-Serial Number
-</label>
+    <section class="card new-visit-card">
 
-<input
-type="text"
-id="robotSerial"
-autocomplete="off"
->
+        <div class="new-visit-title">
 
-</div>
+            <div>
 
-<div class="field">
+                <h2>📝 ثبت مراجعه جدید</h2>
 
-<label for="robotIP">
-IP Address
-</label>
+                <p class="section-description">
+                    اطلاعات این قسمت مربوط به مراجعه فعلی است.
+                    با هر بار ذخیره، یک سابقه جدید ایجاد می‌شود.
+                </p>
 
-<input
-type="text"
-id="robotIP"
-autocomplete="off"
->
+            </div>
 
-</div>
+            <span
+                id="visitStatus"
+                class="visit-status"
+            >
+                مراجعه جدید
+            </span>
 
-<div class="field">
+        </div>
 
-<label for="robotMAC">
-MAC Address
-</label>
 
-<input
-type="text"
-id="robotMAC"
-autocomplete="off"
->
+        <!-- =========================
+             اطلاعات ربات
+        ========================= -->
 
-</div>
+        <div class="sub-card">
 
-</div>
+            <h3>🤖 اطلاعات ربات</h3>
 
-</section>
+            <div class="form-grid">
 
-<section class="card">
+                <div class="field">
 
-<h2>✅ کارهای ثابت</h2>
+                    <label for="robotModel">
+                        مدل ربات
+                    </label>
 
-<p class="section-description">
-کارهای انجام‌شده را تیک بزنید.
-</p>
+                    <input
+                        type="text"
+                        id="robotModel"
+                        readonly
+                    >
 
-<div
-id="checklist"
-class="checklist"
-></div>
+                </div>
 
-</section>
 
-<section class="card">
+                <div class="field">
 
-<h2>📝 کارهای متفرقه</h2>
+                    <label for="robotSerial">
+                        Serial Number
+                    </label>
 
-<div class="field">
+                    <input
+                        type="text"
+                        id="robotSerial"
+                        autocomplete="off"
+                    >
 
-<label for="extraWork">
-کارهایی که جزو موارد ثابت نبود
-</label>
+                </div>
 
-<textarea
-id="extraWork"
-placeholder="هر کار دیگری که انجام شد اینجا بنویسید..."
-></textarea>
 
-</div>
+                <div class="field">
 
-</section>
+                    <label for="robotIP">
+                        IP Address
+                    </label>
 
-<section class="card action-card">
+                    <input
+                        type="text"
+                        id="robotIP"
+                        autocomplete="off"
+                    >
 
-<button
-type="button"
-id="saveVisitBtn"
-class="btn btn-primary"
->
-💾 ذخیره مراجعه
-</button>
+                </div>
 
-<button
-type="button"
-id="printReportBtn"
-class="btn btn-blue"
->
-🖨️ گزارش کار / PDF
-</button>
 
-<button
-type="button"
-id="newCenterBtn"
-class="btn btn-gray"
->
-➕ مرکز جدید
-</button>
+                <div class="field">
 
-</section>
+                    <label for="robotMAC">
+                        MAC Address
+                    </label>
 
-<section class="card">
+                    <input
+                        type="text"
+                        id="robotMAC"
+                        autocomplete="off"
+                    >
 
-<h2>📚 سوابق مراجعه</h2>
+                </div>
 
-<p class="section-description">
-تمام مراجعات قبلی این مرکز همراه با تاریخ
-و کارهای انجام‌شده در این قسمت نمایش داده می‌شود.
-</p>
+            </div>
 
-<div
-id="history"
-class="history"
-></div>
+        </div>
 
-</section>
+
+        <!-- =========================
+             چک لیست
+        ========================= -->
+
+        <div class="sub-card">
+
+            <h3>✅ کارهای ثابت</h3>
+
+            <p class="section-description">
+                کارهای انجام‌شده در این مراجعه را تیک بزنید.
+            </p>
+
+            <div
+                id="checklist"
+                class="checklist"
+            ></div>
+
+        </div>
+
+
+        <!-- =========================
+             کار متفرقه
+        ========================= -->
+
+        <div class="sub-card">
+
+            <h3>📝 کارهای متفرقه</h3>
+
+            <div class="field">
+
+                <label for="extraWork">
+                    کارهایی که جزو موارد ثابت نبود
+                </label>
+
+                <textarea
+                    id="extraWork"
+                    placeholder="هر کار دیگری که انجام شد اینجا بنویسید..."
+                ></textarea>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             دکمه‌ها
+        ========================= -->
+
+        <div class="action-card">
+
+            <button
+                type="button"
+                id="saveVisitBtn"
+                class="btn btn-primary"
+            >
+                💾 ذخیره مراجعه
+            </button>
+
+            <button
+                type="button"
+                id="newVisitBtn"
+                class="btn btn-green"
+            >
+                ➕ ثبت مراجعه جدید
+            </button>
+
+            <button
+                type="button"
+                id="printReportBtn"
+                class="btn btn-blue"
+            >
+                🖨️ گزارش کار / PDF
+            </button>
+
+            <button
+                type="button"
+                id="newCenterBtn"
+                class="btn btn-gray"
+            >
+                ➕ مرکز جدید
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         سوابق
+    ========================= -->
+
+    <section class="card">
+
+        <h2>📚 سوابق مراجعه</h2>
+
+        <p class="section-description">
+            تمام مراجعات قبلی این مرکز همراه با تاریخ،
+            اطلاعات ربات و کارهای انجام‌شده نمایش داده می‌شود.
+        </p>
+
+        <div
+            id="history"
+            class="history"
+        ></div>
+
+    </section>
 
 </section>
 
@@ -343,4 +430,4 @@ class="history"
 
 </body>
 
-</html>
+              </html>
