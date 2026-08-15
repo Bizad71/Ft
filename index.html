@@ -8,15 +8,14 @@
 
     <link rel="stylesheet" href="style.css">
 
-    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
-<!-- =====================================================
+<!-- =========================
      LOGIN
-===================================================== -->
+========================= -->
 
 <section id="loginPage" class="login-page">
 
@@ -24,9 +23,7 @@
 
         <h1>مدیریت مراکز و گزارش کار</h1>
 
-        <p>
-            برای ورود رمز عبور را وارد کنید
-        </p>
+        <p>برای ورود رمز عبور را وارد کنید</p>
 
         <input
             type="password"
@@ -43,34 +40,27 @@
             ورود
         </button>
 
-        <div
-            id="loginMessage"
-            class="login-message"
-        ></div>
+        <div id="loginMessage" class="login-message"></div>
 
     </div>
 
 </section>
 
 
-<!-- =====================================================
+<!-- =========================
      APP
-===================================================== -->
+========================= -->
 
 <main id="app" class="hidden">
 
     <header class="header">
-
-        <h1>
-            مدیریت مراکز و گزارش کار
-        </h1>
-
+        <h1>مدیریت مراکز و گزارش کار</h1>
     </header>
 
 
-    <!-- =================================================
+    <!-- =========================
          PROVINCES
-    ================================================== -->
+    ========================= -->
 
     <section id="provincePage">
 
@@ -78,9 +68,7 @@
 
             <div class="card">
 
-                <h2>
-                    انتخاب استان
-                </h2>
+                <h2>انتخاب استان</h2>
 
                 <div
                     id="provinceGrid"
@@ -94,14 +82,11 @@
     </section>
 
 
-    <!-- =================================================
+    <!-- =========================
          CENTERS
-    ================================================== -->
+    ========================= -->
 
-    <section
-        id="centersPage"
-        class="hidden"
-    >
+    <section id="centersPage" class="hidden">
 
         <div class="container">
 
@@ -115,9 +100,7 @@
                     ← بازگشت
                 </button>
 
-                <h2 id="provinceTitle">
-                    مراکز
-                </h2>
+                <h2 id="provinceTitle">مراکز</h2>
 
                 <button
                     type="button"
@@ -141,6 +124,8 @@
             </div>
 
 
+            <!-- فقط اسم مراکز -->
+
             <div
                 id="centersGrid"
                 class="centers-grid"
@@ -159,14 +144,11 @@
     </section>
 
 
-    <!-- =================================================
+    <!-- =========================
          CENTER
-    ================================================== -->
+    ========================= -->
 
-    <section
-        id="centerPage"
-        class="hidden"
-    >
+    <section id="centerPage" class="hidden">
 
         <div class="container">
 
@@ -180,12 +162,12 @@
                     ← بازگشت
                 </button>
 
-                <h2 id="centerTitle">
-                    نام مرکز
-                </h2>
+                <h2 id="centerTitle">نام مرکز</h2>
 
             </div>
 
+
+            <!-- ثبت دستگاه جدید -->
 
             <div class="center-actions">
 
@@ -200,11 +182,11 @@
             </div>
 
 
+            <!-- بخش‌های مرکز -->
+
             <div class="card">
 
-                <h2>
-                    بخش‌های مرکز
-                </h2>
+                <h2>بخش‌های مرکز</h2>
 
                 <div
                     id="sectionsGrid"
@@ -220,6 +202,8 @@
 
             </div>
 
+
+            <!-- حذف مرکز فقط اینجا -->
 
             <div class="center-delete-area">
 
@@ -238,14 +222,11 @@
     </section>
 
 
-    <!-- =================================================
+    <!-- =========================
          DEVICES
-    ================================================== -->
+    ========================= -->
 
-    <section
-        id="devicesPage"
-        class="hidden"
-    >
+    <section id="devicesPage" class="hidden">
 
         <div class="container">
 
@@ -259,9 +240,7 @@
                     ← بازگشت
                 </button>
 
-                <h2 id="sectionTitle">
-                    ربات‌ها
-                </h2>
+                <h2 id="sectionTitle">ربات‌ها</h2>
 
             </div>
 
@@ -290,7 +269,7 @@
                     id="emptyDevices"
                     class="empty-message hidden"
                 >
-                    هنوز رباتی ثبت نشده است.
+                    هنوز رباتی در این بخش ثبت نشده است.
                 </div>
 
             </div>
@@ -300,14 +279,11 @@
     </section>
 
 
-    <!-- =================================================
+    <!-- =========================
          ROBOT / REPORT
-    ================================================== -->
+    ========================= -->
 
-    <section
-        id="robotPage"
-        class="hidden"
-    >
+    <section id="robotPage" class="hidden">
 
         <div class="container">
 
@@ -321,9 +297,7 @@
                     ← بازگشت
                 </button>
 
-                <h2 id="robotTitle">
-                    ربات
-                </h2>
+                <h2 id="robotTitle">ربات</h2>
 
             </div>
 
@@ -332,9 +306,7 @@
 
             <div class="card">
 
-                <h2>
-                    اطلاعات ربات
-                </h2>
+                <h2>اطلاعات ربات</h2>
 
                 <div class="robot-main-info">
 
@@ -355,17 +327,6 @@
 
                 </div>
 
-
-                <a
-                    id="robotZipLink"
-                    class="file-link"
-                    href="#"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    📦 دانلود فایل مشخصات
-                </a>
-
             </div>
 
 
@@ -373,19 +334,13 @@
 
             <div class="card">
 
-                <h2>
-                    ثبت گزارش جدید
-                </h2>
-
+                <h2>ثبت گزارش جدید</h2>
 
                 <div class="form-grid">
 
-
                     <div class="field">
 
-                        <label>
-                            تاریخ مراجعه
-                        </label>
+                        <label>تاریخ مراجعه</label>
 
                         <input
                             type="text"
@@ -399,9 +354,7 @@
 
                     <div class="field">
 
-                        <label>
-                            موضوع مشکل
-                        </label>
+                        <label>موضوع مشکل</label>
 
                         <input
                             type="text"
@@ -413,9 +366,7 @@
 
                     <div class="field">
 
-                        <label>
-                            گزارش شده توسط
-                        </label>
+                        <label>گزارش شده توسط</label>
 
                         <input
                             type="text"
@@ -427,9 +378,7 @@
 
                     <div class="field">
 
-                        <label>
-                            تاریخ اعلام مشکل
-                        </label>
+                        <label>تاریخ اعلام مشکل</label>
 
                         <input
                             type="text"
@@ -443,9 +392,7 @@
 
                     <div class="field full-field">
 
-                        <label>
-                            توضیحات
-                        </label>
+                        <label>توضیحات</label>
 
                         <textarea
                             id="description"
@@ -458,9 +405,7 @@
 
                     <div class="field">
 
-                        <label>
-                            نام کارشناس
-                        </label>
+                        <label>نام کارشناس</label>
 
                         <input
                             type="text"
@@ -473,9 +418,7 @@
 
                     <div class="field">
 
-                        <label>
-                            تاریخ کارشناس
-                        </label>
+                        <label>تاریخ کارشناس</label>
 
                         <input
                             type="text"
@@ -489,9 +432,7 @@
 
                     <div class="field">
 
-                        <label>
-                            ساعت ورود
-                        </label>
+                        <label>ساعت ورود</label>
 
                         <input
                             type="time"
@@ -503,9 +444,7 @@
 
                     <div class="field">
 
-                        <label>
-                            ساعت خروج
-                        </label>
+                        <label>ساعت خروج</label>
 
                         <input
                             type="time"
@@ -517,9 +456,7 @@
 
                     <div class="field">
 
-                        <label>
-                            نام تحویل گیرنده
-                        </label>
+                        <label>نام تحویل گیرنده</label>
 
                         <input
                             type="text"
@@ -531,9 +468,7 @@
 
                     <div class="field">
 
-                        <label>
-                            نام/امضای کارشناس
-                        </label>
+                        <label>نام/امضای کارشناس</label>
 
                         <input
                             type="text"
@@ -569,13 +504,11 @@
             </div>
 
 
-            <!-- سابقه -->
+            <!-- سابقه کار -->
 
             <div class="card">
 
-                <h2>
-                    سوابق کار
-                </h2>
+                <h2>سوابق کار</h2>
 
                 <div id="history"></div>
 
@@ -586,9 +519,9 @@
     </section>
 
 
-    <!-- =================================================
-         POPUP
-    ================================================== -->
+    <!-- =========================
+         DESCRIPTION POPUP
+    ========================= -->
 
     <div
         id="descriptionModal"
@@ -607,9 +540,7 @@
                 ×
             </button>
 
-            <h2>
-                📝 توضیحات گزارش
-            </h2>
+            <h2>📝 توضیحات گزارش</h2>
 
             <div
                 id="descriptionModalContent"
@@ -621,9 +552,9 @@
     </div>
 
 
-    <!-- =================================================
+    <!-- =========================
          DEVICE MODAL
-    ================================================== -->
+    ========================= -->
 
     <div
         id="deviceModal"
@@ -642,16 +573,12 @@
                 ×
             </button>
 
-            <h2>
-                🤖 ثبت دستگاه جدید
-            </h2>
+            <h2>🤖 ثبت دستگاه جدید</h2>
 
 
             <div class="field">
 
-                <label>
-                    بخش
-                </label>
+                <label>بخش</label>
 
                 <select id="newDeviceSection">
 
@@ -675,10 +602,6 @@
                         MRI
                     </option>
 
-                    <option value="CT">
-                        CT
-                    </option>
-
                     <option value="CTscan">
                         CTscan
                     </option>
@@ -694,9 +617,7 @@
 
             <div class="field">
 
-                <label>
-                    مدل دستگاه
-                </label>
+                <label>مدل دستگاه</label>
 
                 <select id="newDeviceModel">
 
@@ -723,9 +644,7 @@
 
             <div class="field">
 
-                <label>
-                    شماره سریال
-                </label>
+                <label>شماره سریال</label>
 
                 <input
                     type="text"
@@ -748,9 +667,9 @@
     </div>
 
 
-    <!-- =================================================
+    <!-- =========================
          CENTER MODAL
-    ================================================== -->
+    ========================= -->
 
     <div
         id="centerModal"
@@ -769,16 +688,12 @@
                 ×
             </button>
 
-            <h2>
-                🏥 ثبت مرکز جدید
-            </h2>
+            <h2>🏥 ثبت مرکز جدید</h2>
 
 
             <div class="field">
 
-                <label>
-                    نام مرکز
-                </label>
+                <label>نام مرکز</label>
 
                 <input
                     type="text"
@@ -806,4 +721,4 @@
 <script src="app.js"></script>
 
 </body>
-        </html>
+</html>
