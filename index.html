@@ -9,147 +9,100 @@
 
 <body>
 
-<!-- ================= رمز ورود ================= -->
-
 <div id="loginPage" class="login-page">
-
     <div class="login-box">
-
-        <div class="login-icon">🔐</div>
-
-        <h1>مدیریت مراکز</h1>
-
-        <p>برای ورود رمز عبور را وارد کنید</p>
+        <h1>🔐 ورود به سیستم</h1>
 
         <input
             type="password"
             id="passwordInput"
             placeholder="رمز عبور"
-            autocomplete="off"
+            inputmode="numeric"
         >
 
-        <button
-            type="button"
-            id="loginBtn"
-            class="btn btn-primary"
-        >
+        <button id="loginBtn" class="btn btn-primary">
             ورود
         </button>
 
-        <div id="loginMessage" class="login-message"></div>
-
+        <p id="loginMessage"></p>
     </div>
-
 </div>
 
 
-<!-- ================= سایت اصلی ================= -->
-
 <div id="app" class="hidden">
 
-    <header class="header">
-
-        <h1>مدیریت مراکز و ربات‌ها</h1>
-
-        <button
-            type="button"
-            id="logoutBtn"
-            class="logout-btn"
-        >
-            خروج
-        </button>
-
-    </header>
+<header class="header">
+    <h1>🏥 مدیریت مراکز و گزارش کار</h1>
+</header>
 
 
-    <main class="container">
+<main class="container">
+
+    <!-- استان‌ها -->
+
+    <section id="provincePage">
+
+        <div class="card">
+            <h2>🏙️ انتخاب شهر</h2>
+            <p>استان موردنظر را انتخاب کنید.</p>
+
+            <div id="provinceGrid" class="province-grid"></div>
+        </div>
+
+    </section>
 
 
-        <!-- ================= صفحه استان‌ها ================= -->
+    <!-- مراکز -->
 
-        <section id="provincePage">
+    <section id="centersPage" class="hidden">
 
-            <div class="card intro-card">
+        <div class="card page-toolbar">
 
-                <h2>🏢 انتخاب استان</h2>
+            <button
+                id="backProvinceBtn"
+                class="btn btn-gray"
+            >
+                ← استان‌ها
+            </button>
 
-                <p>
-                    استان موردنظر را انتخاب کنید.
-                </p>
+            <h2 id="provinceTitle"></h2>
 
-            </div>
-
-
-            <div
-                id="provinceGrid"
-                class="province-grid"
-            ></div>
-
-        </section>
+        </div>
 
 
-        <!-- ================= صفحه مراکز ================= -->
+        <div class="card">
 
-        <section
-            id="centersPage"
-            class="hidden"
-        >
+            <h2>🔎 جستجوی مرکز</h2>
 
-            <div class="card page-toolbar">
+            <input
+                type="search"
+                id="centerSearch"
+                placeholder="نام مرکز..."
+            >
 
-                <button
-                    type="button"
-                    id="backProvinceBtn"
-                    class="btn btn-gray"
-                >
-                    ← استان‌ها
-                </button>
-
-                <h2 id="provinceTitle">
-                    مراکز استان
-                </h2>
-
-            </div>
+        </div>
 
 
-            <div class="card">
+        <div class="card">
 
-                <div class="section-header">
+            <button
+                id="newCenterBtn"
+                class="btn btn-primary full-btn"
+            >
+                ➕ ثبت مرکز جدید
+            </button>
 
-                    <div>
-                        <h2>🏥 مراکز</h2>
-
-                        <p>
-                            مرکز موردنظر را انتخاب کنید.
-                        </p>
-                    </div>
-
-                    <button
-                        type="button"
-                        id="newCenterBtn"
-                        class="btn btn-primary"
-                    >
-                        ➕ مرکز جدید
-                    </button>
-
-                </div>
+        </div>
 
 
-                <input
-                    type="search"
-                    id="centerSearch"
-                    placeholder="جستجوی نام مرکز..."
-                    autocomplete="off"
-                >
+        <div class="card">
 
-            </div>
-
+            <h2>🏥 مراکز</h2>
 
             <div
                 id="centersGrid"
                 class="centers-grid"
             ></div>
-
 
             <div
                 id="emptyCenters"
@@ -158,318 +111,230 @@
                 هنوز مرکزی ثبت نشده است.
             </div>
 
-        </section>
+        </div>
+
+    </section>
 
 
-        <!-- ================= صفحه مرکز ================= -->
+    <!-- فرم مرکز -->
 
-        <section
-            id="centerPage"
-            class="hidden"
-        >
+    <section id="centerPage" class="hidden">
 
-            <div class="card page-toolbar">
+        <div class="card page-toolbar">
 
-                <button
-                    type="button"
-                    id="backCentersBtn"
-                    class="btn btn-gray"
-                >
-                    ← مراکز
-                </button>
+            <button
+                id="backCentersBtn"
+                class="btn btn-gray"
+            >
+                ← مراکز
+            </button>
 
-                <h2 id="centerPageTitle">
-                    مرکز جدید
-                </h2>
+            <h2 id="centerPageTitle">
+                ثبت گزارش
+            </h2>
+
+        </div>
+
+
+        <!-- اطلاعات ثابت مرکز -->
+
+        <section class="card">
+
+            <h2>🏢 اطلاعات مرکز</h2>
+
+            <div class="form-grid">
+
+                <div class="field">
+
+                    <label>نام مرکز</label>
+
+                    <input
+                        id="centerName"
+                        type="text"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>شماره تماس</label>
+
+                    <input
+                        id="centerPhone"
+                        type="tel"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>نام مسئول</label>
+
+                    <input
+                        id="centerManager"
+                        type="text"
+                    >
+
+                </div>
 
             </div>
 
+        </section>
 
-            <!-- ================= اطلاعات ثابت مرکز ================= -->
 
-            <section class="card">
+        <!-- ربات -->
 
-                <div class="section-title">
+        <section class="card">
 
-                    <span>🏢</span>
+            <h2>🤖 انتخاب ربات</h2>
 
-                    <div>
-                        <h2>اطلاعات مرکز</h2>
-                        <small>
-                            این اطلاعات برای مرکز ذخیره می‌شود.
-                        </small>
-                    </div>
-
-                </div>
-
-
-                <div class="form-grid">
-
-                    <div class="field">
-
-                        <label>
-                            نام مرکز
-                        </label>
-
-                        <input
-                            type="text"
-                            id="centerName"
-                            autocomplete="off"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>
-                            شماره تماس
-                        </label>
-
-                        <input
-                            type="tel"
-                            id="centerPhone"
-                            autocomplete="off"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>
-                            نام مسئول
-                        </label>
-
-                        <input
-                            type="text"
-                            id="centerManager"
-                            autocomplete="off"
-                        >
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- ================= اطلاعات ثابت ربات ================= -->
-
-            <section class="card">
-
-                <div class="section-title">
-
-                    <span>🤖</span>
-
-                    <div>
-                        <h2>اطلاعات ربات</h2>
-                        <small>
-                            اطلاعات دستگاه برای این مرکز ذخیره می‌شود.
-                        </small>
-                    </div>
-
-                </div>
-
-
-                <div class="robot-grid">
-
-                    <button
-                        type="button"
-                        class="robot-card"
-                        data-robot="4102"
-                    >
-                        <span>4102</span>
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="robot-card"
-                        data-robot="4202"
-                    >
-                        <span>4202</span>
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="robot-card"
-                        data-robot="Rimage"
-                    >
-                        <span>Rimage</span>
-                    </button>
-
-                </div>
-
-
-                <div class="form-grid">
-
-                    <div class="field">
-
-                        <label>
-                            مدل ربات
-                        </label>
-
-                        <input
-                            type="text"
-                            id="robotModel"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>
-                            Serial Number
-                        </label>
-
-                        <input
-                            type="text"
-                            id="robotSerial"
-                            autocomplete="off"
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <!-- لینک لیبل ثابت مرکز -->
-
-                <div
-                    id="labelSection"
-                    class="label-section hidden"
-                >
-
-                    <div class="label-icon">
-                        🏷️
-                    </div>
-
-                    <div class="label-info">
-
-                        <strong>
-                            فایل لیبل دستگاه
-                        </strong>
-
-                        <span id="labelText">
-                            هنوز Serial Number ثبت نشده است.
-                        </span>
-
-                    </div>
-
-
-                    <a
-                        id="labelDownload"
-                        href="#"
-                        target="_blank"
-                        class="btn btn-blue hidden"
-                    >
-                        دانلود لیبل
-                    </a>
-
-                </div>
-
-            </section>
-
-
-            <!-- ================= گزارش مراجعه جدید ================= -->
-
-            <section class="card">
-
-                <div class="section-title">
-
-                    <span>📋</span>
-
-                    <div>
-                        <h2>گزارش کار جدید</h2>
-
-                        <small>
-                            موارد انجام‌شده در این مراجعه را انتخاب کنید.
-                        </small>
-                    </div>
-
-                </div>
-
-
-                <div
-                    id="checklist"
-                    class="checklist"
-                ></div>
-
-
-                <div class="field extra-field">
-
-                    <label>
-                        کارهای متفرقه
-                    </label>
-
-                    <textarea
-                        id="extraWork"
-                        placeholder="کارهای دیگری که انجام شده..."
-                    ></textarea>
-
-                </div>
-
-            </section>
-
-
-            <!-- ================= عملیات ================= -->
-
-            <section class="card action-card">
+            <div class="robot-grid">
 
                 <button
-                    type="button"
-                    id="saveBtn"
-                    class="btn btn-primary"
+                    class="robot-card"
+                    data-robot="4102"
                 >
-                    💾 ذخیره مراجعه
+                    4102
                 </button>
-
 
                 <button
-                    type="button"
-                    id="reportBtn"
-                    class="btn btn-blue"
+                    class="robot-card"
+                    data-robot="4202"
                 >
-                    🖨️ گزارش کار / PDF
+                    4202
                 </button>
 
-            </section>
+                <button
+                    class="robot-card"
+                    data-robot="Rimage"
+                >
+                    Rimage
+                </button>
 
-
-            <!-- ================= سوابق ================= -->
-
-            <section class="card">
-
-                <div class="section-title">
-
-                    <span>📚</span>
-
-                    <div>
-                        <h2>سوابق مراجعه</h2>
-                    </div>
-
-                </div>
-
-
-                <div
-                    id="history"
-                    class="history"
-                ></div>
-
-            </section>
+            </div>
 
         </section>
 
-    </main>
+
+        <!-- اطلاعات ربات -->
+
+        <section class="card">
+
+            <h2>⚙️ اطلاعات دستگاه</h2>
+
+            <div class="form-grid">
+
+                <div class="field">
+
+                    <label>مدل ربات</label>
+
+                    <input
+                        id="robotModel"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>شماره سریال دستگاه</label>
+
+                    <input
+                        id="robotSerial"
+                        type="text"
+                    >
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- کارهای ثابت -->
+
+        <section class="card">
+
+            <h2>📋 کارهای انجام‌شده</h2>
+
+            <div
+                id="checklist"
+                class="checklist"
+            ></div>
+
+        </section>
+
+
+        <!-- کار متفرقه -->
+
+        <section class="card">
+
+            <h2>📝 کارهای متفرقه</h2>
+
+            <textarea
+                id="extraWork"
+                placeholder="کارهای دیگر..."
+            ></textarea>
+
+        </section>
+
+
+        <!-- لینک لیبل -->
+
+        <section class="card">
+
+            <h2>🏷️ لیبل دستگاه</h2>
+
+            <p class="info-text">
+                لینک لیبل به صورت خودکار از شماره سریال ساخته می‌شود.
+            </p>
+
+            <div id="labelLinkBox"></div>
+
+        </section>
+
+
+        <!-- عملیات -->
+
+        <section class="card action-card">
+
+            <button
+                id="saveVisitBtn"
+                class="btn btn-primary"
+            >
+                💾 ذخیره گزارش
+            </button>
+
+            <button
+                id="printReportBtn"
+                class="btn btn-blue"
+            >
+                🖨️ گزارش / PDF
+            </button>
+
+        </section>
+
+
+        <!-- سوابق -->
+
+        <section class="card">
+
+            <h2>📚 سوابق مراجعه</h2>
+
+            <div id="history"></div>
+
+        </section>
+
+    </section>
+
+</main>
 
 </div>
-
 
 <script src="script.js"></script>
 
 </body>
-</html>
+    </html>
