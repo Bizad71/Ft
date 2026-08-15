@@ -12,6 +12,8 @@
 
 <body>
 
+<!-- ================= ورود ================= -->
+
 <div id="loginPage" class="login-page">
 
     <div class="login-box">
@@ -28,47 +30,73 @@
             autocomplete="off"
         >
 
-        <button id="loginBtn" class="btn btn-primary">
+        <button
+            id="loginBtn"
+            class="btn btn-primary"
+        >
             ورود
         </button>
 
-        <div id="loginMessage" class="login-message"></div>
+        <div
+            id="loginMessage"
+            class="login-message"
+        ></div>
 
     </div>
 
 </div>
 
 
+<!-- ================= برنامه ================= -->
+
 <div id="app" class="hidden">
 
 <header class="header">
-    <h1>مدیریت مراکز و گزارش کار</h1>
+
+    <h1>
+        مدیریت مراکز و گزارش کار
+    </h1>
+
 </header>
 
 
 <main class="container">
 
 
-<!-- ================= استان‌ها ================= -->
+<!-- =====================================================
+     استان‌ها
+===================================================== -->
 
 <section id="provincePage">
 
     <div class="card intro-card">
 
-        <h2>🏥 انتخاب استان</h2>
+        <h2>
+            🏥 انتخاب استان
+        </h2>
 
-        <p>استان موردنظر را انتخاب کنید.</p>
+        <p>
+            استان موردنظر را انتخاب کنید.
+        </p>
 
     </div>
 
-    <div id="provinceGrid" class="province-grid"></div>
+    <div
+        id="provinceGrid"
+        class="province-grid"
+    ></div>
 
 </section>
 
 
-<!-- ================= مراکز ================= -->
+<!-- =====================================================
+     بیمارستان / بخش / ربات
+===================================================== -->
 
-<section id="centersPage" class="hidden">
+<section
+    id="centersPage"
+    class="hidden"
+>
 
     <div class="card page-toolbar">
 
@@ -80,89 +108,155 @@
         </button>
 
         <h2 id="provinceTitle">
-            مراکز
+            بیمارستان‌ها
         </h2>
 
     </div>
 
 
-    <!-- ================= جستجوی پیشرفته ================= -->
+    <!-- مسیر -->
 
-    <div class="card advanced-search">
-
-        <h2>🔎 جستجوی پیشرفته</h2>
-
-        <div class="search-row">
-
-            <select id="searchType">
-
-                <option value="center">
-                    جستجو بر اساس نام مرکز
-                </option>
-
-                <option value="serial">
-                    جستجو بر اساس شماره سریال ربات
-                </option>
-
-            </select>
+    <div
+        id="breadcrumb"
+        class="breadcrumb"
+    ></div>
 
 
-            <input
-                type="search"
-                id="advancedSearchInput"
-                placeholder="نام مرکز را وارد کنید..."
-                autocomplete="off"
-            >
+    <!-- ================= بیمارستان‌ها ================= -->
 
+    <div
+        id="hospitalsToolbar"
+        class="card hierarchy-toolbar"
+    >
 
-            <button
-                id="clearSearchBtn"
-                class="btn btn-gray"
-            >
-                پاک کردن
-            </button>
+        <div>
+
+            <h2>
+                🏥 بیمارستان‌ها
+            </h2>
+
+            <p>
+                بیمارستان موردنظر را انتخاب کنید.
+            </p>
 
         </div>
-
-    </div>
-
-
-    <div class="card">
 
         <button
             id="newCenterBtn"
             class="btn btn-primary"
         >
-            ➕ مرکز جدید
+            ➕ ثبت بیمارستان / ربات جدید
         </button>
 
     </div>
 
 
-    <div class="card">
+    <div
+        id="hospitalGrid"
+        class="hierarchy-grid"
+    ></div>
 
-        <h2>🏥 مراکز</h2>
 
-        <div
-            id="centersGrid"
-            class="centers-grid"
-        ></div>
+    <div
+        id="emptyHospitals"
+        class="empty-message hidden"
+    >
+        هنوز بیمارستانی در این استان ثبت نشده است.
+    </div>
 
-        <div
-            id="emptyCenters"
-            class="empty-message"
-        >
-            هنوز مرکزی ثبت نشده است.
+
+    <!-- ================= بخش‌ها ================= -->
+
+    <div
+        id="sectionsToolbar"
+        class="card hierarchy-toolbar hidden"
+    >
+
+        <div>
+
+            <h2>
+                📂 بخش‌ها
+            </h2>
+
+            <p id="selectedHospitalText"></p>
+
         </div>
 
+        <button
+            id="newRobotBtn"
+            class="btn btn-primary"
+        >
+            ➕ ثبت ربات جدید
+        </button>
+
+    </div>
+
+
+    <div
+        id="sectionGrid"
+        class="hierarchy-grid"
+    ></div>
+
+
+    <div
+        id="emptySections"
+        class="empty-message hidden"
+    >
+        هنوز بخشی برای این بیمارستان ثبت نشده است.
+    </div>
+
+
+    <!-- ================= ربات‌ها ================= -->
+
+    <div
+        id="robotsToolbar"
+        class="card hierarchy-toolbar hidden"
+    >
+
+        <div>
+
+            <h2>
+                🤖 ربات‌های بخش
+            </h2>
+
+            <p id="selectedSectionText"></p>
+
+        </div>
+
+        <button
+            id="newRobotInSectionBtn"
+            class="btn btn-primary"
+        >
+            ➕ ثبت ربات جدید
+        </button>
+
+    </div>
+
+
+    <div
+        id="robotGrid"
+        class="robot-grid"
+    ></div>
+
+
+    <div
+        id="emptyRobots"
+        class="empty-message hidden"
+    >
+        هنوز رباتی در این بخش ثبت نشده است.
     </div>
 
 </section>
 
 
-<!-- ================= گزارش ================= -->
+<!-- =====================================================
+     گزارش
+===================================================== -->
 
-<section id="reportPage" class="hidden">
+<section
+    id="reportPage"
+    class="hidden"
+>
 
     <div class="card page-toolbar">
 
@@ -170,7 +264,7 @@
             id="backCentersBtn"
             class="btn btn-gray"
         >
-            ← مراکز
+            ← بازگشت
         </button>
 
         <h2 id="reportPageTitle">
@@ -180,17 +274,21 @@
     </div>
 
 
-    <!-- ================= اطلاعات مرکز ================= -->
+    <!-- ================= اطلاعات بیمارستان ================= -->
 
     <section class="card">
 
-        <h2>🏢 اطلاعات مرکز</h2>
+        <h2>
+            🏥 اطلاعات بیمارستان
+        </h2>
 
         <div class="form-grid">
 
             <div class="field">
 
-                <label>نام مرکز</label>
+                <label>
+                    نام بیمارستان
+                </label>
 
                 <input
                     type="text"
@@ -199,14 +297,16 @@
 
             </div>
 
-
             <div class="field">
 
-                <label>بخش</label>
+                <label>
+                    بخش
+                </label>
 
                 <input
                     type="text"
-                    id="sectionName"
+                    id="deviceSection"
+                    placeholder="مثلاً ICU، رادیولوژی، قلب..."
                 >
 
             </div>
@@ -220,16 +320,18 @@
 
     <section class="card">
 
-        <h2>📋 اطلاعات مراجعه</h2>
+        <h2>
+            📋 اطلاعات مراجعه
+        </h2>
 
         <div class="form-grid">
 
 
-            <!-- تاریخ مراجعه -->
-
             <div class="field">
 
-                <label>تاریخ مراجعه</label>
+                <label>
+                    تاریخ مراجعه
+                </label>
 
                 <input
                     type="text"
@@ -242,11 +344,11 @@
             </div>
 
 
-            <!-- مدل دستگاه -->
-
             <div class="field">
 
-                <label>مدل دستگاه</label>
+                <label>
+                    مدل دستگاه
+                </label>
 
                 <select id="deviceModel">
 
@@ -271,11 +373,11 @@
             </div>
 
 
-            <!-- شماره سریال -->
-
             <div class="field">
 
-                <label>شماره سریال</label>
+                <label>
+                    شماره سریال
+                </label>
 
                 <select id="serialNumber">
 
@@ -285,14 +387,12 @@
 
                 </select>
 
-
                 <input
                     type="text"
                     id="newSerialNumber"
                     class="serial-new-input hidden"
                     placeholder="شماره سریال جدید"
                 >
-
 
                 <button
                     id="newSerialBtn"
@@ -305,26 +405,11 @@
             </div>
 
 
-            <!-- بخش ربات -->
-
             <div class="field">
 
-                <label>بخش ربات</label>
-
-                <input
-                    type="text"
-                    id="deviceSection"
-                    placeholder="مثلاً قلب، ICU، رادیولوژی..."
-                >
-
-            </div>
-
-
-            <!-- لینک مشخصات ربات -->
-
-            <div class="field">
-
-                <label>لینک مشخصات ربات</label>
+                <label>
+                    لینک مشخصات ربات
+                </label>
 
                 <input
                     type="url"
@@ -336,11 +421,11 @@
             </div>
 
 
-            <!-- موضوع مشکل -->
-
             <div class="field">
 
-                <label>موضوع مشکل</label>
+                <label>
+                    موضوع مشکل
+                </label>
 
                 <input
                     type="text"
@@ -350,11 +435,11 @@
             </div>
 
 
-            <!-- گزارش شده توسط -->
-
             <div class="field">
 
-                <label>گزارش شده توسط</label>
+                <label>
+                    گزارش شده توسط
+                </label>
 
                 <input
                     type="text"
@@ -364,11 +449,11 @@
             </div>
 
 
-            <!-- تاریخ اعلام مشکل -->
-
             <div class="field">
 
-                <label>تاریخ اعلام مشکل</label>
+                <label>
+                    تاریخ اعلام مشکل
+                </label>
 
                 <input
                     type="text"
@@ -389,7 +474,9 @@
 
     <section class="card">
 
-        <h2>📝 توضیحات</h2>
+        <h2>
+            📝 توضیحات
+        </h2>
 
         <div class="description-box">
 
@@ -415,13 +502,17 @@
 
     <section class="card">
 
-        <h2>👨‍🔧 اطلاعات کارشناس</h2>
+        <h2>
+            👨‍🔧 اطلاعات کارشناس
+        </h2>
 
         <div class="form-grid">
 
             <div class="field">
 
-                <label>نام کارشناس</label>
+                <label>
+                    نام کارشناس
+                </label>
 
                 <input
                     type="text"
@@ -434,7 +525,9 @@
 
             <div class="field">
 
-                <label>تاریخ</label>
+                <label>
+                    تاریخ
+                </label>
 
                 <input
                     type="text"
@@ -449,7 +542,9 @@
 
             <div class="field">
 
-                <label>ساعت ورود</label>
+                <label>
+                    ساعت ورود
+                </label>
 
                 <input
                     type="time"
@@ -461,7 +556,9 @@
 
             <div class="field">
 
-                <label>ساعت خروج</label>
+                <label>
+                    ساعت خروج
+                </label>
 
                 <input
                     type="time"
@@ -479,13 +576,17 @@
 
     <section class="card">
 
-        <h2>✍️ تحویل و امضا</h2>
+        <h2>
+            ✍️ تحویل و امضا
+        </h2>
 
         <div class="form-grid">
 
             <div class="field">
 
-                <label>نام تحویل گیرنده</label>
+                <label>
+                    نام تحویل گیرنده
+                </label>
 
                 <input
                     type="text"
@@ -497,7 +598,9 @@
 
             <div class="field">
 
-                <label>نام کارشناس</label>
+                <label>
+                    نام کارشناس
+                </label>
 
                 <input
                     type="text"
@@ -537,7 +640,9 @@
 
     <section class="card">
 
-        <h2>📚 سوابق مراجعه</h2>
+        <h2>
+            📚 سوابق مراجعه
+        </h2>
 
         <div id="history"></div>
 
@@ -550,12 +655,10 @@
 </div>
 
 
-<!-- ================= Supabase ================= -->
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="script.js"></script>
 
 </body>
 
-</html>
+                    </html>
