@@ -1,6 +1,8 @@
 /* =========================================================
    مدیریت مراکز و گزارش کار
-   نسخه جدید - Supabase
+   ساختار:
+   استان → بیمارستان → بخش → ربات → گزارش
+   Supabase
 ========================================================= */
 
 
@@ -18,7 +20,8 @@ const PASSWORD = "0111";
 
 const MAX_ATTEMPTS = 3;
 
-const LOCK_TIME = 30 * 60 * 1000;
+const LOCK_TIME =
+    30 * 60 * 1000;
 
 
 /* =========================================================
@@ -74,20 +77,28 @@ const provinces = [
 ========================================================= */
 
 let database = {
+
     centers: [],
     devices: [],
     visits: []
+
 };
 
 let currentProvince = "";
 
+let currentProvinceName = "";
+
 let currentCenter = null;
+
+let currentSection = "";
+
+let currentView = "hospitals";
 
 let editingVisitId = null;
 
 
 /* =========================================================
-   DOM
+   ابزار DOM
 ========================================================= */
 
 function getElement(id) {
@@ -99,11 +110,13 @@ function getElement(id) {
 
 function setValue(id, value) {
 
-    const el = getElement(id);
+    const element =
+        getElement(id);
 
-    if (el) {
+    if (element) {
 
-        el.value = value ?? "";
+        element.value =
+            value ?? "";
 
     }
 
@@ -112,16 +125,17 @@ function setValue(id, value) {
 
 function getValue(id) {
 
-    const el = getElement(id);
+    const element =
+        getElement(id);
 
-    if (!el) {
+    if (!element) {
 
         return "";
 
     }
 
     return String(
-        el.value || ""
+        element.value || ""
     ).trim();
 
 }
@@ -133,7 +147,8 @@ function getValue(id) {
 
 function pad2(number) {
 
-    return String(number).padStart(2, "0");
+    return String(number)
+        .padStart(2, "0");
 
 }
 
@@ -182,22 +197,32 @@ function gregorianToJalali(
 
     let days =
         365 * gy +
-        Math.floor((gy2 + 3) / 4) -
-        Math.floor((gy2 + 99) / 100) +
-        Math.floor((gy2 + 399) / 400) -
+        Math.floor(
+            (gy2 + 3) / 4
+        ) -
+        Math.floor(
+            (gy2 + 99) / 100
+        ) +
+        Math.floor(
+            (gy2 + 399) / 400
+        ) -
         80 +
         gd +
         g_d_m[gm - 1];
 
     jy +=
         33 *
-        Math.floor(days / 12053);
+        Math.floor(
+            days / 12053
+        );
 
     days %= 12053;
 
     jy +=
         4 *
-        Math.floor(days / 1461);
+        Math.floor(
+            days / 1461
+        );
 
     days %= 1461;
 
@@ -219,7 +244,9 @@ function gregorianToJalali(
 
         jm =
             1 +
-            Math.floor(days / 31);
+            Math.floor(
+                days / 31
+            );
 
     } else {
 
@@ -267,20 +294,11 @@ function isoToJalali(value) {
 
     }
 
-    const gy =
-        Number(match[1]);
-
-    const gm =
-        Number(match[2]);
-
-    const gd =
-        Number(match[3]);
-
     const result =
         gregorianToJalali(
-            gy,
-            gm,
-            gd
+            Number(match[1]),
+            Number(match[2]),
+            Number(match[3])
         );
 
     return (
@@ -535,6 +553,114 @@ function initSupabase() {
 }
 
 
+async function loadDatabase() {
+
+    if (!supabaseClient) {
+
+        if (!initSupabase()) {
+
+            return false;
+
+        }
+
+    }
+
+    try {
+
+        const [
+            centersResult,
+            devicesResult,
+            visitsResult
+        ] =
+            await Promise.all([
+
+                supabaseClient
+                    .from("centers")
+                    .select("*")
+                    .order(
+                        "created_at",
+                        {
+                            ascending: true
+                        }
+                    ),
+
+                supabaseClient
+                    .from("devices")
+                    .select("*")
+                    .order(
+                        "created_at",
+                        {
+                            ascending: true
+                        }
+                    ),
+
+                supabaseClient
+                    .from("visits")
+                    .select("*")
+                    .order(
+                        "visit_date",
+                        {
+                            ascending: false
+                        }
+                    )
+
+            ]);
+
+
+        if (centersResult.error) {
+
+            throw centersResult.error;
+
+        }
+
+        if (devicesResult.error) {
+
+            throw devicesResult.error;
+
+        }
+
+        if (visitsResult.error) {
+
+            throw visitsResult.error;
+
+        }
+
+
+        database = {
+
+            centers:
+                centersResult.data || [],
+
+            devices:
+                devicesResult.data || [],
+
+            visits:
+                visitsResult.data || []
+
+        };
+
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "DATABASE ERROR:",
+            error
+        );
+
+        alert(
+            "خطا در دریافت اطلاعات پایگاه داده:\n" +
+            error.message
+        );
+
+        return false;
+
+    }
+
+}
+
+
 /* =========================================================
    ورود
 ========================================================= */
@@ -766,115 +892,7 @@ function renderProvinces() {
 
 
 /* =========================================================
-   دریافت کامل اطلاعات
-========================================================= */
-
-async function loadDatabase() {
-
-    if (!supabaseClient) {
-
-        initSupabase();
-
-    }
-
-    try {
-
-        const [
-            centersResult,
-            devicesResult,
-            visitsResult
-        ] =
-            await Promise.all([
-
-                supabaseClient
-                    .from("centers")
-                    .select("*")
-                    .order(
-                        "created_at",
-                        {
-                            ascending: true
-                        }
-                    ),
-
-                supabaseClient
-                    .from("devices")
-                    .select("*")
-                    .order(
-                        "created_at",
-                        {
-                            ascending: true
-                        }
-                    ),
-
-                supabaseClient
-                    .from("visits")
-                    .select("*")
-                    .order(
-                        "visit_date",
-                        {
-                            ascending: false
-                        }
-                    )
-
-            ]);
-
-
-        if (centersResult.error) {
-
-            throw centersResult.error;
-
-        }
-
-        if (devicesResult.error) {
-
-            throw devicesResult.error;
-
-        }
-
-        if (visitsResult.error) {
-
-            throw visitsResult.error;
-
-        }
-
-
-        database = {
-
-            centers:
-                centersResult.data || [],
-
-            devices:
-                devicesResult.data || [],
-
-            visits:
-                visitsResult.data || []
-
-        };
-
-
-        return true;
-
-    } catch (error) {
-
-        console.error(
-            "Database error:",
-            error
-        );
-
-        alert(
-            "خطا در دریافت اطلاعات پایگاه داده:\n" +
-            error.message
-        );
-
-        return false;
-
-    }
-
-}
-
-
-/* =========================================================
-   استان
+   باز کردن استان
 ========================================================= */
 
 async function openProvince(
@@ -885,8 +903,17 @@ async function openProvince(
     currentProvince =
         key;
 
+    currentProvinceName =
+        name;
+
     currentCenter =
         null;
+
+    currentSection =
+        "";
+
+    currentView =
+        "hospitals";
 
     await loadDatabase();
 
@@ -908,37 +935,29 @@ async function openProvince(
         "hidden"
     );
 
-    setValue(
-        "advancedSearchInput",
-        ""
-    );
-
     getElement(
         "provinceTitle"
     ).textContent =
-        "مراکز " + name;
+        "بیمارستان‌های " +
+        name;
 
-    renderCenters();
+    renderHierarchy();
 
 }
 
 
 /* =========================================================
-   اطلاعات مرکز
+   بیمارستان‌ها
 ========================================================= */
 
-function getCenterVisits(
-    centerId
-) {
+function getProvinceHospitals() {
 
-    return database.visits.filter(
-        function(visit) {
+    return database.centers.filter(
+        function(center) {
 
-            return String(
-                visit.center_id
-            ) ===
-            String(
-                centerId
+            return (
+                center.province ===
+                currentProvince
             );
 
         }
@@ -947,40 +966,16 @@ function getCenterVisits(
 }
 
 
-function getCenterDevices(
-    centerId
-) {
-
-    return database.devices.filter(
-        function(device) {
-
-            return String(
-                device.center_id
-            ) ===
-            String(
-                centerId
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   جستجوی پیشرفته
-========================================================= */
-
-function renderCenters() {
+function renderHospitals() {
 
     const grid =
         getElement(
-            "centersGrid"
+            "hospitalGrid"
         );
 
     const empty =
         getElement(
-            "emptyCenters"
+            "emptyHospitals"
         );
 
     if (!grid) {
@@ -991,115 +986,15 @@ function renderCenters() {
 
     grid.innerHTML = "";
 
-    const query =
-        getValue(
-            "advancedSearchInput"
-        ).toLowerCase();
-
-    const type =
-        getValue(
-            "searchType"
-        );
+    const hospitals =
+        getProvinceHospitals();
 
 
-    let centers = [];
-
-
-    if (!query) {
-
-        centers =
-            database.centers.filter(
-                function(center) {
-
-                    return (
-                        center.province ===
-                        currentProvince
-                    );
-
-                }
-            );
-
-    } else if (
-        type === "center"
-    ) {
-
-        centers =
-            database.centers.filter(
-                function(center) {
-
-                    return String(
-                        center.name || ""
-                    )
-                        .toLowerCase()
-                        .includes(
-                            query
-                        );
-
-                }
-            );
-
-    } else {
-
-        const matchingDevices =
-            database.devices.filter(
-                function(device) {
-
-                    return String(
-                        device.serial || ""
-                    )
-                        .toLowerCase()
-                        .includes(
-                            query
-                        );
-
-                }
-            );
-
-
-        const ids =
-            matchingDevices.map(
-                function(device) {
-
-                    return String(
-                        device.center_id
-                    );
-
-                }
-            );
-
-
-        centers =
-            database.centers.filter(
-                function(center) {
-
-                    return ids.includes(
-                        String(
-                            center.id
-                        )
-                    );
-
-                }
-            );
-
-    }
-
-
-    if (!centers.length) {
+    if (!hospitals.length) {
 
         empty?.classList.remove(
             "hidden"
         );
-
-        if (empty) {
-
-            empty.textContent =
-                query
-                    ?
-                    "نتیجه‌ای پیدا نشد."
-                    :
-                    "هنوز مرکزی ثبت نشده است.";
-
-        }
 
         return;
 
@@ -1111,32 +1006,43 @@ function renderCenters() {
     );
 
 
-    centers.forEach(
+    hospitals.forEach(
         function(center) {
 
             const box =
                 document.createElement(
+                    "button"
+                );
+
+            box.type =
+                "button";
+
+            box.className =
+                "hospital-card";
+
+
+            const icon =
+                document.createElement(
                     "div"
                 );
 
-            box.className =
-                "center-box";
+            icon.className =
+                "hospital-icon";
+
+            icon.textContent =
+                "🏥";
 
 
             const title =
                 document.createElement(
-                    "h3"
+                    "div"
                 );
+
+            title.className =
+                "hospital-title";
 
             title.textContent =
-                "🏥 " +
                 center.name;
-
-
-            const visits =
-                getCenterVisits(
-                    center.id
-                );
 
 
             const devices =
@@ -1147,15 +1053,20 @@ function renderCenters() {
 
             const info =
                 document.createElement(
-                    "p"
+                    "div"
                 );
 
-            info.textContent =
-                "گزارش‌ها: " +
-                visits.length +
-                " | دستگاه‌ها: " +
-                devices.length;
+            info.className =
+                "hospital-info";
 
+            info.textContent =
+                devices.length +
+                " ربات";
+
+
+            box.appendChild(
+                icon
+            );
 
             box.appendChild(
                 title
@@ -1166,208 +1077,17 @@ function renderCenters() {
             );
 
 
-            /* =================================================
-               نمایش ربات‌های مرکز
-            ================================================= */
-
-            if (devices.length) {
-
-                const devicesBox =
-                    document.createElement(
-                        "div"
-                    );
-
-                devicesBox.className =
-                    "center-devices";
-
-
-                const devicesTitle =
-                    document.createElement(
-                        "h4"
-                    );
-
-                devicesTitle.textContent =
-                    "🤖 ربات‌های این مرکز";
-
-                devicesBox.appendChild(
-                    devicesTitle
-                );
-
-
-                devices.forEach(
-                    function(device) {
-
-                        const robotBox =
-                            document.createElement(
-                                "div"
-                            );
-
-                        robotBox.className =
-                            "robot-item";
-
-
-                        const robotInfo =
-                            document.createElement(
-                                "div"
-                            );
-
-                        robotInfo.className =
-                            "robot-info";
-
-
-                        const robotTitle =
-                            document.createElement(
-                                "strong"
-                            );
-
-                        robotTitle.textContent =
-                            (
-                                device.model ||
-                                "-"
-                            ) +
-                            " — سریال: " +
-                            (
-                                device.serial ||
-                                "-"
-                            );
-
-
-                        robotInfo.appendChild(
-                            robotTitle
-                        );
-
-
-                        const section =
-                            document.createElement(
-                                "div"
-                            );
-
-                        section.textContent =
-                            "بخش: " +
-                            (
-                                device.section_name ||
-                                "ثبت نشده"
-                            );
-
-
-                        robotInfo.appendChild(
-                            section
-                        );
-
-
-                        robotBox.appendChild(
-                            robotInfo
-                        );
-
-
-                        if (
-                            device.spec_link
-                        ) {
-
-                            const link =
-                                document.createElement(
-                                    "a"
-                                );
-
-                            link.href =
-                                device.spec_link;
-
-                            link.target =
-                                "_blank";
-
-                            link.rel =
-                                "noopener noreferrer";
-
-                            link.className =
-                                "robot-link";
-
-                            link.textContent =
-                                "🔗 مشخصات ربات";
-
-
-                            robotBox.appendChild(
-                                link
-                            );
-
-                        }
-
-
-                        devicesBox.appendChild(
-                            robotBox
-                        );
-
-                    }
-                );
-
-
-                box.appendChild(
-                    devicesBox
-                );
-
-            }
-
-
-            /* =================================================
-               دکمه باز کردن مرکز
-            ================================================= */
-
-            const openButton =
-                document.createElement(
-                    "button"
-                );
-
-            openButton.className =
-                "btn btn-blue";
-
-            openButton.textContent =
-                "باز کردن مرکز";
-
-            openButton.addEventListener(
+            box.addEventListener(
                 "click",
                 function() {
 
-                    openExistingCenter(
+                    openHospital(
                         center
                     );
 
                 }
             );
 
-
-            /* =================================================
-               حذف مرکز
-            ================================================= */
-
-            const deleteButton =
-                document.createElement(
-                    "button"
-                );
-
-            deleteButton.className =
-                "btn btn-danger";
-
-            deleteButton.textContent =
-                "🗑 حذف مرکز";
-
-            deleteButton.addEventListener(
-                "click",
-                function() {
-
-                    deleteCenter(
-                        center
-                    );
-
-                }
-            );
-
-
-            box.appendChild(
-                openButton
-            );
-
-            box.appendChild(
-                deleteButton
-            );
 
             grid.appendChild(
                 box
@@ -1380,7 +1100,1044 @@ function renderCenters() {
 
 
 /* =========================================================
-   مرکز جدید
+   باز کردن بیمارستان
+========================================================= */
+
+function openHospital(
+    center
+) {
+
+    currentCenter =
+        center;
+
+    currentSection =
+        "";
+
+    currentView =
+        "sections";
+
+    renderHierarchy();
+
+}
+
+
+/* =========================================================
+   گرفتن بخش‌های بیمارستان
+========================================================= */
+
+function getCenterSections(
+    centerId
+) {
+
+    const devices =
+        getCenterDevices(
+            centerId
+        );
+
+    const sections = [];
+
+
+    devices.forEach(
+        function(device) {
+
+            const name =
+                String(
+                    device.section_name ||
+                    ""
+                ).trim();
+
+
+            if (
+                name &&
+                !sections.includes(name)
+            ) {
+
+                sections.push(name);
+
+            }
+
+        }
+    );
+
+
+    return sections.sort(
+        function(a, b) {
+
+            return a.localeCompare(
+                b,
+                "fa"
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   نمایش بخش‌ها
+========================================================= */
+
+function renderSections() {
+
+    const grid =
+        getElement(
+            "sectionGrid"
+        );
+
+    const empty =
+        getElement(
+            "emptySections"
+        );
+
+    if (!grid) {
+
+        return;
+
+    }
+
+    grid.innerHTML = "";
+
+
+    if (!currentCenter) {
+
+        return;
+
+    }
+
+
+    const sections =
+        getCenterSections(
+            currentCenter.id
+        );
+
+
+    getElement(
+        "selectedHospitalText"
+    ).textContent =
+        "بیمارستان: " +
+        currentCenter.name;
+
+
+    if (!sections.length) {
+
+        empty?.classList.remove(
+            "hidden"
+        );
+
+        return;
+
+    }
+
+
+    empty?.classList.add(
+        "hidden"
+    );
+
+
+    sections.forEach(
+        function(sectionName) {
+
+            const devices =
+                getCenterDevices(
+                    currentCenter.id
+                ).filter(
+                    function(device) {
+
+                        return String(
+                            device.section_name ||
+                            ""
+                        ).trim() ===
+                        sectionName;
+
+                    }
+                );
+
+
+            const box =
+                document.createElement(
+                    "button"
+                );
+
+            box.type =
+                "button";
+
+            box.className =
+                "section-card";
+
+
+            const icon =
+                document.createElement(
+                    "div"
+                );
+
+            icon.className =
+                "section-icon";
+
+            icon.textContent =
+                "📂";
+
+
+            const title =
+                document.createElement(
+                    "div"
+                );
+
+            title.className =
+                "section-title";
+
+            title.textContent =
+                sectionName;
+
+
+            const info =
+                document.createElement(
+                    "div"
+                );
+
+            info.className =
+                "section-info-count";
+
+            info.textContent =
+                devices.length +
+                " ربات";
+
+
+            box.appendChild(
+                icon
+            );
+
+            box.appendChild(
+                title
+            );
+
+            box.appendChild(
+                info
+            );
+
+
+            box.addEventListener(
+                "click",
+                function() {
+
+                    openSection(
+                        sectionName
+                    );
+
+                }
+            );
+
+
+            grid.appendChild(
+                box
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   باز کردن بخش
+========================================================= */
+
+function openSection(
+    sectionName
+) {
+
+    currentSection =
+        sectionName;
+
+    currentView =
+        "robots";
+
+    renderHierarchy();
+
+}
+
+
+/* =========================================================
+   نمایش ربات‌ها
+========================================================= */
+
+function renderRobots() {
+
+    const grid =
+        getElement(
+            "robotGrid"
+        );
+
+    const empty =
+        getElement(
+            "emptyRobots"
+        );
+
+    if (!grid || !currentCenter) {
+
+        return;
+
+    }
+
+    grid.innerHTML = "";
+
+
+    getElement(
+        "selectedSectionText"
+    ).textContent =
+        "بیمارستان: " +
+        currentCenter.name +
+        " | بخش: " +
+        currentSection;
+
+
+    const robots =
+        getCenterDevices(
+            currentCenter.id
+        ).filter(
+            function(device) {
+
+                return String(
+                    device.section_name ||
+                    ""
+                ).trim() ===
+                String(
+                    currentSection
+                ).trim();
+
+            }
+        );
+
+
+    if (!robots.length) {
+
+        empty?.classList.remove(
+            "hidden"
+        );
+
+        return;
+
+    }
+
+
+    empty?.classList.add(
+        "hidden"
+    );
+
+
+    robots.forEach(
+        function(device) {
+
+            const box =
+                document.createElement(
+                    "div"
+                );
+
+            box.className =
+                "robot-card";
+
+
+            const title =
+                document.createElement(
+                    "h3"
+                );
+
+            title.textContent =
+                "🤖 " +
+                (
+                    device.model ||
+                    "-"
+                );
+
+
+            const serial =
+                document.createElement(
+                    "div"
+                );
+
+            serial.className =
+                "robot-detail";
+
+            serial.innerHTML =
+                "<strong>شماره سریال:</strong> " +
+                escapeHTML(
+                    device.serial || "-"
+                );
+
+
+            const model =
+                document.createElement(
+                    "div"
+                );
+
+            model.className =
+                "robot-detail";
+
+            model.innerHTML =
+                "<strong>مدل:</strong> " +
+                escapeHTML(
+                    device.model || "-"
+                );
+
+
+            const section =
+                document.createElement(
+                    "div"
+                );
+
+            section.className =
+                "robot-detail";
+
+            section.innerHTML =
+                "<strong>بخش:</strong> " +
+                escapeHTML(
+                    device.section_name || "-"
+                );
+
+
+            box.appendChild(
+                title
+            );
+
+            box.appendChild(
+                model
+            );
+
+            box.appendChild(
+                serial
+            );
+
+            box.appendChild(
+                section
+            );
+
+
+            /* لینک مشخصات */
+
+            if (
+                device.spec_link
+            ) {
+
+                const link =
+                    document.createElement(
+                        "a"
+                    );
+
+                link.href =
+                    device.spec_link;
+
+                link.target =
+                    "_blank";
+
+                link.rel =
+                    "noopener noreferrer";
+
+                link.className =
+                    "robot-link";
+
+                link.textContent =
+                    "🔗 دانلود / مشاهده مشخصات ربات";
+
+
+                box.appendChild(
+                    link
+                );
+
+            } else {
+
+                const noLink =
+                    document.createElement(
+                        "div"
+                    );
+
+                noLink.className =
+                    "no-link";
+
+                noLink.textContent =
+                    "لینک مشخصات ثبت نشده است.";
+
+                box.appendChild(
+                    noLink
+                );
+
+            }
+
+
+            /* دکمه گزارش جدید */
+
+            const reportButton =
+                document.createElement(
+                    "button"
+                );
+
+            reportButton.type =
+                "button";
+
+            reportButton.className =
+                "btn btn-primary robot-report-button";
+
+            reportButton.textContent =
+                "➕ ثبت گزارش کار جدید";
+
+
+            reportButton.addEventListener(
+                "click",
+                function() {
+
+                    openNewReportForDevice(
+                        device
+                    );
+
+                }
+            );
+
+
+            box.appendChild(
+                reportButton
+            );
+
+
+            /* سابقه */
+
+            const visits =
+                database.visits.filter(
+                    function(visit) {
+
+                        return String(
+                            visit.device_id
+                        ) ===
+                        String(
+                            device.id
+                        );
+
+                    }
+                );
+
+
+            const historyTitle =
+                document.createElement(
+                    "h4"
+                );
+
+            historyTitle.className =
+                "robot-history-title";
+
+            historyTitle.textContent =
+                "📚 سابقه گزارش‌ها (" +
+                visits.length +
+                ")";
+
+
+            box.appendChild(
+                historyTitle
+            );
+
+
+            if (!visits.length) {
+
+                const noHistory =
+                    document.createElement(
+                        "div"
+                    );
+
+                noHistory.className =
+                    "no-history";
+
+                noHistory.textContent =
+                    "برای این ربات هنوز گزارشی ثبت نشده است.";
+
+                box.appendChild(
+                    noHistory
+                );
+
+            } else {
+
+                const historyList =
+                    document.createElement(
+                        "div"
+                    );
+
+                historyList.className =
+                    "robot-history-list";
+
+
+                visits.forEach(
+                    function(visit, index) {
+
+                        const historyItem =
+                            document.createElement(
+                                "div"
+                            );
+
+                        historyItem.className =
+                            "robot-history-item";
+
+
+                        const historyInfo =
+                            document.createElement(
+                                "div"
+                            );
+
+                        historyInfo.innerHTML =
+                            "<strong>گزارش " +
+                            (index + 1) +
+                            "</strong><br>" +
+                            "تاریخ: " +
+                            escapeHTML(
+                                isoToJalali(
+                                    visit.visit_date
+                                )
+                            );
+
+
+                        const historyButtons =
+                            document.createElement(
+                                "div"
+                            );
+
+                        historyButtons.className =
+                            "history-actions";
+
+
+                        const viewButton =
+                            document.createElement(
+                                "button"
+                            );
+
+                        viewButton.className =
+                            "btn btn-blue";
+
+                        viewButton.textContent =
+                            "👁 مشاهده";
+
+                        viewButton.onclick =
+                            function() {
+
+                                viewVisit(
+                                    visit.id
+                                );
+
+                            };
+
+
+                        const editButton =
+                            document.createElement(
+                                "button"
+                            );
+
+                        editButton.className =
+                            "btn btn-warning";
+
+                        editButton.textContent =
+                            "✏️ ویرایش";
+
+                        editButton.onclick =
+                            function() {
+
+                                editVisit(
+                                    visit.id
+                                );
+
+                            };
+
+
+                        const pdfButton =
+                            document.createElement(
+                                "button"
+                            );
+
+                        pdfButton.className =
+                            "btn btn-gray";
+
+                        pdfButton.textContent =
+                            "🖨 PDF";
+
+                        pdfButton.onclick =
+                            function() {
+
+                                printVisit(
+                                    visit.id
+                                );
+
+                            };
+
+
+                        const deleteButton =
+                            document.createElement(
+                                "button"
+                            );
+
+                        deleteButton.className =
+                            "btn btn-danger";
+
+                        deleteButton.textContent =
+                            "🗑 حذف";
+
+                        deleteButton.onclick =
+                            function() {
+
+                                deleteVisit(
+                                    visit.id
+                                );
+
+                            };
+
+
+                        historyButtons.appendChild(
+                            viewButton
+                        );
+
+                        historyButtons.appendChild(
+                            editButton
+                        );
+
+                        historyButtons.appendChild(
+                            pdfButton
+                        );
+
+                        historyButtons.appendChild(
+                            deleteButton
+                        );
+
+
+                        historyItem.appendChild(
+                            historyInfo
+                        );
+
+                        historyItem.appendChild(
+                            historyButtons
+                        );
+
+
+                        historyList.appendChild(
+                            historyItem
+                        );
+
+                    }
+                );
+
+
+                box.appendChild(
+                    historyList
+                );
+
+            }
+
+
+            grid.appendChild(
+                box
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   نمایش صحیح صفحه فعلی
+========================================================= */
+
+function renderHierarchy() {
+
+    const hospitalToolbar =
+        getElement(
+            "hospitalsToolbar"
+        );
+
+    const sectionToolbar =
+        getElement(
+            "sectionsToolbar"
+        );
+
+    const robotToolbar =
+        getElement(
+            "robotsToolbar"
+        );
+
+
+    const hospitalGrid =
+        getElement(
+            "hospitalGrid"
+        );
+
+    const sectionGrid =
+        getElement(
+            "sectionGrid"
+        );
+
+    const robotGrid =
+        getElement(
+            "robotGrid"
+        );
+
+
+    const emptyHospitals =
+        getElement(
+            "emptyHospitals"
+        );
+
+    const emptySections =
+        getElement(
+            "emptySections"
+        );
+
+    const emptyRobots =
+        getElement(
+            "emptyRobots"
+        );
+
+
+    hospitalToolbar?.classList.add(
+        "hidden"
+    );
+
+    sectionToolbar?.classList.add(
+        "hidden"
+    );
+
+    robotToolbar?.classList.add(
+        "hidden"
+    );
+
+
+    hospitalGrid?.classList.add(
+        "hidden"
+    );
+
+    sectionGrid?.classList.add(
+        "hidden"
+    );
+
+    robotGrid?.classList.add(
+        "hidden"
+    );
+
+
+    emptyHospitals?.classList.add(
+        "hidden"
+    );
+
+    emptySections?.classList.add(
+        "hidden"
+    );
+
+    emptyRobots?.classList.add(
+        "hidden"
+    );
+
+
+    if (
+        currentView ===
+        "hospitals"
+    ) {
+
+        getElement(
+            "provinceTitle"
+        ).textContent =
+            "بیمارستان‌های " +
+            currentProvinceName;
+
+
+        hospitalToolbar?.classList.remove(
+            "hidden"
+        );
+
+        hospitalGrid?.classList.remove(
+            "hidden"
+        );
+
+
+        setBreadcrumb([
+            currentProvinceName
+        ]);
+
+
+        renderHospitals();
+
+        return;
+
+    }
+
+
+    if (
+        currentView ===
+        "sections"
+    ) {
+
+        getElement(
+            "provinceTitle"
+        ).textContent =
+            currentCenter.name;
+
+
+        sectionToolbar?.classList.remove(
+            "hidden"
+        );
+
+        sectionGrid?.classList.remove(
+            "hidden"
+        );
+
+
+        setBreadcrumb([
+            currentProvinceName,
+            currentCenter.name
+        ]);
+
+
+        renderSections();
+
+        return;
+
+    }
+
+
+    if (
+        currentView ===
+        "robots"
+    ) {
+
+        getElement(
+            "provinceTitle"
+        ).textContent =
+            currentSection;
+
+
+        robotToolbar?.classList.remove(
+            "hidden"
+        );
+
+        robotGrid?.classList.remove(
+            "hidden"
+        );
+
+
+        setBreadcrumb([
+            currentProvinceName,
+            currentCenter.name,
+            currentSection
+        ]);
+
+
+        renderRobots();
+
+    }
+
+}
+
+
+/* =========================================================
+   مسیر بالا
+========================================================= */
+
+function setBreadcrumb(
+    items
+) {
+
+    const breadcrumb =
+        getElement(
+            "breadcrumb"
+        );
+
+    if (!breadcrumb) {
+
+        return;
+
+    }
+
+    breadcrumb.innerHTML = "";
+
+    items.forEach(
+        function(item, index) {
+
+            const span =
+                document.createElement(
+                    "span"
+                );
+
+            span.textContent =
+                item;
+
+            breadcrumb.appendChild(
+                span
+            );
+
+
+            if (
+                index <
+                items.length - 1
+            ) {
+
+                const arrow =
+                    document.createElement(
+                        "span"
+                    );
+
+                arrow.className =
+                    "breadcrumb-arrow";
+
+                arrow.textContent =
+                    "‹";
+
+                breadcrumb.appendChild(
+                    arrow
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   برگشت
+========================================================= */
+
+function goBackHierarchy() {
+
+    if (
+        currentView ===
+        "robots"
+    ) {
+
+        currentView =
+            "sections";
+
+        currentSection =
+            "";
+
+        renderHierarchy();
+
+        return;
+
+    }
+
+
+    if (
+        currentView ===
+        "sections"
+    ) {
+
+        currentView =
+            "hospitals";
+
+        currentCenter =
+            null;
+
+        renderHierarchy();
+
+        return;
+
+    }
+
+}
+
+
+/* =========================================================
+   مرکز / بیمارستان جدید
 ========================================================= */
 
 function createNewCenter() {
@@ -1388,8 +2145,12 @@ function createNewCenter() {
     currentCenter =
         null;
 
+    currentSection =
+        "";
+
     editingVisitId =
         null;
+
 
     getElement(
         "centersPage"
@@ -1403,16 +2164,11 @@ function createNewCenter() {
         "hidden"
     );
 
+
     getElement(
         "reportPageTitle"
     ).textContent =
-        "ثبت مرکز جدید";
-
-
-    setValue(
-        "centerName",
-        ""
-    );
+        "ثبت بیمارستان و اولین ربات";
 
 
     getElement(
@@ -1421,6 +2177,11 @@ function createNewCenter() {
         "readonly"
     );
 
+
+    setValue(
+        "centerName",
+        ""
+    );
 
     clearVisitFields();
 
@@ -1438,15 +2199,19 @@ function createNewCenter() {
 
 
 /* =========================================================
-   مرکز موجود
+   ثبت ربات جدید برای بیمارستان
 ========================================================= */
 
-async function openExistingCenter(
-    center
+function createNewRobot(
+    center,
+    section = ""
 ) {
 
     currentCenter =
         center;
+
+    currentSection =
+        section;
 
     editingVisitId =
         null;
@@ -1468,18 +2233,12 @@ async function openExistingCenter(
     getElement(
         "reportPageTitle"
     ).textContent =
-        center.name;
+        "ثبت ربات جدید";
 
 
     setValue(
         "centerName",
         center.name
-    );
-
-
-    setValue(
-        "sectionName",
-        center.section || ""
     );
 
 
@@ -1493,9 +2252,181 @@ async function openExistingCenter(
 
     clearVisitFields();
 
-    loadSerialNumbers();
+
+    setValue(
+        "centerName",
+        center.name
+    );
+
+    setValue(
+        "deviceSection",
+        section
+    );
+
+
+    getElement(
+        "cancelEditBtn"
+    )?.classList.add(
+        "hidden"
+    );
+
 
     renderHistory();
+
+}
+
+
+function openNewReportForDevice(
+    device
+) {
+
+    currentCenter =
+        database.centers.find(
+            function(center) {
+
+                return String(
+                    center.id
+                ) ===
+                String(
+                    device.center_id
+                );
+
+            }
+        );
+
+
+    if (!currentCenter) {
+
+        alert(
+            "بیمارستان ربات پیدا نشد."
+        );
+
+        return;
+
+    }
+
+
+    currentSection =
+        device.section_name || "";
+
+
+    editingVisitId =
+        null;
+
+
+    getElement(
+        "centersPage"
+    )?.classList.add(
+        "hidden"
+    );
+
+    getElement(
+        "reportPage"
+    )?.classList.remove(
+        "hidden"
+    );
+
+
+    getElement(
+        "reportPageTitle"
+    ).textContent =
+        "ثبت گزارش کار جدید";
+
+
+    setValue(
+        "centerName",
+        currentCenter.name
+    );
+
+
+    getElement(
+        "centerName"
+    )?.setAttribute(
+        "readonly",
+        "readonly"
+    );
+
+
+    clearVisitFields();
+
+
+    setValue(
+        "centerName",
+        currentCenter.name
+    );
+
+    setValue(
+        "deviceSection",
+        device.section_name || ""
+    );
+
+    setValue(
+        "deviceModel",
+        device.model || ""
+    );
+
+
+    loadSerialNumbers();
+
+
+    setValue(
+        "serialNumber",
+        device.serial || ""
+    );
+
+
+    setValue(
+        "deviceSpecLink",
+        device.spec_link || ""
+    );
+
+
+    renderHistory();
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================================
+   مرکز موجود - برای سازگاری
+========================================================= */
+
+function openExistingCenter(
+    center
+) {
+
+    openHospital(
+        center
+    );
+
+}
+
+
+/* =========================================================
+   دستگاه‌ها
+========================================================= */
+
+function getCenterDevices(
+    centerId
+) {
+
+    return database.devices.filter(
+        function(device) {
+
+            return String(
+                device.center_id
+            ) ===
+            String(
+                centerId
+            );
+
+        }
+    );
 
 }
 
@@ -1536,7 +2467,7 @@ function clearVisitFields() {
 
     setValue(
         "deviceSection",
-        ""
+        currentSection || ""
     );
 
 
@@ -1633,7 +2564,6 @@ function resetSerialSelect() {
             "option"
         );
 
-
     option.value = "";
 
     option.textContent =
@@ -1653,7 +2583,6 @@ function loadSerialNumbers() {
         getValue(
             "deviceModel"
         );
-
 
     const select =
         getElement(
@@ -1684,7 +2613,6 @@ function loadSerialNumbers() {
         document.createElement(
             "option"
         );
-
 
     first.value = "";
 
@@ -1742,14 +2670,11 @@ function loadSerialNumbers() {
                     "option"
                 );
 
-
             option.value =
                 serial;
 
-
             option.textContent =
                 serial;
-
 
             select.appendChild(
                 option
@@ -1761,10 +2686,6 @@ function loadSerialNumbers() {
 }
 
 
-/* =========================================================
-   انتخاب سریال
-========================================================= */
-
 function toggleNewSerial() {
 
     const input =
@@ -1772,13 +2693,11 @@ function toggleNewSerial() {
             "newSerialNumber"
         );
 
-
     if (!input) {
 
         return;
 
     }
-
 
     input.classList.toggle(
         "hidden"
@@ -1800,21 +2719,21 @@ function toggleNewSerial() {
 
 function getSelectedSerial() {
 
-    const newInput =
+    const input =
         getElement(
             "newSerialNumber"
         );
 
 
     if (
-        newInput &&
-        !newInput.classList.contains(
+        input &&
+        !input.classList.contains(
             "hidden"
         ) &&
-        newInput.value.trim()
+        input.value.trim()
     ) {
 
-        return newInput.value.trim();
+        return input.value.trim();
 
     }
 
@@ -1827,7 +2746,7 @@ function getSelectedSerial() {
 
 
 /* =========================================================
-   داده فرم
+   اطلاعات فرم
 ========================================================= */
 
 function getFormData() {
@@ -1835,55 +2754,82 @@ function getFormData() {
     return {
 
         centerName:
-            getValue("centerName"),
+            getValue(
+                "centerName"
+            ),
 
-        section:
-            getValue("sectionName"),
+        deviceSection:
+            getValue(
+                "deviceSection"
+            ),
 
         visitDate:
-            getValue("visitDate"),
+            getValue(
+                "visitDate"
+            ),
 
         deviceModel:
-            getValue("deviceModel"),
+            getValue(
+                "deviceModel"
+            ),
 
         serialNumber:
             getSelectedSerial(),
 
-        deviceSection:
-            getValue("deviceSection"),
-
         deviceSpecLink:
-            getValue("deviceSpecLink"),
+            getValue(
+                "deviceSpecLink"
+            ),
 
         problemSubject:
-            getValue("problemSubject"),
+            getValue(
+                "problemSubject"
+            ),
 
         reportedBy:
-            getValue("reportedBy"),
+            getValue(
+                "reportedBy"
+            ),
 
         problemDate:
-            getValue("problemDate"),
+            getValue(
+                "problemDate"
+            ),
 
         description:
-            getValue("description"),
+            getValue(
+                "description"
+            ),
 
         expertName:
-            getValue("expertName"),
+            getValue(
+                "expertName"
+            ),
 
         expertDate:
-            getValue("expertDate"),
+            getValue(
+                "expertDate"
+            ),
 
         entryTime:
-            getValue("entryTime"),
+            getValue(
+                "entryTime"
+            ),
 
         exitTime:
-            getValue("exitTime"),
+            getValue(
+                "exitTime"
+            ),
 
         receiverName:
-            getValue("receiverName"),
+            getValue(
+                "receiverName"
+            ),
 
         signatureExpertName:
-            getValue("signatureExpertName")
+            getValue(
+                "signatureExpertName"
+            )
 
     };
 
@@ -1891,7 +2837,7 @@ function getFormData() {
 
 
 /* =========================================================
-   پیدا کردن / ساخت مرکز
+   پیدا کردن / ساخت بیمارستان
 ========================================================= */
 
 async function getOrCreateCenter(
@@ -1905,6 +2851,12 @@ async function getOrCreateCenter(
     }
 
 
+    const name =
+        String(
+            data.centerName || ""
+        ).trim();
+
+
     let center =
         database.centers.find(
             function(item) {
@@ -1914,15 +2866,11 @@ async function getOrCreateCenter(
                     currentProvince
                     &&
                     String(
-                        item.name
+                        item.name || ""
                     )
                         .trim()
                         .toLowerCase() ===
-                    String(
-                        data.centerName
-                    )
-                        .trim()
-                        .toLowerCase()
+                    name.toLowerCase()
                 );
 
             }
@@ -1948,10 +2896,10 @@ async function getOrCreateCenter(
                     currentProvince,
 
                 name:
-                    data.centerName,
+                    name,
 
                 section:
-                    data.section || "",
+                    "",
 
                 phone:
                     "",
@@ -1986,15 +2934,15 @@ async function getOrCreateCenter(
 
 
 /* =========================================================
-   دستگاه / ربات
+   پیدا کردن / ساخت ربات
 ========================================================= */
 
 async function getOrCreateDevice(
     centerId,
     model,
     serial,
-    sectionName = "",
-    specLink = ""
+    sectionName,
+    specLink
 ) {
 
     let device =
@@ -2023,11 +2971,6 @@ async function getOrCreateDevice(
             }
         );
 
-
-    /*
-       اگر ربات قبلاً وجود داشته،
-       بخش و لینک آن به‌روزرسانی می‌شود.
-    */
 
     if (device) {
 
@@ -2073,10 +3016,6 @@ async function getOrCreateDevice(
 
     }
 
-
-    /*
-       ربات جدید
-    */
 
     const result =
         await supabaseClient
@@ -2133,7 +3072,18 @@ async function saveVisit() {
     if (!data.centerName) {
 
         alert(
-            "نام مرکز را وارد کنید."
+            "نام بیمارستان را وارد کنید."
+        );
+
+        return;
+
+    }
+
+
+    if (!data.deviceSection) {
+
+        alert(
+            "بخش را وارد کنید."
         );
 
         return;
@@ -2193,6 +3143,28 @@ async function saveVisit() {
     }
 
 
+    if (!data.deviceModel) {
+
+        alert(
+            "مدل دستگاه را انتخاب کنید."
+        );
+
+        return;
+
+    }
+
+
+    if (!data.serialNumber) {
+
+        alert(
+            "شماره سریال را وارد یا انتخاب کنید."
+        );
+
+        return;
+
+    }
+
+
     let expertDate = null;
 
 
@@ -2217,28 +3189,6 @@ async function saveVisit() {
     }
 
 
-    if (!data.deviceModel) {
-
-        alert(
-            "مدل دستگاه را انتخاب کنید."
-        );
-
-        return;
-
-    }
-
-
-    if (!data.serialNumber) {
-
-        alert(
-            "شماره سریال را وارد یا انتخاب کنید."
-        );
-
-        return;
-
-    }
-
-
     try {
 
         const center =
@@ -2246,36 +3196,6 @@ async function saveVisit() {
                 data
             );
 
-
-        /*
-           ذخیره بخش مرکز
-        */
-
-        const centerUpdate =
-            await supabaseClient
-                .from("centers")
-                .update({
-
-                    section:
-                        data.section || ""
-
-                })
-                .eq(
-                    "id",
-                    center.id
-                );
-
-
-        if (centerUpdate.error) {
-
-            throw centerUpdate.error;
-
-        }
-
-
-        /*
-           ذخیره اطلاعات ربات
-        */
 
         const device =
             await getOrCreateDevice(
@@ -2286,10 +3206,6 @@ async function saveVisit() {
                 data.deviceSpecLink
             );
 
-
-        /*
-           اطلاعات گزارش
-        */
 
         const payload = {
 
@@ -2405,12 +3321,33 @@ async function saveVisit() {
             );
 
 
+        currentSection =
+            data.deviceSection;
+
+
         clearVisitFields();
 
-        loadSerialNumbers();
+
+        getElement(
+            "centerName"
+        )?.setAttribute(
+            "readonly",
+            "readonly"
+        );
+
+
+        setValue(
+            "centerName",
+            currentCenter.name
+        );
+
+        setValue(
+            "deviceSection",
+            currentSection
+        );
+
 
         renderHistory();
-
 
     } catch (error) {
 
@@ -2418,7 +3355,6 @@ async function saveVisit() {
             "SAVE ERROR:",
             error
         );
-
 
         alert(
             "ذخیره اطلاعات انجام نشد:\n" +
@@ -2431,7 +3367,7 @@ async function saveVisit() {
 
 
 /* =========================================================
-   تاریخچه
+   تاریخچه فرم گزارش
 ========================================================= */
 
 function renderHistory() {
@@ -2463,15 +3399,24 @@ function renderHistory() {
 
 
     const visits =
-        getCenterVisits(
-            currentCenter.id
+        database.visits.filter(
+            function(visit) {
+
+                return String(
+                    visit.center_id
+                ) ===
+                String(
+                    currentCenter.id
+                );
+
+            }
         );
 
 
     if (!visits.length) {
 
         history.innerHTML =
-            "<p class='empty-message'>هنوز گزارشی برای این مرکز ثبت نشده است.</p>";
+            "<p class='empty-message'>هنوز گزارشی برای این بیمارستان ثبت نشده است.</p>";
 
         return;
 
@@ -2482,17 +3427,8 @@ function renderHistory() {
         function(visit, index) {
 
             const device =
-                database.devices.find(
-                    function(item) {
-
-                        return String(
-                            item.id
-                        ) ===
-                        String(
-                            visit.device_id
-                        );
-
-                    }
+                getVisitDevice(
+                    visit
                 );
 
 
@@ -2500,7 +3436,6 @@ function renderHistory() {
                 document.createElement(
                     "div"
                 );
-
 
             box.className =
                 "history-item";
@@ -2511,7 +3446,6 @@ function renderHistory() {
                     "h3"
                 );
 
-
             title.textContent =
                 "گزارش " +
                 (index + 1) +
@@ -2521,16 +3455,10 @@ function renderHistory() {
                 );
 
 
-            box.appendChild(
-                title
-            );
-
-
             const info =
                 document.createElement(
                     "p"
                 );
-
 
             info.textContent =
                 "دستگاه: " +
@@ -2550,16 +3478,10 @@ function renderHistory() {
                 );
 
 
-            box.appendChild(
-                info
-            );
-
-
             const subject =
                 document.createElement(
                     "p"
                 );
-
 
             subject.textContent =
                 "موضوع مشکل: " +
@@ -2570,23 +3492,15 @@ function renderHistory() {
 
 
             box.appendChild(
-                subject
+                title
             );
 
-
-            const description =
-                document.createElement(
-                    "p"
-                );
-
-
-            description.textContent =
-                visit.description ||
-                "توضیحی ثبت نشده است.";
-
+            box.appendChild(
+                info
+            );
 
             box.appendChild(
-                description
+                subject
             );
 
 
@@ -2595,26 +3509,20 @@ function renderHistory() {
                     "div"
                 );
 
-
             actions.className =
                 "history-actions";
 
-
-            /* مشاهده */
 
             const viewButton =
                 document.createElement(
                     "button"
                 );
 
-
             viewButton.className =
                 "btn btn-blue";
 
-
             viewButton.textContent =
                 "👁 مشاهده";
-
 
             viewButton.onclick =
                 function() {
@@ -2626,21 +3534,16 @@ function renderHistory() {
                 };
 
 
-            /* ویرایش */
-
             const editButton =
                 document.createElement(
                     "button"
                 );
 
-
             editButton.className =
                 "btn btn-warning";
 
-
             editButton.textContent =
                 "✏️ ویرایش";
-
 
             editButton.onclick =
                 function() {
@@ -2652,21 +3555,16 @@ function renderHistory() {
                 };
 
 
-            /* PDF */
-
             const pdfButton =
                 document.createElement(
                     "button"
                 );
 
-
             pdfButton.className =
                 "btn btn-gray";
 
-
             pdfButton.textContent =
                 "🖨 PDF";
-
 
             pdfButton.onclick =
                 function() {
@@ -2678,21 +3576,16 @@ function renderHistory() {
                 };
 
 
-            /* حذف */
-
             const deleteButton =
                 document.createElement(
                     "button"
                 );
 
-
             deleteButton.className =
                 "btn btn-danger";
 
-
             deleteButton.textContent =
                 "🗑 حذف";
-
 
             deleteButton.onclick =
                 function() {
@@ -2708,16 +3601,13 @@ function renderHistory() {
                 viewButton
             );
 
-
             actions.appendChild(
                 editButton
             );
 
-
             actions.appendChild(
                 pdfButton
             );
-
 
             actions.appendChild(
                 deleteButton
@@ -2740,7 +3630,7 @@ function renderHistory() {
 
 
 /* =========================================================
-   پیدا کردن گزارش
+   گزارش
 ========================================================= */
 
 function findVisit(
@@ -2810,159 +3700,191 @@ function viewVisit(
         );
 
 
-    const content = `
+    const history =
+        getElement(
+            "history"
+        );
 
-        <div class="card">
+
+    if (!history) {
+
+        return;
+
+    }
+
+
+    const content =
+        document.createElement(
+            "div"
+        );
+
+    content.className =
+        "visit-details";
+
+
+    content.innerHTML = `
+
+        <div class="visit-details-card">
 
             <h2>
                 📋 اطلاعات کامل گزارش
             </h2>
 
-            <p>
-                <strong>نام مرکز:</strong>
-                ${escapeHTML(
-                    currentCenter.name
-                )}
-            </p>
+            <div class="visit-details-row">
 
-            <p>
-                <strong>بخش مرکز:</strong>
-                ${escapeHTML(
-                    currentCenter.section || "-"
-                )}
-            </p>
+                <div class="visit-detail">
+                    <strong>نام بیمارستان</strong>
+                    ${escapeHTML(
+                        currentCenter?.name || "-"
+                    )}
+                </div>
 
-            <p>
-                <strong>تاریخ مراجعه:</strong>
-                ${escapeHTML(
-                    isoToJalali(
-                        visit.visit_date
-                    )
-                )}
-            </p>
+                <div class="visit-detail">
+                    <strong>بخش</strong>
+                    ${escapeHTML(
+                        device?.section_name || "-"
+                    )}
+                </div>
 
-            <p>
-                <strong>مدل دستگاه:</strong>
-                ${escapeHTML(
-                    device?.model || "-"
-                )}
-            </p>
+                <div class="visit-detail">
+                    <strong>تاریخ مراجعه</strong>
+                    ${escapeHTML(
+                        isoToJalali(
+                            visit.visit_date
+                        )
+                    )}
+                </div>
 
-            <p>
-                <strong>شماره سریال:</strong>
-                ${escapeHTML(
-                    device?.serial || "-"
-                )}
-            </p>
+                <div class="visit-detail">
+                    <strong>مدل دستگاه</strong>
+                    ${escapeHTML(
+                        device?.model || "-"
+                    )}
+                </div>
 
-            <p>
-                <strong>بخش ربات:</strong>
-                ${escapeHTML(
-                    device?.section_name || "-"
-                )}
-            </p>
+                <div class="visit-detail">
+                    <strong>شماره سریال</strong>
+                    ${escapeHTML(
+                        device?.serial || "-"
+                    )}
+                </div>
+
+                <div class="visit-detail">
+                    <strong>موضوع مشکل</strong>
+                    ${escapeHTML(
+                        visit.problem_subject || "-"
+                    )}
+                </div>
+
+                <div class="visit-detail">
+                    <strong>گزارش شده توسط</strong>
+                    ${escapeHTML(
+                        visit.reported_by || "-"
+                    )}
+                </div>
+
+                <div class="visit-detail">
+                    <strong>تاریخ اعلام مشکل</strong>
+                    ${escapeHTML(
+                        isoToJalali(
+                            visit.problem_date
+                        ) || "-"
+                    )}
+                </div>
+
+            </div>
+
 
             ${
                 device?.spec_link
                     ?
                     `
-                    <p>
-                        <strong>مشخصات ربات:</strong>
+                    <div class="visit-file-box">
+
+                        <strong>
+                            مشخصات ربات:
+                        </strong>
+
                         <a
-                            href="${escapeHTML(device.spec_link)}"
+                            href="${escapeHTML(
+                                device.spec_link
+                            )}"
                             target="_blank"
                             rel="noopener noreferrer"
+                            class="file-link"
                         >
-                            🔗 مشاهده فایل / مشخصات
+                            🔗 مشاهده / دانلود مشخصات
                         </a>
-                    </p>
+
+                    </div>
                     `
                     :
                     ""
             }
 
-            <p>
-                <strong>موضوع مشکل:</strong>
-                ${escapeHTML(
-                    visit.problem_subject || "-"
-                )}
-            </p>
 
-            <p>
-                <strong>گزارش شده توسط:</strong>
-                ${escapeHTML(
-                    visit.reported_by || "-"
-                )}
-            </p>
+            <div class="description">
 
-            <p>
-                <strong>تاریخ اعلام مشکل:</strong>
-                ${escapeHTML(
-                    isoToJalali(
-                        visit.problem_date
-                    )
-                )}
-            </p>
+                <h3>
+                    📝 توضیحات
+                </h3>
 
-            <hr>
+                <p>
+                    با مراجعه به مرکز و بررسی ربات،
+                </p>
 
-            <h3>📝 توضیحات</h3>
+                <p style="white-space:pre-wrap">
+                    ${escapeHTML(
+                        visit.description || ""
+                    )}
+                </p>
 
-            <p style="white-space:pre-wrap">
-                با مراجعه به مرکز و بررسی ربات،
+                <p>
+                    ربات تست و تحویل مسئول مربوطه گردید.
+                </p>
 
-                ${escapeHTML(
-                    visit.description || ""
-                )}
+            </div>
 
-                ربات تست و تحویل مسئول مربوطه گردید.
-            </p>
 
-            <hr>
+            <div class="visit-details-row">
 
-            <p>
-                <strong>کارشناس:</strong>
-                ${escapeHTML(
-                    visit.expert_name || "-"
-                )}
-            </p>
+                <div class="visit-detail">
+                    <strong>کارشناس</strong>
+                    ${escapeHTML(
+                        visit.expert_name || "-"
+                    )}
+                </div>
 
-            <p>
-                <strong>تاریخ کارشناس:</strong>
-                ${escapeHTML(
-                    isoToJalali(
-                        visit.created_at
-                    )
-                )}
-            </p>
+                <div class="visit-detail">
+                    <strong>ساعت ورود</strong>
+                    ${escapeHTML(
+                        visit.entry_time || "-"
+                    )}
+                </div>
 
-            <p>
-                <strong>ساعت ورود:</strong>
-                ${escapeHTML(
-                    visit.entry_time || "-"
-                )}
-            </p>
+                <div class="visit-detail">
+                    <strong>ساعت خروج</strong>
+                    ${escapeHTML(
+                        visit.exit_time || "-"
+                    )}
+                </div>
 
-            <p>
-                <strong>ساعت خروج:</strong>
-                ${escapeHTML(
-                    visit.exit_time || "-"
-                )}
-            </p>
+                <div class="visit-detail">
+                    <strong>تحویل گیرنده</strong>
+                    ${escapeHTML(
+                        visit.receiver_name || "-"
+                    )}
+                </div>
 
-            <p>
-                <strong>تحویل گیرنده:</strong>
-                ${escapeHTML(
-                    visit.receiver_name || "-"
-                )}
-            </p>
+                <div class="visit-detail">
+                    <strong>نام کارشناس امضا</strong>
+                    ${escapeHTML(
+                        visit.expert_signature || "-"
+                    )}
+                </div>
 
-            <p>
-                <strong>امضای کارشناس:</strong>
-                ${escapeHTML(
-                    visit.expert_signature || "-"
-                )}
-            </p>
+            </div>
+
 
             <div class="action-card">
 
@@ -2980,6 +3902,13 @@ function viewVisit(
                     🖨 PDF / چاپ
                 </button>
 
+                <button
+                    class="btn btn-gray"
+                    onclick="renderHistory()"
+                >
+                    بستن
+                </button>
+
             </div>
 
         </div>
@@ -2987,21 +3916,15 @@ function viewVisit(
     `;
 
 
-    const history =
-        getElement(
-            "history"
-        );
-
-
-    history.innerHTML =
-        content +
-        history.innerHTML;
+    history.prepend(
+        content
+    );
 
 }
 
 
 /* =========================================================
-   ویرایش گزارش
+   ویرایش
 ========================================================= */
 
 function editVisit(
@@ -3031,8 +3954,71 @@ function editVisit(
         );
 
 
+    if (!device) {
+
+        alert(
+            "ربات این گزارش پیدا نشد."
+        );
+
+        return;
+
+    }
+
+
+    currentCenter =
+        database.centers.find(
+            function(center) {
+
+                return String(
+                    center.id
+                ) ===
+                String(
+                    visit.center_id
+                );
+
+            }
+        );
+
+
+    currentSection =
+        device.section_name || "";
+
+
     editingVisitId =
         visit.id;
+
+
+    getElement(
+        "reportPage"
+    )?.classList.remove(
+        "hidden"
+    );
+
+    getElement(
+        "centersPage"
+    )?.classList.add(
+        "hidden"
+    );
+
+
+    getElement(
+        "reportPageTitle"
+    ).textContent =
+        "ویرایش گزارش";
+
+
+    setValue(
+        "centerName",
+        currentCenter?.name || ""
+    );
+
+
+    getElement(
+        "centerName"
+    )?.setAttribute(
+        "readonly",
+        "readonly"
+    );
 
 
     setValue(
@@ -3044,8 +4030,14 @@ function editVisit(
 
 
     setValue(
+        "deviceSection",
+        device.section_name || ""
+    );
+
+
+    setValue(
         "deviceModel",
-        device?.model || ""
+        device.model || ""
     );
 
 
@@ -3054,19 +4046,13 @@ function editVisit(
 
     setValue(
         "serialNumber",
-        device?.serial || ""
-    );
-
-
-    setValue(
-        "deviceSection",
-        device?.section_name || ""
+        device.serial || ""
     );
 
 
     setValue(
         "deviceSpecLink",
-        device?.spec_link || ""
+        device.spec_link || ""
     );
 
 
@@ -3135,12 +4121,6 @@ function editVisit(
 
 
     getElement(
-        "reportPageTitle"
-    ).textContent =
-        "ویرایش گزارش";
-
-
-    getElement(
         "cancelEditBtn"
     )?.classList.remove(
         "hidden"
@@ -3178,12 +4158,14 @@ function cancelEdit() {
     clearVisitFields();
 
 
-    getElement(
-        "reportPageTitle"
-    ).textContent =
-        currentCenter
-            ? currentCenter.name
-            : "ثبت مرکز جدید";
+    if (currentCenter) {
+
+        getElement(
+            "reportPageTitle"
+        ).textContent =
+            "ثبت گزارش کار جدید";
+
+    }
 
 }
 
@@ -3209,13 +4191,11 @@ async function deleteVisit(
     }
 
 
-    const ok =
-        confirm(
+    if (
+        !confirm(
             "آیا از حذف این گزارش مطمئن هستید؟"
-        );
-
-
-    if (!ok) {
+        )
+    ) {
 
         return;
 
@@ -3258,7 +4238,6 @@ async function deleteVisit(
             error
         );
 
-
         alert(
             "حذف گزارش انجام نشد:\n" +
             error.message
@@ -3270,7 +4249,7 @@ async function deleteVisit(
 
 
 /* =========================================================
-   حذف مرکز
+   حذف بیمارستان
 ========================================================= */
 
 async function deleteCenter(
@@ -3278,8 +4257,17 @@ async function deleteCenter(
 ) {
 
     const visits =
-        getCenterVisits(
-            center.id
+        database.visits.filter(
+            function(visit) {
+
+                return String(
+                    visit.center_id
+                ) ===
+                String(
+                    center.id
+                );
+
+            }
         );
 
 
@@ -3289,15 +4277,13 @@ async function deleteCenter(
         );
 
 
-    const ok =
-        confirm(
-            "مرکز «" +
+    if (
+        !confirm(
+            "بیمارستان «" +
             center.name +
-            "» و تمام گزارش‌ها و دستگاه‌های آن حذف شود؟"
-        );
-
-
-    if (!ok) {
+            "» و تمام ربات‌ها و گزارش‌های آن حذف شود؟"
+        )
+    ) {
 
         return;
 
@@ -3305,10 +4291,6 @@ async function deleteCenter(
 
 
     try {
-
-        /*
-           اول گزارش‌ها
-        */
 
         if (visits.length) {
 
@@ -3331,10 +4313,6 @@ async function deleteCenter(
         }
 
 
-        /*
-           سپس دستگاه‌ها
-        */
-
         if (devices.length) {
 
             const result =
@@ -3356,10 +4334,6 @@ async function deleteCenter(
         }
 
 
-        /*
-           در آخر مرکز
-        */
-
         const result =
             await supabaseClient
                 .from("centers")
@@ -3379,13 +4353,12 @@ async function deleteCenter(
 
         await loadDatabase();
 
+        renderHierarchy();
+
 
         alert(
-            "مرکز و اطلاعات مربوط به آن حذف شد."
+            "بیمارستان و اطلاعات مربوط به آن حذف شد."
         );
-
-
-        renderCenters();
 
 
     } catch (error) {
@@ -3394,9 +4367,8 @@ async function deleteCenter(
             error
         );
 
-
         alert(
-            "حذف مرکز انجام نشد:\n" +
+            "حذف بیمارستان انجام نشد:\n" +
             error.message
         );
 
@@ -3406,7 +4378,7 @@ async function deleteCenter(
 
 
 /* =========================================================
-   چاپ گزارش
+   چاپ PDF
 ========================================================= */
 
 function printVisit(
@@ -3433,6 +4405,21 @@ function printVisit(
     const device =
         getVisitDevice(
             visit
+        );
+
+
+    const center =
+        database.centers.find(
+            function(item) {
+
+                return String(
+                    item.id
+                ) ===
+                String(
+                    visit.center_id
+                );
+
+            }
         );
 
 
@@ -3467,10 +4454,7 @@ function printVisit(
 
 <!DOCTYPE html>
 
-<html
-    lang="fa"
-    dir="rtl"
->
+<html lang="fa" dir="rtl">
 
 <head>
 
@@ -3483,17 +4467,12 @@ function printVisit(
 <style>
 
 @page {
-
     size: A4;
-
     margin: 15mm;
-
 }
 
 * {
-
     box-sizing: border-box;
-
 }
 
 body {
@@ -3618,12 +4597,6 @@ h1 {
 
 }
 
-a {
-
-    color: #111;
-
-}
-
 </style>
 
 </head>
@@ -3637,36 +4610,31 @@ a {
 
 <div class="grid">
 
+<div class="field">
+
+<div class="label">
+نام بیمارستان
+</div>
+
+<div class="value">
+${escapeHTML(
+    center?.name || "-"
+)}
+</div>
+
+</div>
+
 
 <div class="field">
 
 <div class="label">
-نام مرکز
+بخش
 </div>
 
 <div class="value">
-
 ${escapeHTML(
-    currentCenter.name
+    device?.section_name || "-"
 )}
-
-</div>
-
-</div>
-
-
-<div class="field">
-
-<div class="label">
-بخش مرکز
-</div>
-
-<div class="value">
-
-${escapeHTML(
-    currentCenter.section || "-"
-)}
-
 </div>
 
 </div>
@@ -3679,13 +4647,11 @@ ${escapeHTML(
 </div>
 
 <div class="value">
-
 ${escapeHTML(
     isoToJalali(
         visit.visit_date
     )
 )}
-
 </div>
 
 </div>
@@ -3698,11 +4664,9 @@ ${escapeHTML(
 </div>
 
 <div class="value">
-
 ${escapeHTML(
     device?.model || "-"
 )}
-
 </div>
 
 </div>
@@ -3715,28 +4679,9 @@ ${escapeHTML(
 </div>
 
 <div class="value">
-
 ${escapeHTML(
     device?.serial || "-"
 )}
-
-</div>
-
-</div>
-
-
-<div class="field">
-
-<div class="label">
-بخش ربات
-</div>
-
-<div class="value">
-
-${escapeHTML(
-    device?.section_name || "-"
-)}
-
 </div>
 
 </div>
@@ -3749,11 +4694,9 @@ ${escapeHTML(
 </div>
 
 <div class="value">
-
 ${escapeHTML(
     visit.problem_subject || "-"
 )}
-
 </div>
 
 </div>
@@ -3766,11 +4709,9 @@ ${escapeHTML(
 </div>
 
 <div class="value">
-
 ${escapeHTML(
     visit.reported_by || "-"
 )}
-
 </div>
 
 </div>
@@ -3783,17 +4724,14 @@ ${escapeHTML(
 </div>
 
 <div class="value">
-
 ${escapeHTML(
     isoToJalali(
         visit.problem_date
-    )
+    ) || "-"
 )}
-
 </div>
 
 </div>
-
 
 </div>
 
@@ -3809,11 +4747,9 @@ ${
             </div>
 
             <div class="value">
-
                 ${escapeHTML(
                     device.spec_link
                 )}
-
             </div>
 
         </div>
@@ -3830,18 +4766,15 @@ ${
 </div>
 
 <div class="description-text">
-
 ${escapeHTML(
     description
 )}
-
 </div>
 
 </div>
 
 
 <div class="grid">
-
 
 <div class="field">
 
@@ -3850,11 +4783,9 @@ ${escapeHTML(
 </div>
 
 <div class="value">
-
 ${escapeHTML(
     visit.expert_name || "-"
 )}
-
 </div>
 
 </div>
@@ -3867,11 +4798,9 @@ ${escapeHTML(
 </div>
 
 <div class="value">
-
 ${escapeHTML(
     visit.entry_time || "-"
 )}
-
 </div>
 
 </div>
@@ -3884,11 +4813,9 @@ ${escapeHTML(
 </div>
 
 <div class="value">
-
 ${escapeHTML(
     visit.exit_time || "-"
 )}
-
 </div>
 
 </div>
@@ -3901,21 +4828,17 @@ ${escapeHTML(
 </div>
 
 <div class="value">
-
 ${escapeHTML(
     visit.receiver_name || "-"
 )}
-
 </div>
 
 </div>
-
 
 </div>
 
 
 <div class="signatures">
-
 
 <div class="signature">
 
@@ -3924,11 +4847,9 @@ ${escapeHTML(
 </strong>
 
 <div>
-
 ${escapeHTML(
     visit.receiver_name || ""
 )}
-
 </div>
 
 <div class="line"></div>
@@ -3943,17 +4864,14 @@ ${escapeHTML(
 </strong>
 
 <div>
-
 ${escapeHTML(
     visit.expert_signature || ""
 )}
-
 </div>
 
 <div class="line"></div>
 
 </div>
-
 
 </div>
 
@@ -3962,15 +4880,12 @@ ${escapeHTML(
 
 setTimeout(
     function() {
-
         window.print();
-
     },
     500
 );
 
 <\/script>
-
 
 </body>
 
@@ -4071,8 +4986,6 @@ document.addEventListener(
         );
 
 
-        /* استان */
-
         renderProvinces();
 
 
@@ -4083,6 +4996,27 @@ document.addEventListener(
         )?.addEventListener(
             "click",
             function() {
+
+                if (
+                    currentView !==
+                    "hospitals"
+                ) {
+
+                    currentView =
+                        "hospitals";
+
+                    currentCenter =
+                        null;
+
+                    currentSection =
+                        "";
+
+                    renderHierarchy();
+
+                    return;
+
+                }
+
 
                 getElement(
                     "centersPage"
@@ -4103,7 +5037,7 @@ document.addEventListener(
         );
 
 
-        /* برگشت مراکز */
+        /* برگشت از گزارش */
 
         getElement(
             "backCentersBtn"
@@ -4123,16 +5057,34 @@ document.addEventListener(
                     "hidden"
                 );
 
+
                 editingVisitId =
                     null;
 
-                renderCenters();
+
+                if (currentCenter) {
+
+                    currentView =
+                        currentSection
+                            ? "robots"
+                            : "sections";
+
+                    renderHierarchy();
+
+                } else {
+
+                    currentView =
+                        "hospitals";
+
+                    renderHierarchy();
+
+                }
 
             }
         );
 
 
-        /* مرکز جدید */
+        /* بیمارستان جدید */
 
         getElement(
             "newCenterBtn"
@@ -4142,60 +5094,34 @@ document.addEventListener(
         );
 
 
-        /* جستجو */
+        /* ربات جدید داخل بیمارستان */
 
         getElement(
-            "advancedSearchInput"
+            "newRobotBtn"
         )?.addEventListener(
-            "input",
-            renderCenters
-        );
-
-
-        getElement(
-            "searchType"
-        )?.addEventListener(
-            "change",
+            "click",
             function() {
 
-                const input =
-                    getElement(
-                        "advancedSearchInput"
-                    );
-
-
-                if (input) {
-
-                    input.placeholder =
-                        getValue(
-                            "searchType"
-                        ) === "serial"
-                            ?
-                            "شماره سریال ربات..."
-                            :
-                            "نام مرکز...";
-
-                }
-
-
-                renderCenters();
+                createNewRobot(
+                    currentCenter
+                );
 
             }
         );
 
 
+        /* ربات جدید داخل بخش */
+
         getElement(
-            "clearSearchBtn"
+            "newRobotInSectionBtn"
         )?.addEventListener(
             "click",
             function() {
 
-                setValue(
-                    "advancedSearchInput",
-                    ""
+                createNewRobot(
+                    currentCenter,
+                    currentSection
                 );
-
-                renderCenters();
 
             }
         );
@@ -4210,11 +5136,6 @@ document.addEventListener(
             function() {
 
                 loadSerialNumbers();
-
-                setValue(
-                    "deviceSection",
-                    ""
-                );
 
                 setValue(
                     "deviceSpecLink",
@@ -4330,7 +5251,7 @@ document.addEventListener(
         );
 
 
-        /* فرمت تاریخ شمسی */
+        /* تاریخ */
 
         [
             "visitDate",
