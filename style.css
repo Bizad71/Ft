@@ -24,6 +24,11 @@ button {
     cursor: pointer;
 }
 
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .hidden {
     display: none !important;
 }
@@ -196,6 +201,7 @@ button {
 
 .center-box .btn {
     width: 100%;
+    margin-top: 8px;
 }
 
 
@@ -240,14 +246,11 @@ input[readonly] {
     color: #8b949e;
 }
 
-
-/* =========================
-   تاریخ
-========================= */
-
-input[type="date"] {
-    min-height: 46px;
-    color-scheme: dark;
+.date-help {
+    display: block;
+    margin-top: 6px;
+    color: #8b949e;
+    font-size: 12px;
 }
 
 
@@ -319,9 +322,18 @@ input[type="date"] {
     background: #30363d;
 }
 
+.btn-danger {
+    background: #da3633;
+}
+
 .btn:hover {
     opacity: 0.9;
 }
+
+
+/* =========================
+   عملیات
+========================= */
 
 .action-card {
     display: flex;
@@ -349,6 +361,23 @@ input[type="date"] {
 
 .history-item p {
     color: #c9d1d9;
+    margin: 7px 0;
+}
+
+.history-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.history-actions .btn {
+    flex: 1;
+    min-width: 150px;
+}
+
+.history-more {
+    margin-top: 5px;
 }
 
 .empty-message {
@@ -418,6 +447,14 @@ input[type="date"] {
     }
 
     .action-card .btn {
+        width: 100%;
+    }
+
+    .history-actions {
+        flex-direction: column;
+    }
+
+    .history-actions .btn {
         width: 100%;
     }
 
