@@ -157,7 +157,15 @@ button {
 }
 
 
-/* ================= جستجو ================= */
+/* ================= جستجوی پیشرفته ================= */
+
+.advanced-search {
+    margin-bottom: 18px;
+}
+
+.advanced-search h2 {
+    margin-bottom: 15px;
+}
 
 .search-row {
     display: grid;
@@ -188,6 +196,7 @@ button {
 
 .center-box h3 {
     margin-top: 0;
+    margin-bottom: 12px;
 }
 
 .center-box p {
@@ -197,6 +206,63 @@ button {
 .center-box .btn {
     width: 100%;
     margin-top: 8px;
+}
+
+
+/* ================= اطلاعات بخش / ربات ================= */
+
+.section-info {
+    margin-top: 15px;
+    padding: 14px;
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+}
+
+.section-info h4 {
+    margin: 0 0 10px;
+    color: #58a6ff;
+}
+
+.robot-section {
+    margin-top: 12px;
+    padding: 14px;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+}
+
+.robot-section-title {
+    font-weight: bold;
+    color: #58a6ff;
+    margin-bottom: 8px;
+}
+
+.robot-section-info {
+    color: #c9d1d9;
+    line-height: 1.9;
+}
+
+.robot-links {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.robot-link {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #1f6feb;
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.robot-link:hover {
+    opacity: .9;
 }
 
 
@@ -360,6 +426,73 @@ input[readonly] {
 }
 
 
+/* ================= نمایش کامل گزارش ================= */
+
+.visit-details {
+    line-height: 2;
+}
+
+.visit-details-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.visit-detail {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.visit-detail strong {
+    display: block;
+    color: #58a6ff;
+    margin-bottom: 5px;
+}
+
+
+/* ================= لینک فایل ================= */
+
+.file-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 9px 13px;
+    border-radius: 9px;
+    background: #1f6feb;
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.file-link:hover {
+    opacity: .9;
+}
+
+
+/* ================= پیام ================= */
+
+.success-message {
+    padding: 12px;
+    border-radius: 10px;
+    background: #238636;
+    color: #fff;
+    margin-bottom: 12px;
+}
+
+.error-message {
+    padding: 12px;
+    border-radius: 10px;
+    background: #da3633;
+    color: #fff;
+    margin-bottom: 12px;
+}
+
+
 /* ================= موبایل ================= */
 
 @media (max-width: 800px) {
@@ -373,6 +506,10 @@ input[readonly] {
     }
 
     .search-row {
+        grid-template-columns: 1fr;
+    }
+
+    .visit-details-row {
         grid-template-columns: 1fr;
     }
 }
@@ -434,5 +571,18 @@ input[readonly] {
 
     .header h1 {
         font-size: 20px;
+    }
+
+    .search-row {
+        grid-template-columns: 1fr;
+    }
+
+    .robot-links {
+        flex-direction: column;
+    }
+
+    .robot-link {
+        width: 100%;
+        text-align: center;
     }
 }
