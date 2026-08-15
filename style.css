@@ -1,2087 +1,1000 @@
-/* =========================================================
-   مدیریت مراکز و گزارش کار
-========================================================= */
-
-const STORAGE_KEY =
-    "center_management_data";
-
-
-/* =========================================================
-   استان‌ها
-   تهران اول
-========================================================= */
-
-const provinces = [
-
-    {
-        key: "tehran",
-        name: "تهران"
-    },
-
-    {
-        key: "alborz",
-        name: "البرز"
-    },
-
-    {
-        key: "isfahan",
-        name: "اصفهان"
-    },
-
-    {
-        key: "east-azerbaijan",
-        name: "آذربایجان شرقی"
-    },
-
-    {
-        key: "west-azerbaijan",
-        name: "آذربایجان غربی"
-    },
-
-    {
-        key: "ardabil",
-        name: "اردبیل"
-    },
-
-    {
-        key: "bushehr",
-        name: "بوشهر"
-    },
-
-    {
-        key: "chaharmahal",
-        name: "چهارمحال و بختیاری"
-    },
-
-    {
-        key: "south-khorasan",
-        name: "خراسان جنوبی"
-    },
-
-    {
-        key: "razavi-khorasan",
-        name: "خراسان رضوی"
-    },
-
-    {
-        key: "north-khorasan",
-        name: "خراسان شمالی"
-    },
-
-    {
-        key: "khuzestan",
-        name: "خوزستان"
-    },
-
-    {
-        key: "zanjan",
-        name: "زنجان"
-    },
-
-    {
-        key: "semnan",
-        name: "سمنان"
-    },
-
-    {
-        key: "sistan",
-        name: "سیستان و بلوچستان"
-    },
-
-    {
-        key: "fars",
-        name: "فارس"
-    },
-
-    {
-        key: "qazvin",
-        name: "قزوین"
-    },
-
-    {
-        key: "qom",
-        name: "قم"
-    },
-
-    {
-        key: "kurdistan",
-        name: "کردستان"
-    },
-
-    {
-        key: "kerman",
-        name: "کرمان"
-    },
-
-    {
-        key: "kermanshah",
-        name: "کرمانشاه"
-    },
-
-    {
-        key: "kohgiluyeh",
-        name: "کهگیلویه و بویراحمد"
-    },
-
-    {
-        key: "golestan",
-        name: "گلستان"
-    },
-
-    {
-        key: "gilan",
-        name: "گیلان"
-    },
-
-    {
-        key: "lorestan",
-        name: "لرستان"
-    },
-
-    {
-        key: "mazandaran",
-        name: "مازندران"
-    },
-
-    {
-        key: "markazi",
-        name: "مرکزی"
-    },
-
-    {
-        key: "hormozgan",
-        name: "هرمزگان"
-    },
-
-    {
-        key: "hamedan",
-        name: "همدان"
-    },
-
-    {
-        key: "yazd",
-        name: "یزد"
-    }
-];
-
-
-/* =========================================================
-   چک لیست جدید
-========================================================= */
-
-const checklistItems = [
-
-    "بررسی سیستم",
-
-    "نصب ویندوز",
-
-    "نصب نرم‌افزارهای موردنیاز",
-
-    "کالیبره ربات",
-
-    "تعمیر بازو",
-
-    "تعویض رکوردر",
-
-    "تعویض کارتریج",
-
-    "تعویض هد پرینت",
-
-    "تعویض کریر",
-
-    "تست ربات",
-
-    "تست رایت",
-
-    "تست نهایی"
-
-];
-
-
-/* =========================================================
-   دیتابیس
-========================================================= */
-
-let database =
-    JSON.parse(
-        localStorage.getItem(
-            STORAGE_KEY
-        )
-    ) || {
-        centers: []
-    };
-
-
-if (!Array.isArray(database.centers)) {
-
-    database.centers = [];
-
-}
-
-
-let currentProvince = null;
-
-let currentCenter = null;
-
-let currentRobot = "";
-
-
-/* =========================================================
-   ذخیره
-========================================================= */
-
-function saveDatabase() {
-
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(database)
-    );
-
-}
-
-
-/* =========================================================
-   نام استان
-========================================================= */
-
-function getProvinceName(key) {
-
-    const province =
-        provinces.find(
-            p => p.key === key
-        );
-
-    return province
-        ? province.name
-        : "";
-
-}
-
-
-/* =========================================================
-   نمایش استان‌ها
-========================================================= */
-
-function renderProvinces() {
-
-    const grid =
-        document.getElementById(
-            "provinceGrid"
-        );
-
-
-    grid.innerHTML = "";
-
-
-    provinces.forEach(
-        province => {
-
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-
-            button.className =
-                "province-box";
-
-
-            if (
-                province.key ===
-                "tehran"
-            ) {
-
-                button.classList.add(
-                    "tehran"
-                );
-
-            }
-
-
-            button.textContent =
-                province.name;
-
-
-            button.onclick =
-                () => {
-
-                    openProvince(
-                        province.key
-                    );
-
-                };
-
-
-            grid.appendChild(
-                button
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   باز کردن استان
-========================================================= */
-
-function openProvince(
-    provinceKey
-) {
-
-    currentProvince =
-        provinceKey;
-
-
-    currentCenter = null;
-
-    currentRobot = "";
-
-
-    document
-        .getElementById(
-            "provincePage"
-        )
-        .classList.add(
-            "hidden"
-        );
-
-
-    document
-        .getElementById(
-            "centerPage"
-        )
-        .classList.add(
-            "hidden"
-        );
-
-
-    document
-        .getElementById(
-            "centersPage"
-        )
-        .classList.remove(
-            "hidden"
-        );
-
-
-    document
-        .getElementById(
-            "provinceTitle"
-        )
-        .textContent =
-        "🏥 مراکز " +
-        getProvinceName(
-            provinceKey
-        );
-
-
-    document
-        .getElementById(
-            "centerSearch"
-        )
-        .value = "";
-
-
-    renderCenters();
-
-}
-
-
-/* =========================================================
-   نمایش مراکز
-========================================================= */
-
-function renderCenters() {
-
-    const grid =
-        document.getElementById(
-            "centersGrid"
-        );
-
-
-    const empty =
-        document.getElementById(
-            "emptyCenters"
-        );
-
-
-    const search =
-        document.getElementById(
-            "centerSearch"
-        )
-        .value
-        .trim()
-        .toLowerCase();
-
-
-    grid.innerHTML = "";
-
-
-    let centers =
-        database.centers.filter(
-            center =>
-                center.province ===
-                currentProvince
-        );
-
-
-    if (search) {
-
-        centers =
-            centers.filter(
-                center =>
-                    center.name
-                        .toLowerCase()
-                        .includes(search)
-            );
-
-    }
-
-
-    if (!centers.length) {
-
-        empty.style.display =
-            "block";
-
-        return;
-
-    }
-
-
-    empty.style.display =
-        "none";
-
-
-    centers.forEach(
-        center => {
-
-            const box =
-                document.createElement(
-                    "div"
-                );
-
-
-            box.className =
-                "center-box";
-
-
-            box.innerHTML = `
-
-                <h3>
-                    🏥 ${escapeHTML(
-                        center.name
-                    )}
-                </h3>
-
-                <p>
-                    مسئول:
-                    ${escapeHTML(
-                        center.manager ||
-                        "ثبت نشده"
-                    )}
-                </p>
-
-                <button
-                    class="btn blue"
-                >
-                    باز کردن مرکز
-                </button>
-
-            `;
-
-
-            box
-                .querySelector(
-                    "button"
-                )
-                .onclick =
-                () => {
-
-                    openCenter(
-                        center
-                    );
-
-                };
-
-
-            grid.appendChild(
-                box
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   مرکز جدید
-========================================================= */
-
-function newCenter() {
-
-    currentCenter = null;
-
-    currentRobot = "";
-
-
-    showCenterPage();
-
-
-    clearForm();
-
-
-    document
-        .getElementById(
-            "centerName"
-        )
-        .focus();
-
-}
-
-
-/* =========================================================
-   باز کردن مرکز
-========================================================= */
-
-function openCenter(
-    center
-) {
-
-    currentCenter =
-        center;
-
-
-    currentRobot = "";
-
-
-    showCenterPage();
-
-
-    document
-        .getElementById(
-            "centerName"
-        )
-        .value =
-        center.name || "";
-
-
-    document
-        .getElementById(
-            "centerPhone"
-        )
-        .value =
-        center.phone || "";
-
-
-    document
-        .getElementById(
-            "centerAddress"
-        )
-        .value =
-        center.address || "";
-
-
-    document
-        .getElementById(
-            "centerManager"
-        )
-        .value =
-        center.manager || "";
-
-
-    document
-        .getElementById(
-            "robotModel"
-        )
-        .value = "";
-
-
-    document
-        .getElementById(
-            "robotSerial"
-        )
-        .value = "";
-
-
-    document
-        .getElementById(
-            "extraWork"
-        )
-        .value = "";
-
-
-    renderHistory();
-
-}
-
-
-/* =========================================================
-   صفحه مرکز
-========================================================= */
-
-function showCenterPage() {
-
-    document
-        .getElementById(
-            "centersPage"
-        )
-        .classList.add(
-            "hidden"
-        );
-
-
-    document
-        .getElementById(
-            "provincePage"
-        )
-        .classList.add(
-            "hidden"
-        );
-
-
-    document
-        .getElementById(
-            "centerPage"
-        )
-        .classList.remove(
-            "hidden"
-        );
-
-
-    document
-        .getElementById(
-            "centerPageTitle"
-        )
-        .textContent =
-        currentCenter
-            ? currentCenter.name
-            : "ثبت گزارش کار";
-
-
-    createChecklist();
-
-}
-
-
-/* =========================================================
-   پاک کردن فرم
-========================================================= */
-
-function clearForm() {
-
-    document.getElementById(
-        "centerName"
-    ).value = "";
-
-
-    document.getElementById(
-        "centerPhone"
-    ).value = "";
-
-
-    document.getElementById(
-        "centerAddress"
-    ).value = "";
-
-
-    document.getElementById(
-        "centerManager"
-    ).value = "";
-
-
-    document.getElementById(
-        "robotModel"
-    ).value = "";
-
-
-    document.getElementById(
-        "robotSerial"
-    ).value = "";
-
-
-    document.getElementById(
-        "extraWork"
-    ).value = "";
-
-
-    document
-        .querySelectorAll(
-            ".robot-card"
-        )
-        .forEach(
-            card =>
-                card.classList.remove(
-                    "active"
-                )
-        );
-
-
-    document.getElementById(
-        "history"
-    ).innerHTML =
-        "<div class='empty'>هنوز گزارشی ثبت نشده است.</div>";
-
-
-    createChecklist();
-
-}
-
-
-/* =========================================================
-   انتخاب ربات
-========================================================= */
-
-document
-    .querySelectorAll(
-        ".robot-card"
-    )
-    .forEach(
-        card => {
-
-            card.onclick =
-                () => {
-
-                    document
-                        .querySelectorAll(
-                            ".robot-card"
-                        )
-                        .forEach(
-                            c =>
-                                c.classList.remove(
-                                    "active"
-                                )
-                        );
-
-
-                    card.classList.add(
-                        "active"
-                    );
-
-
-                    currentRobot =
-                        card.dataset.robot;
-
-
-                    document
-                        .getElementById(
-                            "robotModel"
-                        )
-                        .value =
-                        currentRobot;
-
-
-                    /*
-                       اطلاعات ربات قبلی
-                    */
-
-                    if (
-                        currentCenter &&
-                        currentCenter.robots &&
-                        currentCenter.robots[
-                            currentRobot
-                        ]
-                    ) {
-
-                        const robot =
-                            currentCenter
-                                .robots[
-                                    currentRobot
-                                ];
-
-
-                        document
-                            .getElementById(
-                                "robotSerial"
-                            )
-                            .value =
-                            robot.serial || "";
-
-                    } else {
-
-                        document
-                            .getElementById(
-                                "robotSerial"
-                            )
-                            .value = "";
-
-                    }
-
-
-                    createChecklist();
-
-                };
-
-        }
-    );
-
-
-/* =========================================================
-   ساخت چک لیست
-========================================================= */
-
-function createChecklist(
-    savedItems = []
-) {
-
-    const container =
-        document.getElementById(
-            "checklist"
-        );
-
-
-    if (!container) {
-        return;
-    }
-
-
-    container.innerHTML = "";
-
-
-    checklistItems.forEach(
-        (item, index) => {
-
-            const row =
-                document.createElement(
-                    "div"
-                );
-
-
-            row.className =
-                "check-item";
-
-
-            const checkbox =
-                document.createElement(
-                    "input"
-                );
-
-
-            checkbox.type =
-                "checkbox";
-
-
-            checkbox.id =
-                "check_" +
-                index;
-
-
-            checkbox.value =
-                item;
-
-
-            checkbox.checked =
-                savedItems.includes(
-                    item
-                );
-
-
-            const label =
-                document.createElement(
-                    "label"
-                );
-
-
-            label.htmlFor =
-                checkbox.id;
-
-
-            label.textContent =
-                item;
-
-
-            row.appendChild(
-                checkbox
-            );
-
-
-            row.appendChild(
-                label
-            );
-
-
-            container.appendChild(
-                row
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   گرفتن چک لیست
-========================================================= */
-
-function getChecklist() {
-
-    const result = [];
-
-
-    document
-        .querySelectorAll(
-            "#checklist input"
-        )
-        .forEach(
-            checkbox => {
-
-                if (
-                    checkbox.checked
-                ) {
-
-                    result.push(
-                        checkbox.value
-                    );
-
-                }
-
-            }
-        );
-
-
-    return result;
-
-}
-
-
-/* =========================================================
-   ذخیره گزارش
-========================================================= */
-
-function saveVisit() {
-
-    const name =
-        document
-            .getElementById(
-                "centerName"
-            )
-            .value
-            .trim();
-
-
-    const phone =
-        document
-            .getElementById(
-                "centerPhone"
-            )
-            .value
-            .trim();
-
-
-    const address =
-        document
-            .getElementById(
-                "centerAddress"
-            )
-            .value
-            .trim();
-
-
-    const manager =
-        document
-            .getElementById(
-                "centerManager"
-            )
-            .value
-            .trim();
-
-
-    const serial =
-        document
-            .getElementById(
-                "robotSerial"
-            )
-            .value
-            .trim();
-
-
-    const extra =
-        document
-            .getElementById(
-                "extraWork"
-            )
-            .value
-            .trim();
-
-
-    if (!name) {
-
-        alert(
-            "نام مرکز را وارد کنید."
-        );
-
-        return;
-
-    }
-
-
-    if (!currentRobot) {
-
-        alert(
-            "مدل ربات را انتخاب کنید."
-        );
-
-        return;
-
-    }
-
-
-    if (!serial) {
-
-        alert(
-            "شماره سریال دستگاه را وارد کنید."
-        );
-
-        return;
-
-    }
-
-
-    /*
-       پیدا کردن مرکز
-    */
-
-    let center =
-        currentCenter;
-
-
-    if (!center) {
-
-        center =
-            database.centers.find(
-                item =>
-                    item.province ===
-                    currentProvince &&
-                    item.name
-                        .toLowerCase() ===
-                    name.toLowerCase()
-            );
-
-    }
-
-
-    /*
-       ساخت مرکز
-    */
-
-    if (!center) {
-
-        center = {
-
-            id:
-                Date.now(),
-
-            province:
-                currentProvince,
-
-            name:
-                name,
-
-            phone:
-                phone,
-
-            address:
-                address,
-
-            manager:
-                manager,
-
-            robots: {},
-
-            visits: []
-
-        };
-
-
-        database.centers.push(
-            center
-        );
-
-    }
-
-
-    /*
-       اطلاعات عمومی
-    */
-
-    center.name =
-        name;
-
-    center.phone =
-        phone;
-
-    center.address =
-        address;
-
-    center.manager =
-        manager;
-
-
-    if (!center.robots) {
-
-        center.robots = {};
-
-    }
-
-
-    /*
-       شماره سریال = شناسه لیبل
-    */
-
-    center.robots[
-        currentRobot
-    ] = {
-
-        serial:
-            serial,
-
-        label:
-            serial
-
-    };
-
-
-    /*
-       گزارش مراجعه
-    */
-
-    const visit = {
-
-        id:
-            Date.now(),
-
-        date:
-            new Date()
-                .toLocaleString(
-                    "fa-IR"
-                ),
-
-        robot:
-            currentRobot,
-
-        serial:
-            serial,
-
-        label:
-            serial,
-
-        checklist:
-            getChecklist(),
-
-        extraWork:
-            extra
-
-    };
-
-
-    if (!Array.isArray(
-        center.visits
-    )) {
-
-        center.visits = [];
-
-    }
-
-
-    center.visits.unshift(
-        visit
-    );
-
-
-    saveDatabase();
-
-
-    currentCenter =
-        center;
-
-
-    document
-        .getElementById(
-            "centerPageTitle"
-        )
-        .textContent =
-        center.name;
-
-
-    renderHistory();
-
-
-    alert(
-        "گزارش با موفقیت ذخیره شد."
-    );
-
-}
-
-
-/* =========================================================
-   سوابق
-========================================================= */
-
-function renderHistory() {
-
-    const history =
-        document.getElementById(
-            "history"
-        );
-
-
-    history.innerHTML = "";
-
-
-    if (
-        !currentCenter ||
-        !currentCenter.visits ||
-        !currentCenter.visits.length
-    ) {
-
-        history.innerHTML =
-            "<div class='empty'>هنوز گزارشی ثبت نشده است.</div>";
-
-        return;
-
-    }
-
-
-    currentCenter.visits.forEach(
-        visit => {
-
-            const box =
-                document.createElement(
-                    "div"
-                );
-
-
-            box.className =
-                "history-item";
-
-
-            box.innerHTML = `
-
-                <h3>
-                    📅 ${escapeHTML(
-                        visit.date
-                    )}
-                </h3>
-
-                <p>
-                    <strong>ربات:</strong>
-                    ${escapeHTML(
-                        visit.robot
-                    )}
-                </p>
-
-                <p>
-                    <strong>شماره سریال:</strong>
-                    ${escapeHTML(
-                        visit.serial
-                    )}
-                </p>
-
-                <p>
-                    <strong>لیبل:</strong>
-                    ${escapeHTML(
-                        visit.label
-                    )}
-                </p>
-
-                <strong>
-                    کارهای انجام‌شده:
-                </strong>
-
-                <ul>
-                    ${
-                        visit.checklist
-                            .map(
-                                item =>
-                                    `<li>${escapeHTML(item)}</li>`
-                            )
-                            .join("")
-                    }
-                </ul>
-
-                ${
-                    visit.extraWork
-                        ? `
-                            <p>
-                                <strong>
-                                    شرح خدمات:
-                                </strong>
-                                <br>
-                                ${escapeHTML(
-                                    visit.extraWork
-                                )}
-                            </p>
-                          `
-                        : ""
-                }
-
-            `;
-
-
-            history.appendChild(
-                box
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   چاپ گزارش
-   طراحی شبیه فرم داخل عکس
-========================================================= */
-
-function printReport() {
-
-    const centerName =
-        document
-            .getElementById(
-                "centerName"
-            )
-            .value
-            .trim();
-
-
-    const phone =
-        document
-            .getElementById(
-                "centerPhone"
-            )
-            .value
-            .trim();
-
-
-    const address =
-        document
-            .getElementById(
-                "centerAddress"
-            )
-            .value
-            .trim();
-
-
-    const manager =
-        document
-            .getElementById(
-                "centerManager"
-            )
-            .value
-            .trim();
-
-
-    const model =
-        document
-            .getElementById(
-                "robotModel"
-            )
-            .value
-            .trim();
-
-
-    const serial =
-        document
-            .getElementById(
-                "robotSerial"
-            )
-            .value
-            .trim();
-
-
-    if (!centerName) {
-
-        alert(
-            "نام مرکز وارد نشده است."
-        );
-
-        return;
-
-    }
-
-
-    if (!model) {
-
-        alert(
-            "مدل ربات را انتخاب کنید."
-        );
-
-        return;
-
-    }
-
-
-    if (!serial) {
-
-        alert(
-            "شماره سریال دستگاه را وارد کنید."
-        );
-
-        return;
-
-    }
-
-
-    const selected =
-        getChecklist();
-
-
-    const extra =
-        document
-            .getElementById(
-                "extraWork"
-            )
-            .value
-            .trim();
-
-
-    const date =
-        new Date()
-            .toLocaleDateString(
-                "fa-IR"
-            );
-
-
-    const report =
-        window.open(
-            "",
-            "_blank"
-        );
-
-
-    if (!report) {
-
-        alert(
-            "پنجره گزارش توسط مرورگر مسدود شده است."
-        );
-
-        return;
-
-    }
-
-
-    report.document.write(`
-
-<!DOCTYPE html>
-
-<html
-lang="fa"
-dir="rtl"
->
-
-<head>
-
-<meta charset="UTF-8">
-
-<title>
-گزارش نصب، آموزش و خدمات پس از فروش
-</title>
-
-<style>
-
-@page {
-    size: A4;
-    margin: 10mm;
-}
-
 * {
     box-sizing: border-box;
 }
 
-body {
 
+html {
+    direction: rtl;
+}
+
+
+body {
     margin: 0;
+    min-height: 100vh;
 
     font-family:
         Tahoma,
         Arial,
         sans-serif;
 
-    color: #111;
+    background:
+        #0d1117;
 
-    direction: rtl;
-
-    font-size: 12px;
-
+    color: #ffffff;
 }
 
-.report {
 
+button,
+input,
+textarea {
+    font-family: inherit;
+}
+
+
+button {
+    cursor: pointer;
+}
+
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================
+   LOGIN
+========================= */
+
+.login-page {
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+}
+
+
+.login-box {
     width: 100%;
+    max-width: 430px;
 
-    border: 2px solid #263d8f;
-
-}
-
-.header {
+    padding: 40px 30px;
 
     text-align: center;
 
-    border-bottom: 4px solid #263d8f;
+    background: #161b22;
 
-    padding: 14px;
+    border:
+        1px solid
+        #30363d;
 
-    position: relative;
+    border-radius: 22px;
 
+    box-shadow:
+        0 20px 60px
+        rgba(0, 0, 0, .35);
 }
+
+
+.login-icon {
+    font-size: 55px;
+
+    margin-bottom: 15px;
+}
+
+
+.login-box h1 {
+    margin:
+        0 0 10px;
+
+    font-size: 25px;
+}
+
+
+.login-box p {
+    color: #8b949e;
+
+    margin-bottom: 25px;
+}
+
+
+.login-box input {
+    margin-bottom: 12px;
+
+    text-align: center;
+
+    font-size: 18px;
+}
+
+
+.login-box .btn {
+    width: 100%;
+}
+
+
+.login-error {
+    display: none;
+
+    margin-top: 15px;
+
+    padding: 10px;
+
+    color: #ff7b72;
+
+    background: #2b1517;
+
+    border:
+        1px solid
+        #da3633;
+
+    border-radius: 9px;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    min-height: 80px;
+
+    padding:
+        15px 25px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    background:
+        #161b22;
+
+    border-bottom:
+        1px solid
+        #30363d;
+}
+
 
 .header h1 {
-
     margin: 0;
 
-    color: #263d8f;
-
-    font-size: 19px;
-
+    font-size: 24px;
 }
 
-.header .company {
 
-    position: absolute;
+.header span {
+    display: block;
 
-    left: 15px;
+    margin-top: 5px;
 
-    top: 10px;
+    color: #8b949e;
 
-    color: #263d8f;
-
-    font-size: 17px;
-
-    font-weight: bold;
-
+    font-size: 13px;
 }
 
-.section-title {
 
-    background: #263d8f;
+/* =========================
+   CONTAINER
+========================= */
+
+.container {
+    width: 100%;
+
+    max-width: 1200px;
+
+    margin: auto;
+
+    padding: 25px;
+}
+
+
+/* =========================
+   CARD
+========================= */
+
+.card {
+    margin-bottom: 20px;
+
+    padding: 22px;
+
+    background:
+        #161b22;
+
+    border:
+        1px solid
+        #30363d;
+
+    border-radius: 17px;
+}
+
+
+.card-title {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 20px;
+}
+
+
+.card-title > span {
+    font-size: 25px;
+}
+
+
+.card-title h2 {
+    margin: 0;
+}
+
+
+.card-title p {
+    margin:
+        5px 0 0;
+
+    color: #8b949e;
+}
+
+
+/* =========================
+   INTRO
+========================= */
+
+.intro-card {
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+}
+
+
+.intro-icon {
+    font-size: 50px;
+}
+
+
+.intro-card h2 {
+    margin: 0 0 8px;
+}
+
+
+.intro-card p {
+    margin: 0;
+
+    color: #8b949e;
+}
+
+
+/* =========================
+   استان‌ها
+========================= */
+
+.province-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 16px;
+}
+
+
+.province-card {
+    min-height: 125px;
+
+    padding: 18px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    background:
+        #161b22;
 
     color: white;
 
+    border:
+        1px solid
+        #30363d;
+
+    border-radius: 17px;
+
+    transition:
+        .2s ease;
+}
+
+
+.province-card:hover {
+    transform:
+        translateY(-4px);
+
+    border-color:
+        #58a6ff;
+
+    background:
+        #1c2128;
+}
+
+
+.province-card.tehran {
+    border-color:
+        #58a6ff;
+
+    box-shadow:
+        0 0 0 1px
+        rgba(88,166,255,.15);
+}
+
+
+.province-icon {
+    font-size: 32px;
+}
+
+
+.province-name {
+    font-size: 17px;
+
+    font-weight: bold;
+}
+
+
+/* =========================
+   TOOLBAR
+========================= */
+
+.page-toolbar {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+}
+
+
+.page-toolbar h2 {
+    flex: 1;
+
+    margin: 0;
+
+    text-align: center;
+}
+
+
+.section-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 20px;
+}
+
+
+.section-header h2 {
+    margin: 0;
+}
+
+
+.section-header p {
+    margin: 6px 0 0;
+
+    color: #8b949e;
+}
+
+
+/* =========================
+   INPUT
+========================= */
+
+input,
+textarea {
+    width: 100%;
+
+    padding:
+        12px 14px;
+
+    color: white;
+
+    background:
+        #0d1117;
+
+    border:
+        1px solid
+        #30363d;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    font-size: 15px;
+}
+
+
+input:focus,
+textarea:focus {
+    border-color:
+        #58a6ff;
+
+    box-shadow:
+        0 0 0 2px
+        rgba(88,166,255,.12);
+}
+
+
+textarea {
+    resize: vertical;
+
+    min-height: 110px;
+}
+
+
+/* =========================
+   CENTERS
+========================= */
+
+.centers-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 18px;
+}
+
+
+.center-box {
+    padding: 20px;
+
+    background:
+        #161b22;
+
+    border:
+        1px solid
+        #30363d;
+
+    border-radius: 17px;
+
+    transition: .2s ease;
+}
+
+
+.center-box:hover {
+    transform:
+        translateY(-3px);
+
+    border-color:
+        #58a6ff;
+}
+
+
+.center-icon {
+    font-size: 35px;
+
+    margin-bottom: 10px;
+}
+
+
+.center-box h3 {
+    margin:
+        0 0 8px;
+
+    font-size: 19px;
+}
+
+
+.center-box p {
+    margin:
+        5px 0;
+
+    color: #8b949e;
+}
+
+
+.center-box .btn {
+    width: 100%;
+
+    margin-top: 15px;
+}
+
+
+.empty-message {
+    padding: 45px;
+
     text-align: center;
 
-    padding: 7px;
+    color: #8b949e;
+
+    background:
+        #161b22;
+
+    border:
+        1px solid
+        #30363d;
+
+    border-radius: 17px;
+}
+
+
+/* =========================
+   FORM
+========================= */
+
+.form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 18px;
+}
+
+
+.field label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #c9d1d9;
+
+    font-size: 14px;
+}
+
+
+.field.full {
+    grid-column:
+        1 / -1;
+}
+
+
+/* =========================
+   ROBOT
+========================= */
+
+.robot-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 15px;
+}
+
+
+.robot-card {
+    min-height: 125px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    color: white;
+
+    background:
+        #0d1117;
+
+    border:
+        1px solid
+        #30363d;
+
+    border-radius: 15px;
+
+    transition: .2s ease;
+}
+
+
+.robot-card strong {
+    font-size: 27px;
+}
+
+
+.robot-card span {
+    color: #8b949e;
+
+    font-size: 13px;
+}
+
+
+.robot-card:hover,
+.robot-card.selected {
+    border-color:
+        #58a6ff;
+
+    background:
+        #1c2128;
+
+    transform:
+        translateY(-3px);
+}
+
+
+/* =========================
+   LABEL
+========================= */
+
+.label-info {
+    margin-top: 18px;
+
+    padding: 13px;
+
+    background:
+        #0d1117;
+
+    border:
+        1px solid
+        #30363d;
+
+    border-radius: 10px;
+
+    color: #8b949e;
+}
+
+
+.label-info strong {
+    color: #58a6ff;
+
+    margin-right: 5px;
+}
+
+
+/* =========================
+   CHECKLIST
+========================= */
+
+.checklist {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 10px;
+}
+
+
+.check-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 13px;
+
+    background:
+        #0d1117;
+
+    border:
+        1px solid
+        #30363d;
+
+    border-radius: 10px;
+}
+
+
+.check-item input {
+    width: 18px;
+
+    height: 18px;
+
+    margin: 0;
+
+    accent-color:
+        #2ea043;
+}
+
+
+.check-item label {
+    cursor: pointer;
+}
+
+
+/* =========================
+   BUTTON
+========================= */
+
+.btn {
+    border: none;
+
+    border-radius: 10px;
+
+    padding:
+        11px 18px;
+
+    color: white;
+
+    font-size: 14px;
 
     font-weight: bold;
 
-    border-top: 1px solid #263d8f;
-
-    border-bottom: 1px solid #263d8f;
-
+    transition: .15s ease;
 }
 
-.info-table {
 
-    width: 100%;
-
-    border-collapse: collapse;
-
+.btn:hover {
+    opacity: .88;
 }
 
-.info-table td {
 
-    border: 1px solid #263d8f;
-
-    padding: 7px;
-
-    height: 28px;
-
+.btn:active {
+    transform:
+        scale(.98);
 }
 
-.label {
+
+.btn-primary {
+    background:
+        #238636;
+}
+
+
+.btn-blue {
+    background:
+        #1f6feb;
+}
+
+
+.btn-gray {
+    background:
+        #30363d;
+}
+
+
+.big-btn {
+    flex: 1;
+
+    min-height: 50px;
+
+    font-size: 16px;
+}
+
+
+.action-card {
+    display: flex;
+
+    gap: 12px;
+}
+
+
+/* =========================
+   HISTORY
+========================= */
+
+.history-item {
+    margin-bottom: 15px;
+
+    padding: 18px;
+
+    background:
+        #0d1117;
+
+    border:
+        1px solid
+        #30363d;
+
+    border-radius: 14px;
+}
+
+
+.history-item:last-child {
+    margin-bottom: 0;
+}
+
+
+.history-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 12px;
+}
+
+
+.history-date {
+    color:
+        #58a6ff;
 
     font-weight: bold;
-
-    width: 18%;
-
-    background: #f5f6fa;
-
 }
 
-.services {
 
-    width: 100%;
+.history-robot {
+    padding:
+        5px 10px;
 
-    border-collapse: collapse;
+    background:
+        #30363d;
 
+    border-radius: 7px;
+
+    font-size: 13px;
 }
 
-.services th,
-.services td {
 
-    border: 1px solid #263d8f;
-
-    padding: 6px;
-
-}
-
-.services th {
-
-    background: #eef0f8;
-
-}
-
-.services td {
-
-    height: 26px;
-
-}
-
-.description {
-
-    min-height: 120px;
-
-    padding: 12px;
-
-    border-bottom: 1px solid #263d8f;
+.history-item ul {
+    margin-bottom: 10px;
 
     line-height: 2;
-
-}
-
-.signature {
-
-    width: 100%;
-
-    border-collapse: collapse;
-
-}
-
-.signature td {
-
-    border: 1px solid #263d8f;
-
-    height: 80px;
-
-    vertical-align: top;
-
-    padding: 8px;
-
-}
-
-.small {
-
-    font-size: 10px;
-
-    color: #555;
-
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="report">
-
-
-<div class="header">
-
-<div class="company">
-گزارش خدمات
-</div>
-
-<h1>
-گزارش نصب، آموزش و خدمات پس از فروش
-</h1>
-
-</div>
-
-
-<div class="section-title">
-مشخصات بیمارستان / مرکز
-</div>
-
-
-<table class="info-table">
-
-<tr>
-
-<td class="label">
-نام مرکز
-</td>
-
-<td>
-${escapeHTML(centerName)}
-</td>
-
-<td class="label">
-تاریخ
-</td>
-
-<td>
-${escapeHTML(date)}
-</td>
-
-</tr>
-
-
-<tr>
-
-<td class="label">
-مسئول
-</td>
-
-<td>
-${escapeHTML(manager)}
-</td>
-
-<td class="label">
-تلفن
-</td>
-
-<td>
-${escapeHTML(phone)}
-</td>
-
-</tr>
-
-
-<tr>
-
-<td class="label">
-آدرس
-</td>
-
-<td colspan="3">
-${escapeHTML(address)}
-</td>
-
-</tr>
-
-</table>
-
-
-<div class="section-title">
-مشخصات دستگاه
-</div>
-
-
-<table class="info-table">
-
-<tr>
-
-<td class="label">
-دستگاه / سیستم
-</td>
-
-<td>
-${escapeHTML(model)}
-</td>
-
-<td class="label">
-شماره سریال
-</td>
-
-<td>
-${escapeHTML(serial)}
-</td>
-
-</tr>
-
-
-<tr>
-
-<td class="label">
-شماره لیبل
-</td>
-
-<td colspan="3">
-${escapeHTML(serial)}
-</td>
-
-</tr>
-
-</table>
-
-
-<div class="section-title">
-گزارش خدمات انجام‌شده
-</div>
-
-
-<table class="services">
-
-<thead>
-
-<tr>
-
-<th style="width:8%">
-ردیف
-</th>
-
-<th>
-شرح خدمات
-</th>
-
-<th style="width:12%">
-انجام شد
-</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-${
-    checklistItems
-        .map(
-            (item, index) => {
-
-                const checked =
-                    selected.includes(
-                        item
-                    );
-
-                return `
-
-<tr>
-
-<td>
-${index + 1}
-</td>
-
-<td>
-${escapeHTML(item)}
-</td>
-
-<td style="text-align:center">
-${checked ? "✓" : ""}
-</td>
-
-</tr>
-
-`;
-
-            }
-        )
-        .join("")
-}
-
-</tbody>
-
-</table>
-
-
-<div class="section-title">
-شرح خدمات / توضیحات
-</div>
-
-
-<div class="description">
-
-${
-    extra
-        ? escapeHTML(extra)
-        : "توضیحات ثبت نشده است."
-}
-
-</div>
-
-
-<div class="section-title">
-تأیید و امضاء
-</div>
-
-
-<table class="signature">
-
-<tr>
-
-<td>
-نام تحویل‌گیرنده / مسئول مرکز
-<br><br>
-امضاء:
-</td>
-
-<td>
-نام کارشناس
-<br><br>
-امضاء:
-</td>
-
-</tr>
-
-</table>
-
-
-</div>
-
-<script>
-
-window.onload = function() {
-
-    setTimeout(
-        function() {
-            window.print();
-        },
-        500
-    );
-
-};
-
-</script>
-
-</body>
-
-</html>
-
-    `);
-
-
-    report.document.close();
-
 }
 
 
-/* =========================================================
-   برگشت‌ها
-========================================================= */
+.history-extra {
+    padding-top: 10px;
 
-document
-    .getElementById(
-        "backProvinceBtn"
-    )
-    .onclick =
-    () => {
+    border-top:
+        1px solid
+        #30363d;
 
-        document
-            .getElementById(
-                "centersPage"
-            )
-            .classList.add(
-                "hidden"
-            );
+    color: #c9d1d9;
+}
 
 
-        document
-            .getElementById(
-                "provincePage"
-            )
-            .classList.remove(
-                "hidden"
-            );
+/* =========================
+   RESPONSIVE
+========================= */
 
-        currentProvince = null;
+@media (max-width: 900px) {
 
-        currentCenter = null;
-
-    };
-
-
-document
-    .getElementById(
-        "backCentersBtn"
-    )
-    .onclick =
-    () => {
-
-        document
-            .getElementById(
-                "centerPage"
-            )
-            .classList.add(
-                "hidden"
-            );
-
-
-        document
-            .getElementById(
-                "centersPage"
-            )
-            .classList.remove(
-                "hidden"
-            );
-
-
-        currentCenter = null;
-
-        currentRobot = "";
-
-        renderCenters();
-
-    };
-
-
-/* =========================================================
-   دکمه‌ها
-========================================================= */
-
-document
-    .getElementById(
-        "newCenterBtn"
-    )
-    .onclick =
-    newCenter;
-
-
-document
-    .getElementById(
-        "saveBtn"
-    )
-    .onclick =
-    saveVisit;
-
-
-document
-    .getElementById(
-        "printBtn"
-    )
-    .onclick =
-    printReport;
-
-
-document
-    .getElementById(
-        "centerSearch"
-    )
-    .addEventListener(
-        "input",
-        renderCenters
-    );
-
-
-/* =========================================================
-   امنیت
-========================================================= */
-
-function escapeHTML(value) {
-
-    if (!value) {
-        return "";
+    .province-grid {
+        grid-template-columns:
+            repeat(3, 1fr);
     }
 
-    return String(value)
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    .centers-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
 
 }
 
 
-/* =========================================================
-   شروع
-========================================================= */
+@media (max-width: 650px) {
 
-renderProvinces();
+    .header {
+        padding: 15px;
+    }
+
+
+    .header h1 {
+        font-size: 19px;
+    }
+
+
+    .container {
+        padding: 12px;
+    }
+
+
+    .card {
+        padding: 16px;
+    }
+
+
+    .intro-card {
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+
+    .province-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 10px;
+    }
+
+
+    .province-card {
+        min-height: 105px;
+    }
+
+
+    .province-name {
+        font-size: 14px;
+    }
+
+
+    .centers-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .field.full {
+        grid-column: auto;
+    }
+
+
+    .robot-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .checklist {
+        grid-template-columns: 1fr;
+    }
+
+
+    .section-header {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+
+    .section-header .btn {
+        width: 100%;
+    }
+
+
+    .page-toolbar {
+        flex-direction: column;
+    }
+
+
+    .page-toolbar .btn {
+        width: 100%;
+    }
+
+
+    .action-card {
+        flex-direction: column;
+    }
+
+
+    .big-btn {
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .province-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .province-icon {
+        font-size: 25px;
+    }
+
+
+    .province-name {
+        font-size: 13px;
+    }
+
+}
