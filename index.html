@@ -12,10 +12,534 @@
 
 <title>مدیریت مراکز و ربات‌ها</title>
 
-<link
-    rel="stylesheet"
-    href="style.css"
->
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    direction: rtl;
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: #0d1117;
+    color: #ffffff;
+    font-family: Tahoma, Arial, sans-serif;
+}
+
+button,
+input,
+textarea {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================
+   هدر
+========================= */
+
+.header {
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+    padding: 22px 15px;
+    text-align: center;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 25px;
+}
+
+
+/* =========================
+   کانتینر
+========================= */
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 22px;
+}
+
+
+/* =========================
+   کارت عمومی
+========================= */
+
+.card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.card h2 {
+    margin-top: 0;
+}
+
+
+/* =========================
+   صفحه استان‌ها
+========================= */
+
+.province-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.province-header h2 {
+    margin: 0 0 8px;
+    font-size: 24px;
+}
+
+.province-header p {
+    margin: 0;
+    color: #8b949e;
+}
+
+
+/* =========================
+   لیست استان‌ها
+========================= */
+
+.provinces-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+
+/* =========================
+   کارت استان
+========================= */
+
+.province-card {
+    min-height: 145px;
+    border: 1px solid #30363d;
+    border-radius: 18px;
+    background: #161b22;
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease;
+}
+
+.province-card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff;
+    background: #1c2128;
+}
+
+.province-card:active {
+    transform: scale(0.97);
+}
+
+.province-icon {
+    font-size: 35px;
+}
+
+.province-name {
+    font-size: 17px;
+    font-weight: bold;
+}
+
+
+/* =========================
+   نوار بالای صفحات
+========================= */
+
+.page-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.page-toolbar h2 {
+    flex: 1;
+    margin: 0;
+}
+
+
+/* =========================
+   دکمه
+========================= */
+
+.btn {
+    border: none;
+    border-radius: 10px;
+    padding: 11px 18px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background: #238636;
+}
+
+.btn-blue {
+    background: #1f6feb;
+}
+
+.btn-gray {
+    background: #30363d;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+
+/* =========================
+   جستجو
+========================= */
+
+.search-input {
+    width: 100%;
+    padding: 13px 15px;
+    border-radius: 10px;
+    border: 1px solid #30363d;
+    background: #0d1117;
+    color: white;
+    font-size: 15px;
+    outline: none;
+}
+
+.search-input:focus {
+    border-color: #58a6ff;
+}
+
+
+/* =========================
+   مراکز
+========================= */
+
+.centers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.center-box {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 16px;
+    padding: 18px;
+
+    min-height: 200px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.center-box:hover {
+    border-color: #58a6ff;
+}
+
+.center-box-icon {
+    font-size: 34px;
+}
+
+.center-box h3 {
+    margin: 10px 0 8px;
+}
+
+.center-box p {
+    color: #8b949e;
+    flex: 1;
+}
+
+.center-open-btn {
+    width: 100%;
+}
+
+
+/* =========================
+   فرم
+========================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.field {
+    width: 100%;
+}
+
+.field.full {
+    grid-column: 1 / -1;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 7px;
+    color: #c9d1d9;
+    font-size: 14px;
+}
+
+.field input,
+.field textarea {
+    width: 100%;
+    padding: 12px 14px;
+
+    border: 1px solid #30363d;
+    border-radius: 10px;
+
+    background: #0d1117;
+    color: white;
+
+    outline: none;
+    font-size: 15px;
+}
+
+.field input:focus,
+.field textarea:focus {
+    border-color: #58a6ff;
+}
+
+textarea {
+    min-height: 130px;
+    resize: vertical;
+}
+
+
+/* =========================
+   ربات‌ها
+========================= */
+
+.robot-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.robot-card {
+    min-height: 130px;
+
+    border: 1px solid #30363d;
+    border-radius: 16px;
+
+    background: #0d1117;
+    color: white;
+
+    font-size: 27px;
+    font-weight: bold;
+}
+
+.robot-card:hover {
+    border-color: #58a6ff;
+    background: #1c2128;
+}
+
+.robot-card.selected {
+    border-color: #2ea043;
+    background: #122719;
+}
+
+
+/* =========================
+   چک لیست
+========================= */
+
+.checklist {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px;
+
+    border: 1px solid #30363d;
+    border-radius: 10px;
+
+    background: #0d1117;
+}
+
+.check-item input {
+    width: 18px;
+    height: 18px;
+}
+
+.check-item label {
+    cursor: pointer;
+}
+
+
+/* =========================
+   عملیات
+========================= */
+
+.action-card {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+
+/* =========================
+   سوابق
+========================= */
+
+.history-item {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 14px;
+}
+
+.history-item h3 {
+    color: #58a6ff;
+    margin-top: 0;
+}
+
+.history-item ul {
+    line-height: 2;
+    color: #c9d1d9;
+}
+
+.empty-message {
+    text-align: center;
+    padding: 35px;
+    color: #8b949e;
+}
+
+
+/* =========================
+   موبایل
+========================= */
+
+@media (max-width: 900px) {
+
+    .provinces-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .centers-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .robot-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .container {
+        padding: 12px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    .provinces-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .province-card {
+        min-height: 115px;
+    }
+
+    .province-icon {
+        font-size: 29px;
+    }
+
+    .province-name {
+        font-size: 15px;
+    }
+
+    .centers-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .field.full {
+        grid-column: auto;
+    }
+
+    .robot-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .checklist {
+        grid-template-columns: 1fr;
+    }
+
+    .page-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .page-toolbar h2 {
+        text-align: center;
+        order: -1;
+    }
+
+    .action-card {
+        flex-direction: column;
+    }
+
+    .action-card .btn {
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .provinces-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .province-card {
+        min-height: 105px;
+    }
+
+    .province-name {
+        font-size: 14px;
+    }
+
+}
+
+</style>
 
 </head>
 
@@ -36,39 +560,33 @@
 
 
 <!-- =====================================================
-     صفحه نقشه ایران
+     صفحه اول - استان‌ها
 ===================================================== -->
 
-<section id="mapPage">
+<section id="provinceListPage">
 
 
-    <div class="card intro-card">
+    <div class="card">
 
-        <h2>
-            🇮🇷 انتخاب استان
-        </h2>
+        <div class="province-header">
 
-        <p>
-            روی استان موردنظر در نقشه کلیک کنید.
-        </p>
+            <h2>
+                🇮🇷 انتخاب استان
+            </h2>
 
-    </div>
-
-
-    <section class="card map-card">
-
-        <div
-            id="iranMap"
-            class="iran-map"
-        >
-
-            <div class="map-loading">
-                در حال بارگذاری نقشه...
-            </div>
+            <p>
+                استان موردنظر را انتخاب کنید
+            </p>
 
         </div>
 
-    </section>
+
+        <div
+            id="provincesGrid"
+            class="provinces-grid"
+        ></div>
+
+    </div>
 
 
 </section>
@@ -87,58 +605,48 @@
 
     <div class="card page-toolbar">
 
-
         <button
             type="button"
-            id="backMapBtn"
+            id="backProvinceListBtn"
             class="btn btn-gray"
         >
-            ← نقشه ایران
+            ← استان‌ها
         </button>
-
 
         <h2 id="provinceTitle">
             مراکز استان
         </h2>
 
-
     </div>
 
 
-
     <section class="card">
-
 
         <h2>
             🔎 جستجوی مرکز
         </h2>
 
-
         <input
             type="search"
             id="provinceCenterSearch"
+            class="search-input"
             placeholder="نام مرکز را وارد کنید..."
             autocomplete="off"
         >
 
-
     </section>
 
 
-
-    <section class="card new-center-card">
-
+    <section class="card">
 
         <h2>
             ➕ ثبت مرکز جدید
         </h2>
 
-
         <p>
             برای ثبت اولین مراجعه یک مرکز جدید،
             روی دکمه زیر بزنید.
         </p>
-
 
         <button
             type="button"
@@ -148,24 +656,19 @@
             ➕ مرکز جدید
         </button>
 
-
     </section>
 
 
-
     <section class="card">
-
 
         <h2>
             🏥 مراکز این استان
         </h2>
 
-
         <div
             id="centersGrid"
             class="centers-grid"
         ></div>
-
 
         <div
             id="emptyCenters"
@@ -173,7 +676,6 @@
         >
             هنوز مرکزی برای این استان ثبت نشده است.
         </div>
-
 
     </section>
 
@@ -183,7 +685,7 @@
 
 
 <!-- =====================================================
-     صفحه اطلاعات مرکز
+     صفحه مرکز
 ===================================================== -->
 
 <section
@@ -194,7 +696,6 @@
 
     <div class="card page-toolbar">
 
-
         <button
             type="button"
             id="backProvinceBtn"
@@ -203,39 +704,33 @@
             ← بازگشت به مراکز
         </button>
 
-
         <h2 id="pageTitle">
-            ثبت اطلاعات مرکز
+            ثبت مرکز جدید
         </h2>
 
-
     </div>
-
 
 
     <!-- اطلاعات مرکز -->
 
     <section class="card">
 
-
         <h2>
             🏢 اطلاعات مرکز
         </h2>
-
 
         <div class="form-grid">
 
 
             <div class="field">
 
-                <label for="centerName">
+                <label>
                     نام مرکز
                 </label>
 
                 <input
                     type="text"
                     id="centerName"
-                    autocomplete="off"
                 >
 
             </div>
@@ -243,14 +738,13 @@
 
             <div class="field">
 
-                <label for="centerPhone">
+                <label>
                     شماره تماس
                 </label>
 
                 <input
                     type="tel"
                     id="centerPhone"
-                    autocomplete="off"
                 >
 
             </div>
@@ -258,14 +752,13 @@
 
             <div class="field full">
 
-                <label for="centerAddress">
+                <label>
                     آدرس
                 </label>
 
                 <input
                     type="text"
                     id="centerAddress"
-                    autocomplete="off"
                 >
 
             </div>
@@ -273,14 +766,13 @@
 
             <div class="field">
 
-                <label for="centerManager">
+                <label>
                     نام مسئول
                 </label>
 
                 <input
                     type="text"
                     id="centerManager"
-                    autocomplete="off"
                 >
 
             </div>
@@ -288,15 +780,14 @@
 
             <div class="field">
 
-                <label for="labelLink">
+                <label>
                     لینک فایل لیبل
                 </label>
 
                 <input
                     type="url"
                     id="labelLink"
-                    placeholder="https://github.com/..."
-                    autocomplete="off"
+                    placeholder="https://..."
                 >
 
             </div>
@@ -307,16 +798,13 @@
     </section>
 
 
-
-    <!-- انتخاب ربات -->
+    <!-- ربات -->
 
     <section class="card">
-
 
         <h2>
             🤖 انتخاب ربات
         </h2>
-
 
         <div class="robot-grid">
 
@@ -326,9 +814,7 @@
                 class="robot-card"
                 data-robot="4102"
             >
-                <span>
-                    4102
-                </span>
+                4102
             </button>
 
 
@@ -337,9 +823,7 @@
                 class="robot-card"
                 data-robot="4202"
             >
-                <span>
-                    4202
-                </span>
+                4202
             </button>
 
 
@@ -348,35 +832,29 @@
                 class="robot-card"
                 data-robot="Rimage"
             >
-                <span>
-                    Rimage
-                </span>
+                Rimage
             </button>
 
 
         </div>
 
-
     </section>
-
 
 
     <!-- اطلاعات ربات -->
 
     <section class="card">
 
-
         <h2>
             ⚙️ اطلاعات ربات
         </h2>
-
 
         <div class="form-grid">
 
 
             <div class="field">
 
-                <label for="robotModel">
+                <label>
                     مدل ربات
                 </label>
 
@@ -391,7 +869,7 @@
 
             <div class="field">
 
-                <label for="robotSerial">
+                <label>
                     Serial Number
                 </label>
 
@@ -405,7 +883,7 @@
 
             <div class="field">
 
-                <label for="robotIP">
+                <label>
                     IP Address
                 </label>
 
@@ -419,7 +897,7 @@
 
             <div class="field">
 
-                <label for="robotMAC">
+                <label>
                     MAC Address
                 </label>
 
@@ -433,71 +911,56 @@
 
         </div>
 
-
     </section>
-
 
 
     <!-- چک لیست -->
 
     <section class="card">
 
-
         <h2>
             ✅ کارهای ثابت
         </h2>
 
-
-        <p class="section-description">
+        <p>
             کارهای انجام‌شده را تیک بزنید.
         </p>
-
 
         <div
             id="checklist"
             class="checklist"
         ></div>
 
-
     </section>
-
 
 
     <!-- کار متفرقه -->
 
     <section class="card">
 
-
         <h2>
             📝 کارهای متفرقه
         </h2>
 
-
         <div class="field">
 
-
-            <label for="extraWork">
+            <label>
                 کارهایی که جزو موارد ثابت نبود
             </label>
 
-
             <textarea
                 id="extraWork"
-                placeholder="هر کار دیگری که انجام شد اینجا بنویسید..."
+                placeholder="هر کار دیگری که انجام شد..."
             ></textarea>
-
 
         </div>
 
-
     </section>
-
 
 
     <!-- عملیات -->
 
     <section class="card action-card">
-
 
         <button
             type="button"
@@ -516,26 +979,21 @@
             🖨️ گزارش کار / PDF
         </button>
 
-
     </section>
 
 
-
-    <!-- سوابق -->
+    <!-- تاریخچه -->
 
     <section class="card">
-
 
         <h2>
             📚 سوابق مراجعه
         </h2>
 
-
         <div
             id="history"
             class="history"
         ></div>
-
 
     </section>
 
@@ -550,4 +1008,4 @@
 
 </body>
 
-            </html>
+</html>
