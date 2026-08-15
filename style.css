@@ -152,10 +152,6 @@ button {
     background: #1c2128;
 }
 
-.province-card:first-child {
-    border-color: #58a6ff;
-}
-
 
 /* =========================
    Toolbar
@@ -242,6 +238,16 @@ select:focus {
 input[readonly] {
     background: #21262d;
     color: #8b949e;
+}
+
+
+/* =========================
+   تاریخ
+========================= */
+
+input[type="date"] {
+    min-height: 46px;
+    color-scheme: dark;
 }
 
 
@@ -419,4 +425,4 @@ input[readonly] {
         font-size: 20px;
     }
 
-    }
+}
