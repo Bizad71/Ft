@@ -12,10 +12,6 @@
 
 <body>
 
-<!-- =========================
-     ورود
-========================= -->
-
 <div id="loginPage" class="login-page">
 
     <div class="login-box">
@@ -43,74 +39,17 @@
 </div>
 
 
-<!-- =========================
-     برنامه
-========================= -->
-
 <div id="app" class="hidden">
 
 <header class="header">
     <h1>مدیریت مراکز و گزارش کار</h1>
 </header>
 
+
 <main class="container">
 
 
-<!-- =========================
-     جستجوی پیشرفته
-========================= -->
-
-<section class="card advanced-search-card">
-
-    <h2>🔎 جستجوی پیشرفته</h2>
-
-    <div class="advanced-search">
-
-        <select id="advancedSearchType">
-
-            <option value="center">
-                جستجو بر اساس نام مرکز
-            </option>
-
-            <option value="serial">
-                جستجو بر اساس شماره سریال
-            </option>
-
-        </select>
-
-        <input
-            type="search"
-            id="advancedSearchInput"
-            placeholder="نام مرکز را وارد کنید..."
-            autocomplete="off"
-        >
-
-        <button
-            type="button"
-            id="advancedSearchBtn"
-            class="btn btn-blue"
-        >
-            جستجو
-        </button>
-
-        <button
-            type="button"
-            id="clearAdvancedSearchBtn"
-            class="btn btn-gray"
-        >
-            پاک کردن
-        </button>
-
-    </div>
-
-    <div id="advancedSearchResults"></div>
-
-</section>
-
-
-<!-- =========================
-     استان‌ها
-========================= -->
+<!-- ================= استان‌ها ================= -->
 
 <section id="provincePage">
 
@@ -118,9 +57,7 @@
 
         <h2>🏥 انتخاب استان</h2>
 
-        <p>
-            استان موردنظر را انتخاب کنید.
-        </p>
+        <p>استان موردنظر را انتخاب کنید.</p>
 
     </div>
 
@@ -129,9 +66,7 @@
 </section>
 
 
-<!-- =========================
-     مراکز
-========================= -->
+<!-- ================= مراکز ================= -->
 
 <section id="centersPage" class="hidden">
 
@@ -151,16 +86,42 @@
     </div>
 
 
-    <div class="card">
+    <!-- جستجوی پیشرفته -->
 
-        <h2>🔎 جستجوی مرکز</h2>
+    <div class="card advanced-search">
 
-        <input
-            type="search"
-            id="centerSearch"
-            placeholder="نام مرکز..."
-            autocomplete="off"
-        >
+        <h2>🔎 جستجوی پیشرفته</h2>
+
+        <div class="search-row">
+
+            <select id="searchType">
+
+                <option value="center">
+                    جستجو بر اساس نام مرکز
+                </option>
+
+                <option value="serial">
+                    جستجو بر اساس شماره سریال ربات
+                </option>
+
+            </select>
+
+
+            <input
+                type="search"
+                id="advancedSearchInput"
+                placeholder="نام مرکز را وارد کنید..."
+                autocomplete="off"
+            >
+
+            <button
+                id="clearSearchBtn"
+                class="btn btn-gray"
+            >
+                پاک کردن
+            </button>
+
+        </div>
 
     </div>
 
@@ -181,9 +142,15 @@
 
         <h2>🏥 مراکز</h2>
 
-        <div id="centersGrid" class="centers-grid"></div>
+        <div
+            id="centersGrid"
+            class="centers-grid"
+        ></div>
 
-        <div id="emptyCenters" class="empty-message">
+        <div
+            id="emptyCenters"
+            class="empty-message"
+        >
             هنوز مرکزی ثبت نشده است.
         </div>
 
@@ -192,9 +159,7 @@
 </section>
 
 
-<!-- =========================
-     گزارش
-========================= -->
+<!-- ================= گزارش ================= -->
 
 <section id="reportPage" class="hidden">
 
@@ -224,14 +189,22 @@
 
             <div class="field">
 
-                <label>
-                    نام مرکز
-                </label>
+                <label>نام مرکز</label>
 
                 <input
                     type="text"
                     id="centerName"
-                    autocomplete="off"
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label>بخش</label>
+
+                <input
+                    type="text"
+                    id="sectionName"
                 >
 
             </div>
@@ -249,30 +222,16 @@
 
         <div class="form-grid">
 
-            <div class="field">
-
-                <label>
-                    بخش
-                </label>
-
-                <input
-                    type="text"
-                    id="sectionName"
-                >
-
-            </div>
-
 
             <div class="field">
 
-                <label>
-                    تاریخ مراجعه
-                </label>
+                <label>تاریخ مراجعه</label>
 
                 <input
                     type="text"
                     id="visitDate"
                     placeholder="1405/05/18"
+                    maxlength="10"
                     inputmode="numeric"
                 >
 
@@ -281,9 +240,7 @@
 
             <div class="field">
 
-                <label>
-                    مدل دستگاه
-                </label>
+                <label>مدل دستگاه</label>
 
                 <select id="deviceModel">
 
@@ -310,9 +267,7 @@
 
             <div class="field">
 
-                <label>
-                    شماره سریال
-                </label>
+                <label>شماره سریال</label>
 
                 <select id="serialNumber">
 
@@ -330,8 +285,8 @@
                 >
 
                 <button
-                    type="button"
                     id="newSerialBtn"
+                    type="button"
                     class="btn btn-small btn-gray"
                 >
                     + سریال جدید
@@ -342,9 +297,7 @@
 
             <div class="field">
 
-                <label>
-                    موضوع مشکل
-                </label>
+                <label>موضوع مشکل</label>
 
                 <input
                     type="text"
@@ -356,9 +309,7 @@
 
             <div class="field">
 
-                <label>
-                    گزارش شده توسط
-                </label>
+                <label>گزارش شده توسط</label>
 
                 <input
                     type="text"
@@ -370,14 +321,13 @@
 
             <div class="field">
 
-                <label>
-                    تاریخ اعلام مشکل
-                </label>
+                <label>تاریخ اعلام مشکل</label>
 
                 <input
                     type="text"
                     id="problemDate"
                     placeholder="1405/05/18"
+                    maxlength="10"
                     inputmode="numeric"
                 >
 
@@ -402,7 +352,7 @@
 
             <textarea
                 id="description"
-                placeholder="توضیحات و اقدامات انجام‌شده..."
+                placeholder="توضیحات و اقدامات انجام‌شده را وارد کنید..."
             ></textarea>
 
             <div class="fixed-text">
@@ -424,9 +374,7 @@
 
             <div class="field">
 
-                <label>
-                    نام کارشناس
-                </label>
+                <label>نام کارشناس</label>
 
                 <input
                     type="text"
@@ -439,14 +387,13 @@
 
             <div class="field">
 
-                <label>
-                    تاریخ
-                </label>
+                <label>تاریخ</label>
 
                 <input
                     type="text"
                     id="expertDate"
                     placeholder="1405/05/18"
+                    maxlength="10"
                     inputmode="numeric"
                 >
 
@@ -455,9 +402,7 @@
 
             <div class="field">
 
-                <label>
-                    ساعت ورود
-                </label>
+                <label>ساعت ورود</label>
 
                 <input
                     type="time"
@@ -469,9 +414,7 @@
 
             <div class="field">
 
-                <label>
-                    ساعت خروج
-                </label>
+                <label>ساعت خروج</label>
 
                 <input
                     type="time"
@@ -495,9 +438,7 @@
 
             <div class="field">
 
-                <label>
-                    نام تحویل گیرنده
-                </label>
+                <label>نام تحویل گیرنده</label>
 
                 <input
                     type="text"
@@ -509,9 +450,7 @@
 
             <div class="field">
 
-                <label>
-                    نام کارشناس
-                </label>
+                <label>نام کارشناس</label>
 
                 <input
                     type="text"
@@ -535,13 +474,6 @@
             class="btn btn-primary"
         >
             💾 ذخیره گزارش
-        </button>
-
-        <button
-            id="printReportBtn"
-            class="btn btn-blue"
-        >
-            🖨️ گزارش کار / PDF
         </button>
 
         <button
