@@ -2,13 +2,12 @@
     box-sizing: border-box;
 }
 
-html {
-    direction: rtl;
-}
-
+html,
 body {
     margin: 0;
+    padding: 0;
     font-family: Tahoma, Arial, sans-serif;
+    direction: rtl;
     background: #0d1117;
     color: #fff;
 }
@@ -28,13 +27,15 @@ button {
 }
 
 
-/* ================= ورود ================= */
+/* =========================
+   ورود
+========================= */
 
 .login-page {
     min-height: 100vh;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     padding: 20px;
 }
 
@@ -43,23 +44,13 @@ button {
     max-width: 400px;
     background: #161b22;
     border: 1px solid #30363d;
-    border-radius: 20px;
-    padding: 35px 25px;
+    border-radius: 18px;
+    padding: 30px;
     text-align: center;
-    box-shadow: 0 20px 60px rgba(0,0,0,.35);
-}
-
-.login-icon {
-    font-size: 55px;
-    margin-bottom: 10px;
 }
 
 .login-box h1 {
-    margin: 10px 0;
-}
-
-.login-box p {
-    color: #8b949e;
+    margin-top: 0;
     margin-bottom: 25px;
 }
 
@@ -67,103 +58,90 @@ button {
     margin-bottom: 12px;
 }
 
-.login-box .btn {
-    width: 100%;
-}
-
-.login-message {
-    margin-top: 15px;
-    min-height: 22px;
+#loginMessage {
     color: #ff7b72;
+    min-height: 24px;
 }
 
 
-/* ================= عمومی ================= */
+/* =========================
+   هدر
+========================= */
 
 .header {
-    position: relative;
-    padding: 22px;
     background: #161b22;
     border-bottom: 1px solid #30363d;
+    padding: 22px;
     text-align: center;
 }
 
 .header h1 {
     margin: 0;
-    font-size: 25px;
+    font-size: 24px;
 }
 
-.logout-btn {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    border: 1px solid #30363d;
-    background: #21262d;
-    color: #fff;
-    border-radius: 9px;
-    padding: 9px 15px;
-}
+
+/* =========================
+   کانتینر
+========================= */
 
 .container {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1100px;
     margin: auto;
-    padding: 25px;
+    padding: 20px;
 }
+
+
+/* =========================
+   کارت
+========================= */
 
 .card {
     background: #161b22;
     border: 1px solid #30363d;
     border-radius: 16px;
     padding: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 .card h2 {
     margin-top: 0;
 }
 
-.card p {
-    color: #8b949e;
-}
 
-
-/* ================= استان‌ها ================= */
-
-.intro-card {
-    text-align: center;
-}
+/* =========================
+   استان‌ها
+========================= */
 
 .province-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
+    gap: 14px;
 }
 
 .province-card {
-    min-height: 110px;
-    background: #161b22;
+    min-height: 85px;
+    background: #0d1117;
     border: 1px solid #30363d;
-    border-radius: 16px;
-    color: #fff;
+    border-radius: 14px;
+    color: white;
     font-size: 17px;
     font-weight: bold;
+    padding: 15px;
     transition: .2s;
 }
 
 .province-card:hover {
-    transform: translateY(-4px);
     border-color: #58a6ff;
-    background: #1c2128;
-}
-
-.province-card:first-child {
-    border-color: #58a6ff;
+    transform: translateY(-2px);
+    background: #111820;
 }
 
 
-/* ================= نوار صفحه ================= */
+/* =========================
+   نوار
+========================= */
 
 .page-toolbar {
     display: flex;
@@ -172,46 +150,19 @@ button {
 }
 
 .page-toolbar h2 {
-    flex: 1;
     margin: 0;
+    flex: 1;
 }
 
 
-/* ================= بخش ================= */
-
-.section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-}
-
-.section-title {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.section-title > span {
-    font-size: 28px;
-}
-
-.section-title h2 {
-    margin: 0 0 5px;
-}
-
-.section-title small {
-    color: #8b949e;
-}
-
-
-/* ================= فرم ================= */
+/* =========================
+   فرم
+========================= */
 
 .form-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
+    gap: 16px;
 }
 
 .field {
@@ -220,8 +171,8 @@ button {
 
 .field label {
     display: block;
+    margin-bottom: 7px;
     color: #c9d1d9;
-    margin-bottom: 8px;
 }
 
 input,
@@ -231,7 +182,7 @@ textarea {
     background: #0d1117;
     border: 1px solid #30363d;
     border-radius: 10px;
-    color: #fff;
+    color: white;
     font-size: 15px;
     outline: none;
 }
@@ -242,110 +193,41 @@ textarea:focus {
 }
 
 textarea {
-    min-height: 120px;
+    min-height: 130px;
     resize: vertical;
 }
 
 
-/* ================= مراکز ================= */
-
-.centers-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-}
-
-.center-box {
-    background: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 16px;
-    padding: 20px;
-}
-
-.center-box:hover {
-    border-color: #58a6ff;
-}
-
-.center-icon {
-    font-size: 35px;
-}
-
-.center-box h3 {
-    margin: 12px 0 8px;
-}
-
-.center-box p {
-    color: #8b949e;
-}
-
-.center-box .btn {
-    width: 100%;
-}
-
-.empty-message {
-    text-align: center;
-    padding: 40px;
-    color: #8b949e;
-}
-
-
-/* ================= ربات ================= */
+/* =========================
+   ربات
+========================= */
 
 .robot-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
-    margin-bottom: 20px;
 }
 
 .robot-card {
-    min-height: 120px;
+    min-height: 110px;
     background: #0d1117;
+    color: white;
     border: 1px solid #30363d;
     border-radius: 15px;
-    color: #fff;
-    font-size: 28px;
+    font-size: 25px;
     font-weight: bold;
 }
 
 .robot-card:hover,
 .robot-card.selected {
     border-color: #58a6ff;
-    background: #1c2128;
+    background: #1f6feb;
 }
 
 
-/* ================= لیبل ================= */
-
-.label-section {
-    margin-top: 20px;
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    background: #0d1117;
-    border: 1px solid #30363d;
-    border-radius: 12px;
-}
-
-.label-icon {
-    font-size: 30px;
-}
-
-.label-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.label-info span {
-    color: #8b949e;
-    font-size: 13px;
-}
-
-
-/* ================= چک لیست ================= */
+/* =========================
+   چک لیست
+========================= */
 
 .checklist {
     display: grid;
@@ -357,16 +239,16 @@ textarea {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 13px;
     background: #0d1117;
     border: 1px solid #30363d;
     border-radius: 10px;
+    padding: 13px;
 }
 
 .check-item input {
     width: 19px;
     height: 19px;
-    accent-color: #2ea043;
+    margin: 0;
 }
 
 .check-item label {
@@ -374,15 +256,72 @@ textarea {
 }
 
 
-/* ================= دکمه ================= */
+/* =========================
+   مراکز
+========================= */
+
+.centers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.center-box {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 15px;
+    padding: 18px;
+}
+
+.center-box h3 {
+    margin-top: 0;
+}
+
+.center-box p {
+    color: #8b949e;
+}
+
+.empty-message {
+    text-align: center;
+    padding: 30px;
+    color: #8b949e;
+}
+
+.full-btn {
+    width: 100%;
+}
+
+
+/* =========================
+   لیبل
+========================= */
+
+.label-box {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.label-box a {
+    color: #58a6ff;
+    word-break: break-all;
+}
+
+.info-text {
+    color: #8b949e;
+}
+
+
+/* =========================
+   دکمه
+========================= */
 
 .btn {
     border: none;
     border-radius: 10px;
     padding: 12px 18px;
-    color: #fff;
+    color: white;
     font-weight: bold;
-    font-size: 14px;
 }
 
 .btn-primary {
@@ -397,79 +336,114 @@ textarea {
     background: #30363d;
 }
 
-.btn:hover {
-    opacity: .88;
-}
-
 .action-card {
     display: flex;
     gap: 10px;
-    flex-wrap: wrap;
 }
 
 
-/* ================= تاریخچه ================= */
+/* =========================
+   سوابق
+========================= */
 
 .history-item {
     background: #0d1117;
     border: 1px solid #30363d;
-    border-radius: 14px;
-    padding: 18px;
+    border-radius: 13px;
+    padding: 17px;
     margin-bottom: 12px;
 }
 
 .history-item h3 {
-    margin-top: 0;
     color: #58a6ff;
+    margin-top: 0;
 }
 
 .history-item ul {
     line-height: 2;
-    color: #c9d1d9;
 }
 
 
-/* ================= موبایل ================= */
+/* =========================
+   موبایل
+========================= */
 
-@media (max-width: 900px) {
-
-    .province-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-    .centers-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-}
-
-@media (max-width: 650px) {
+@media (max-width: 700px) {
 
     .container {
-        padding: 12px;
+        padding: 10px;
+    }
+
+    .card {
+        padding: 14px;
+        border-radius: 13px;
+    }
+
+    .header {
+        padding: 17px 10px;
     }
 
     .header h1 {
         font-size: 20px;
-        padding: 0 60px;
     }
 
-    .logout-btn {
-        left: 10px;
-        padding: 7px 10px;
+    /*
+       استان‌ها روی موبایل
+    */
+
+    .province-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
     }
 
-    .province-grid,
-    .centers-grid,
-    .robot-grid,
-    .checklist,
+    .province-card {
+        min-height: 70px;
+        font-size: 15px;
+        padding: 10px 5px;
+        width: 100%;
+    }
+
+    /*
+       فرم
+    */
+
     .form-grid {
         grid-template-columns: 1fr;
     }
 
-    .page-toolbar,
-    .section-header,
-    .label-section {
+    /*
+       ربات
+    */
+
+    .robot-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .robot-card {
+        min-height: 90px;
+    }
+
+    /*
+       چک لیست
+    */
+
+    .checklist {
+        grid-template-columns: 1fr;
+    }
+
+    /*
+       مراکز
+    */
+
+    .centers-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /*
+       نوار بالا
+    */
+
+    .page-toolbar {
         flex-direction: column;
         align-items: stretch;
     }
@@ -479,8 +453,15 @@ textarea {
         order: -1;
     }
 
+    /*
+       دکمه‌ها
+    */
+
+    .action-card {
+        flex-direction: column;
+    }
+
     .action-card .btn {
         width: 100%;
     }
-
 }
