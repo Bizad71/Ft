@@ -32,11 +32,7 @@
             autocomplete="off"
         >
 
-        <button
-            id="loginBtn"
-            class="btn btn-primary"
-            type="button"
-        >
+        <button id="loginBtn" class="btn btn-primary">
             ورود
         </button>
 
@@ -56,7 +52,6 @@
 <header class="header">
     <h1>مدیریت مراکز و گزارش کار</h1>
 </header>
-
 
 <main class="container">
 
@@ -83,7 +78,6 @@
 
         </select>
 
-
         <input
             type="search"
             id="advancedSearchInput"
@@ -91,30 +85,25 @@
             autocomplete="off"
         >
 
-
         <button
+            type="button"
             id="advancedSearchBtn"
             class="btn btn-blue"
-            type="button"
         >
             جستجو
         </button>
 
-
         <button
+            type="button"
             id="clearAdvancedSearchBtn"
             class="btn btn-gray"
-            type="button"
         >
             پاک کردن
         </button>
 
     </div>
 
-    <div
-        id="advancedSearchResults"
-        class="advanced-search-results"
-    ></div>
+    <div id="advancedSearchResults"></div>
 
 </section>
 
@@ -135,10 +124,7 @@
 
     </div>
 
-    <div
-        id="provinceGrid"
-        class="province-grid"
-    ></div>
+    <div id="provinceGrid" class="province-grid"></div>
 
 </section>
 
@@ -147,17 +133,13 @@
      مراکز
 ========================= -->
 
-<section
-    id="centersPage"
-    class="hidden"
->
+<section id="centersPage" class="hidden">
 
     <div class="card page-toolbar">
 
         <button
             id="backProvinceBtn"
             class="btn btn-gray"
-            type="button"
         >
             ← استان‌ها
         </button>
@@ -188,7 +170,6 @@
         <button
             id="newCenterBtn"
             class="btn btn-primary"
-            type="button"
         >
             ➕ مرکز جدید
         </button>
@@ -200,15 +181,9 @@
 
         <h2>🏥 مراکز</h2>
 
-        <div
-            id="centersGrid"
-            class="centers-grid"
-        ></div>
+        <div id="centersGrid" class="centers-grid"></div>
 
-        <div
-            id="emptyCenters"
-            class="empty-message"
-        >
+        <div id="emptyCenters" class="empty-message">
             هنوز مرکزی ثبت نشده است.
         </div>
 
@@ -221,17 +196,13 @@
      گزارش
 ========================= -->
 
-<section
-    id="reportPage"
-    class="hidden"
->
+<section id="reportPage" class="hidden">
 
     <div class="card page-toolbar">
 
         <button
             id="backCentersBtn"
             class="btn btn-gray"
-            type="button"
         >
             ← مراکز
         </button>
@@ -253,22 +224,7 @@
 
             <div class="field">
 
-                <label for="provinceName">
-                    استان
-                </label>
-
-                <input
-                    type="text"
-                    id="provinceName"
-                    readonly
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label for="centerName">
+                <label>
                     نام مرکز
                 </label>
 
@@ -295,14 +251,13 @@
 
             <div class="field">
 
-                <label for="sectionName">
+                <label>
                     بخش
                 </label>
 
                 <input
                     type="text"
                     id="sectionName"
-                    autocomplete="off"
                 >
 
             </div>
@@ -310,7 +265,7 @@
 
             <div class="field">
 
-                <label for="visitDate">
+                <label>
                     تاریخ مراجعه
                 </label>
 
@@ -319,7 +274,6 @@
                     id="visitDate"
                     placeholder="1405/05/18"
                     inputmode="numeric"
-                    autocomplete="off"
                 >
 
             </div>
@@ -327,7 +281,7 @@
 
             <div class="field">
 
-                <label for="deviceModel">
+                <label>
                     مدل دستگاه
                 </label>
 
@@ -356,7 +310,7 @@
 
             <div class="field">
 
-                <label for="serialNumber">
+                <label>
                     شماره سریال
                 </label>
 
@@ -373,7 +327,6 @@
                     id="newSerialNumber"
                     class="serial-new-input hidden"
                     placeholder="شماره سریال جدید"
-                    autocomplete="off"
                 >
 
                 <button
@@ -389,14 +342,13 @@
 
             <div class="field">
 
-                <label for="problemSubject">
+                <label>
                     موضوع مشکل
                 </label>
 
                 <input
                     type="text"
                     id="problemSubject"
-                    autocomplete="off"
                 >
 
             </div>
@@ -404,14 +356,13 @@
 
             <div class="field">
 
-                <label for="reportedBy">
+                <label>
                     گزارش شده توسط
                 </label>
 
                 <input
                     type="text"
                     id="reportedBy"
-                    autocomplete="off"
                 >
 
             </div>
@@ -419,7 +370,7 @@
 
             <div class="field">
 
-                <label for="problemDate">
+                <label>
                     تاریخ اعلام مشکل
                 </label>
 
@@ -428,7 +379,6 @@
                     id="problemDate"
                     placeholder="1405/05/18"
                     inputmode="numeric"
-                    autocomplete="off"
                 >
 
             </div>
@@ -452,7 +402,7 @@
 
             <textarea
                 id="description"
-                placeholder="توضیحات و اقدامات انجام‌شده را وارد کنید..."
+                placeholder="توضیحات و اقدامات انجام‌شده..."
             ></textarea>
 
             <div class="fixed-text">
@@ -474,7 +424,7 @@
 
             <div class="field">
 
-                <label for="expertName">
+                <label>
                     نام کارشناس
                 </label>
 
@@ -489,7 +439,7 @@
 
             <div class="field">
 
-                <label for="expertDate">
+                <label>
                     تاریخ
                 </label>
 
@@ -505,7 +455,7 @@
 
             <div class="field">
 
-                <label for="entryTime">
+                <label>
                     ساعت ورود
                 </label>
 
@@ -519,7 +469,7 @@
 
             <div class="field">
 
-                <label for="exitTime">
+                <label>
                     ساعت خروج
                 </label>
 
@@ -545,7 +495,7 @@
 
             <div class="field">
 
-                <label for="receiverName">
+                <label>
                     نام تحویل گیرنده
                 </label>
 
@@ -559,7 +509,7 @@
 
             <div class="field">
 
-                <label for="signatureExpertName">
+                <label>
                     نام کارشناس
                 </label>
 
@@ -583,33 +533,22 @@
         <button
             id="saveVisitBtn"
             class="btn btn-primary"
-            type="button"
         >
             💾 ذخیره گزارش
         </button>
 
         <button
-            id="updateVisitBtn"
-            class="btn btn-primary hidden"
-            type="button"
+            id="printReportBtn"
+            class="btn btn-blue"
         >
-            💾 ذخیره ویرایش
+            🖨️ گزارش کار / PDF
         </button>
 
         <button
             id="cancelEditBtn"
             class="btn btn-gray hidden"
-            type="button"
         >
-            انصراف از ویرایش
-        </button>
-
-        <button
-            id="printReportBtn"
-            class="btn btn-blue"
-            type="button"
-        >
-            🖨️ گزارش کار / PDF
+            لغو ویرایش
         </button>
 
     </section>
