@@ -24,19 +24,12 @@ button {
     cursor: pointer;
 }
 
-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
 .hidden {
     display: none !important;
 }
 
 
-/* =========================
-   ورود
-========================= */
+/* ================= ورود ================= */
 
 .login-page {
     min-height: 100vh;
@@ -79,9 +72,7 @@ button:disabled {
 }
 
 
-/* =========================
-   Header
-========================= */
+/* ================= Header ================= */
 
 .header {
     background: #161b22;
@@ -96,9 +87,7 @@ button:disabled {
 }
 
 
-/* =========================
-   Container
-========================= */
+/* ================= Container ================= */
 
 .container {
     width: 100%;
@@ -108,9 +97,7 @@ button:disabled {
 }
 
 
-/* =========================
-   Card
-========================= */
+/* ================= Card ================= */
 
 .card {
     background: #161b22;
@@ -129,9 +116,7 @@ button:disabled {
 }
 
 
-/* =========================
-   استان‌ها
-========================= */
+/* ================= استان ================= */
 
 .province-grid {
     display: grid;
@@ -145,10 +130,10 @@ button:disabled {
     border: 1px solid #30363d;
     border-radius: 15px;
     background: #161b22;
-    color: #ffffff;
+    color: #fff;
     font-size: 17px;
     font-weight: bold;
-    transition: 0.2s;
+    transition: .2s;
 }
 
 .province-card:hover {
@@ -158,9 +143,7 @@ button:disabled {
 }
 
 
-/* =========================
-   Toolbar
-========================= */
+/* ================= Toolbar ================= */
 
 .page-toolbar {
     display: flex;
@@ -174,9 +157,21 @@ button:disabled {
 }
 
 
-/* =========================
-   مراکز
-========================= */
+/* ================= جستجو ================= */
+
+.search-row {
+    display: grid;
+    grid-template-columns: 260px 1fr auto;
+    gap: 10px;
+}
+
+.search-row select,
+.search-row input {
+    min-height: 46px;
+}
+
+
+/* ================= مراکز ================= */
 
 .centers-grid {
     display: grid;
@@ -205,9 +200,7 @@ button:disabled {
 }
 
 
-/* =========================
-   فرم
-========================= */
+/* ================= فرم ================= */
 
 .form-grid {
     display: grid;
@@ -230,7 +223,7 @@ select {
     border-radius: 10px;
     border: 1px solid #30363d;
     background: #0d1117;
-    color: #ffffff;
+    color: #fff;
     outline: none;
     font-size: 15px;
 }
@@ -246,17 +239,8 @@ input[readonly] {
     color: #8b949e;
 }
 
-.date-help {
-    display: block;
-    margin-top: 6px;
-    color: #8b949e;
-    font-size: 12px;
-}
 
-
-/* =========================
-   توضیحات
-========================= */
+/* ================= توضیحات ================= */
 
 .description-box {
     border: 1px solid #30363d;
@@ -282,9 +266,7 @@ input[readonly] {
 }
 
 
-/* =========================
-   سریال
-========================= */
+/* ================= سریال ================= */
 
 .serial-new-input {
     margin-top: 10px;
@@ -297,15 +279,13 @@ input[readonly] {
 }
 
 
-/* =========================
-   دکمه‌ها
-========================= */
+/* ================= دکمه ================= */
 
 .btn {
     border: none;
     border-radius: 10px;
     padding: 11px 18px;
-    color: #ffffff;
+    color: #fff;
     font-weight: bold;
     font-size: 14px;
 }
@@ -326,14 +306,13 @@ input[readonly] {
     background: #da3633;
 }
 
-.btn:hover {
-    opacity: 0.9;
+.btn-warning {
+    background: #9e6a03;
 }
 
-
-/* =========================
-   عملیات
-========================= */
+.btn:hover {
+    opacity: .9;
+}
 
 .action-card {
     display: flex;
@@ -342,13 +321,11 @@ input[readonly] {
 }
 
 
-/* =========================
-   سوابق
-========================= */
+/* ================= سوابق ================= */
 
 .history-item {
     padding: 18px;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
     background: #0d1117;
     border: 1px solid #30363d;
     border-radius: 13px;
@@ -361,23 +338,19 @@ input[readonly] {
 
 .history-item p {
     color: #c9d1d9;
-    margin: 7px 0;
+    line-height: 1.8;
 }
 
 .history-actions {
     display: flex;
     gap: 8px;
-    margin-top: 15px;
     flex-wrap: wrap;
+    margin-top: 15px;
 }
 
 .history-actions .btn {
     flex: 1;
-    min-width: 150px;
-}
-
-.history-more {
-    margin-top: 5px;
+    min-width: 100px;
 }
 
 .empty-message {
@@ -387,9 +360,7 @@ input[readonly] {
 }
 
 
-/* =========================
-   موبایل
-========================= */
+/* ================= موبایل ================= */
 
 @media (max-width: 800px) {
 
@@ -401,6 +372,9 @@ input[readonly] {
         grid-template-columns: repeat(2, 1fr);
     }
 
+    .search-row {
+        grid-template-columns: 1fr;
+    }
 }
 
 
@@ -461,5 +435,4 @@ input[readonly] {
     .header h1 {
         font-size: 20px;
     }
-
 }
