@@ -2,1010 +2,500 @@
 <html lang="fa" dir="rtl">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+    <title>مدیریت مراکز و ربات‌ها</title>
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>مدیریت مراکز و ربات‌ها</title>
-
-<style>
-
-* {
-    box-sizing: border-box;
-}
-
-html {
-    direction: rtl;
-    scroll-behavior: smooth;
-}
-
-body {
-    margin: 0;
-    background: #0d1117;
-    color: #ffffff;
-    font-family: Tahoma, Arial, sans-serif;
-}
-
-button,
-input,
-textarea {
-    font-family: inherit;
-}
-
-button {
-    cursor: pointer;
-}
-
-.hidden {
-    display: none !important;
-}
-
-
-/* =========================
-   هدر
-========================= */
-
-.header {
-    background: #161b22;
-    border-bottom: 1px solid #30363d;
-    padding: 22px 15px;
-    text-align: center;
-}
-
-.header h1 {
-    margin: 0;
-    font-size: 25px;
-}
-
-
-/* =========================
-   کانتینر
-========================= */
-
-.container {
-    width: 100%;
-    max-width: 1200px;
-    margin: auto;
-    padding: 22px;
-}
-
-
-/* =========================
-   کارت عمومی
-========================= */
-
-.card {
-    background: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 20px;
-}
-
-.card h2 {
-    margin-top: 0;
-}
-
-
-/* =========================
-   صفحه استان‌ها
-========================= */
-
-.province-header {
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.province-header h2 {
-    margin: 0 0 8px;
-    font-size: 24px;
-}
-
-.province-header p {
-    margin: 0;
-    color: #8b949e;
-}
-
-
-/* =========================
-   لیست استان‌ها
-========================= */
-
-.provinces-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-}
-
-
-/* =========================
-   کارت استان
-========================= */
-
-.province-card {
-    min-height: 145px;
-    border: 1px solid #30363d;
-    border-radius: 18px;
-    background: #161b22;
-    color: white;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    gap: 10px;
-
-    transition:
-        transform 0.18s ease,
-        border-color 0.18s ease,
-        background 0.18s ease;
-}
-
-.province-card:hover {
-    transform: translateY(-4px);
-    border-color: #58a6ff;
-    background: #1c2128;
-}
-
-.province-card:active {
-    transform: scale(0.97);
-}
-
-.province-icon {
-    font-size: 35px;
-}
-
-.province-name {
-    font-size: 17px;
-    font-weight: bold;
-}
-
-
-/* =========================
-   نوار بالای صفحات
-========================= */
-
-.page-toolbar {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.page-toolbar h2 {
-    flex: 1;
-    margin: 0;
-}
-
-
-/* =========================
-   دکمه
-========================= */
-
-.btn {
-    border: none;
-    border-radius: 10px;
-    padding: 11px 18px;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.btn-primary {
-    background: #238636;
-}
-
-.btn-blue {
-    background: #1f6feb;
-}
-
-.btn-gray {
-    background: #30363d;
-}
-
-.btn:hover {
-    opacity: 0.9;
-}
-
-
-/* =========================
-   جستجو
-========================= */
-
-.search-input {
-    width: 100%;
-    padding: 13px 15px;
-    border-radius: 10px;
-    border: 1px solid #30363d;
-    background: #0d1117;
-    color: white;
-    font-size: 15px;
-    outline: none;
-}
-
-.search-input:focus {
-    border-color: #58a6ff;
-}
-
-
-/* =========================
-   مراکز
-========================= */
-
-.centers-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-}
-
-.center-box {
-    background: #0d1117;
-    border: 1px solid #30363d;
-    border-radius: 16px;
-    padding: 18px;
-
-    min-height: 200px;
-
-    display: flex;
-    flex-direction: column;
-}
-
-.center-box:hover {
-    border-color: #58a6ff;
-}
-
-.center-box-icon {
-    font-size: 34px;
-}
-
-.center-box h3 {
-    margin: 10px 0 8px;
-}
-
-.center-box p {
-    color: #8b949e;
-    flex: 1;
-}
-
-.center-open-btn {
-    width: 100%;
-}
-
-
-/* =========================
-   فرم
-========================= */
-
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-}
-
-.field {
-    width: 100%;
-}
-
-.field.full {
-    grid-column: 1 / -1;
-}
-
-.field label {
-    display: block;
-    margin-bottom: 7px;
-    color: #c9d1d9;
-    font-size: 14px;
-}
-
-.field input,
-.field textarea {
-    width: 100%;
-    padding: 12px 14px;
-
-    border: 1px solid #30363d;
-    border-radius: 10px;
-
-    background: #0d1117;
-    color: white;
-
-    outline: none;
-    font-size: 15px;
-}
-
-.field input:focus,
-.field textarea:focus {
-    border-color: #58a6ff;
-}
-
-textarea {
-    min-height: 130px;
-    resize: vertical;
-}
-
-
-/* =========================
-   ربات‌ها
-========================= */
-
-.robot-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-}
-
-.robot-card {
-    min-height: 130px;
-
-    border: 1px solid #30363d;
-    border-radius: 16px;
-
-    background: #0d1117;
-    color: white;
-
-    font-size: 27px;
-    font-weight: bold;
-}
-
-.robot-card:hover {
-    border-color: #58a6ff;
-    background: #1c2128;
-}
-
-.robot-card.selected {
-    border-color: #2ea043;
-    background: #122719;
-}
-
-
-/* =========================
-   چک لیست
-========================= */
-
-.checklist {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-}
-
-.check-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    padding: 12px;
-
-    border: 1px solid #30363d;
-    border-radius: 10px;
-
-    background: #0d1117;
-}
-
-.check-item input {
-    width: 18px;
-    height: 18px;
-}
-
-.check-item label {
-    cursor: pointer;
-}
-
-
-/* =========================
-   عملیات
-========================= */
-
-.action-card {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-
-/* =========================
-   سوابق
-========================= */
-
-.history-item {
-    background: #0d1117;
-    border: 1px solid #30363d;
-    border-radius: 14px;
-    padding: 18px;
-    margin-bottom: 14px;
-}
-
-.history-item h3 {
-    color: #58a6ff;
-    margin-top: 0;
-}
-
-.history-item ul {
-    line-height: 2;
-    color: #c9d1d9;
-}
-
-.empty-message {
-    text-align: center;
-    padding: 35px;
-    color: #8b949e;
-}
-
-
-/* =========================
-   موبایل
-========================= */
-
-@media (max-width: 900px) {
-
-    .provinces-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-    .centers-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .robot-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-}
-
-
-@media (max-width: 650px) {
-
-    .container {
-        padding: 12px;
-    }
-
-    .card {
-        padding: 15px;
-    }
-
-    .provinces-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-    }
-
-    .province-card {
-        min-height: 115px;
-    }
-
-    .province-icon {
-        font-size: 29px;
-    }
-
-    .province-name {
-        font-size: 15px;
-    }
-
-    .centers-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .field.full {
-        grid-column: auto;
-    }
-
-    .robot-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .checklist {
-        grid-template-columns: 1fr;
-    }
-
-    .page-toolbar {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .page-toolbar h2 {
-        text-align: center;
-        order: -1;
-    }
-
-    .action-card {
-        flex-direction: column;
-    }
-
-    .action-card .btn {
-        width: 100%;
-    }
-
-}
-
-
-@media (max-width: 400px) {
-
-    .provinces-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .province-card {
-        min-height: 105px;
-    }
-
-    .province-name {
-        font-size: 14px;
-    }
-
-}
-
-</style>
-
+    <link rel="stylesheet" href="style.css">
 </head>
-
 
 <body>
 
-
 <header class="header">
-
-    <h1>
-        مدیریت مراکز و ربات‌ها
-    </h1>
-
+    <h1>مدیریت مراکز و ربات‌ها</h1>
 </header>
-
 
 <main class="container">
 
+    <!-- =========================
+         صفحه استان‌ها
+    ========================== -->
 
-<!-- =====================================================
-     صفحه اول - استان‌ها
-===================================================== -->
+    <section id="provincePage">
 
-<section id="provinceListPage">
+        <div class="card intro-card">
 
-
-    <div class="card">
-
-        <div class="province-header">
-
-            <h2>
-                🇮🇷 انتخاب استان
-            </h2>
+            <h2>🇮🇷 انتخاب استان</h2>
 
             <p>
-                استان موردنظر را انتخاب کنید
+                استان موردنظر را انتخاب کنید.
             </p>
 
         </div>
 
+        <section class="card">
 
-        <div
-            id="provincesGrid"
-            class="provinces-grid"
-        ></div>
+            <div
+                id="provincesGrid"
+                class="provinces-grid"
+            ></div>
 
-    </div>
-
-
-</section>
-
-
-
-<!-- =====================================================
-     صفحه مراکز استان
-===================================================== -->
-
-<section
-    id="provincePage"
-    class="hidden"
->
-
-
-    <div class="card page-toolbar">
-
-        <button
-            type="button"
-            id="backProvinceListBtn"
-            class="btn btn-gray"
-        >
-            ← استان‌ها
-        </button>
-
-        <h2 id="provinceTitle">
-            مراکز استان
-        </h2>
-
-    </div>
-
-
-    <section class="card">
-
-        <h2>
-            🔎 جستجوی مرکز
-        </h2>
-
-        <input
-            type="search"
-            id="provinceCenterSearch"
-            class="search-input"
-            placeholder="نام مرکز را وارد کنید..."
-            autocomplete="off"
-        >
+        </section>
 
     </section>
 
 
-    <section class="card">
+    <!-- =========================
+         صفحه مراکز
+    ========================== -->
 
-        <h2>
-            ➕ ثبت مرکز جدید
-        </h2>
+    <section
+        id="centersPage"
+        class="hidden"
+    >
 
-        <p>
-            برای ثبت اولین مراجعه یک مرکز جدید،
-            روی دکمه زیر بزنید.
-        </p>
+        <div class="card page-toolbar">
 
-        <button
-            type="button"
-            id="newCenterBtn"
-            class="btn btn-primary"
-        >
-            ➕ مرکز جدید
-        </button>
+            <button
+                id="backProvinceBtn"
+                class="btn btn-gray"
+                type="button"
+            >
+                ← استان‌ها
+            </button>
 
-    </section>
-
-
-    <section class="card">
-
-        <h2>
-            🏥 مراکز این استان
-        </h2>
-
-        <div
-            id="centersGrid"
-            class="centers-grid"
-        ></div>
-
-        <div
-            id="emptyCenters"
-            class="empty-message"
-        >
-            هنوز مرکزی برای این استان ثبت نشده است.
-        </div>
-
-    </section>
-
-
-</section>
-
-
-
-<!-- =====================================================
-     صفحه مرکز
-===================================================== -->
-
-<section
-    id="centerPage"
-    class="hidden"
->
-
-
-    <div class="card page-toolbar">
-
-        <button
-            type="button"
-            id="backProvinceBtn"
-            class="btn btn-gray"
-        >
-            ← بازگشت به مراکز
-        </button>
-
-        <h2 id="pageTitle">
-            ثبت مرکز جدید
-        </h2>
-
-    </div>
-
-
-    <!-- اطلاعات مرکز -->
-
-    <section class="card">
-
-        <h2>
-            🏢 اطلاعات مرکز
-        </h2>
-
-        <div class="form-grid">
-
-
-            <div class="field">
-
-                <label>
-                    نام مرکز
-                </label>
-
-                <input
-                    type="text"
-                    id="centerName"
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    شماره تماس
-                </label>
-
-                <input
-                    type="tel"
-                    id="centerPhone"
-                >
-
-            </div>
-
-
-            <div class="field full">
-
-                <label>
-                    آدرس
-                </label>
-
-                <input
-                    type="text"
-                    id="centerAddress"
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    نام مسئول
-                </label>
-
-                <input
-                    type="text"
-                    id="centerManager"
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    لینک فایل لیبل
-                </label>
-
-                <input
-                    type="url"
-                    id="labelLink"
-                    placeholder="https://..."
-                >
-
-            </div>
-
+            <h2 id="provinceTitle">
+                مراکز استان
+            </h2>
 
         </div>
 
+
+        <section class="card">
+
+            <h2>🔎 جستجوی مرکز</h2>
+
+            <input
+                type="search"
+                id="centerSearch"
+                placeholder="نام مرکز را وارد کنید..."
+                autocomplete="off"
+            >
+
+        </section>
+
+
+        <section class="card">
+
+            <h2>➕ ثبت مرکز جدید</h2>
+
+            <button
+                id="newCenterBtn"
+                class="btn btn-primary"
+                type="button"
+            >
+                ➕ مرکز جدید
+            </button>
+
+        </section>
+
+
+        <section class="card">
+
+            <h2>🏥 مراکز این استان</h2>
+
+            <div
+                id="centersGrid"
+                class="centers-grid"
+            ></div>
+
+            <div
+                id="emptyCenters"
+                class="empty-message"
+            >
+                هنوز مرکزی ثبت نشده است.
+            </div>
+
+        </section>
+
     </section>
 
 
-    <!-- ربات -->
+    <!-- =========================
+         صفحه گزارش کار
+    ========================== -->
 
-    <section class="card">
+    <section
+        id="reportPage"
+        class="hidden"
+    >
 
-        <h2>
-            🤖 انتخاب ربات
-        </h2>
+        <div class="card page-toolbar">
 
-        <div class="robot-grid">
+            <button
+                id="backCentersBtn"
+                class="btn btn-gray"
+                type="button"
+            >
+                ← مراکز
+            </button>
 
+            <h2 id="reportPageTitle">
+                گزارش کار
+            </h2>
+
+        </div>
+
+
+        <!-- مشخصات مرکز -->
+
+        <section class="card">
+
+            <div class="section-title">
+                مشخصات مرکز / بیمارستان / شرکت
+            </div>
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label>نام مرکز</label>
+                    <input
+                        id="centerName"
+                        type="text"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>نام مسئول</label>
+                    <input
+                        id="centerManager"
+                        type="text"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>شماره تماس</label>
+                    <input
+                        id="centerPhone"
+                        type="text"
+                    >
+                </div>
+
+                <div class="field full">
+                    <label>آدرس</label>
+                    <input
+                        id="centerAddress"
+                        type="text"
+                    >
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- مشخصات دستگاه -->
+
+        <section class="card">
+
+            <div class="section-title">
+                مشخصات دستگاه
+            </div>
+
+            <div class="form-grid">
+
+                <div class="field">
+
+                    <label>دستگاه / سیستم</label>
+
+                    <input
+                        id="robotModel"
+                        type="text"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>شماره سریال دستگاه</label>
+
+                    <input
+                        id="robotSerial"
+                        type="text"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="robot-grid">
+
+                <button
+                    type="button"
+                    class="robot-card"
+                    data-robot="4102"
+                >
+                    4102
+                </button>
+
+                <button
+                    type="button"
+                    class="robot-card"
+                    data-robot="4202"
+                >
+                    4202
+                </button>
+
+                <button
+                    type="button"
+                    class="robot-card"
+                    data-robot="Rimage"
+                >
+                    Rimage
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- گزارش اشکال -->
+
+        <section class="card">
+
+            <div class="section-title">
+                گزارش اشکال دستگاه
+            </div>
+
+            <div class="field">
+
+                <label>
+                    موضوع مشکل / شرح اشکال
+                </label>
+
+                <textarea
+                    id="problemDescription"
+                    placeholder="شرح مشکل یا ایراد دستگاه..."
+                ></textarea>
+
+            </div>
+
+        </section>
+
+
+        <!-- اقلام مصرفی -->
+
+        <section class="card">
+
+            <div class="section-title">
+                دستگاه نصب شده / قطعات مصرف شده و موضوع خدمات
+            </div>
+
+            <div class="parts-table">
+
+                <div class="parts-header">
+                    <div>ردیف</div>
+                    <div>نام قطعه</div>
+                    <div>تعداد</div>
+                    <div>توضیحات</div>
+                </div>
+
+                <div
+                    id="partsRows"
+                    class="parts-body"
+                ></div>
+
+            </div>
 
             <button
                 type="button"
-                class="robot-card"
-                data-robot="4102"
+                id="addPartBtn"
+                class="btn btn-blue"
             >
-                4102
+                ➕ افزودن قطعه
             </button>
 
+        </section>
+
+
+        <!-- شرح خدمات -->
+
+        <section class="card">
+
+            <div class="section-title">
+                شرح خدمات
+            </div>
+
+            <div
+                id="checklist"
+                class="checklist"
+            ></div>
+
+
+            <div class="field extra-work-field">
+
+                <label>
+                    توضیحات / سایر خدمات
+                </label>
+
+                <textarea
+                    id="extraWork"
+                    placeholder="شرح سایر خدمات انجام‌شده..."
+                ></textarea>
+
+            </div>
+
+        </section>
+
+
+        <!-- ساعت کار -->
+
+        <section class="card">
+
+            <div class="section-title">
+                ساعت کار
+            </div>
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label>نام کارشناس</label>
+
+                    <input
+                        id="technicianName"
+                        type="text"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>تاریخ</label>
+
+                    <input
+                        id="workDate"
+                        type="text"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>ساعت ورود</label>
+
+                    <input
+                        id="entryTime"
+                        type="time"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>ساعت خروج</label>
+
+                    <input
+                        id="exitTime"
+                        type="time"
+                    >
+                </div>
+
+                <div class="field full">
+
+                    <label>
+                        توضیحات ساعت کار
+                    </label>
+
+                    <textarea
+                        id="workDescription"
+                        placeholder="توضیحات..."
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- امضا -->
+
+        <section class="card">
+
+            <div class="section-title">
+                تأیید و امضا
+            </div>
+
+            <div class="form-grid">
+
+                <div class="field">
+
+                    <label>
+                        نام تحویل‌گیرنده / مسئول فنی
+                    </label>
+
+                    <input
+                        id="receiverName"
+                        type="text"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        نام نماینده شرکت
+                    </label>
+
+                    <input
+                        id="companyRepresentative"
+                        type="text"
+                    >
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- عملیات -->
+
+        <section class="card action-card">
 
             <button
+                id="saveVisitBtn"
+                class="btn btn-primary"
                 type="button"
-                class="robot-card"
-                data-robot="4202"
             >
-                4202
+                💾 ذخیره گزارش
             </button>
-
 
             <button
+                id="printReportBtn"
+                class="btn btn-blue"
                 type="button"
-                class="robot-card"
-                data-robot="Rimage"
             >
-                Rimage
+                🖨️ چاپ / PDF
             </button>
 
-
-        </div>
-
-    </section>
+        </section>
 
 
-    <!-- اطلاعات ربات -->
+        <!-- سوابق -->
 
-    <section class="card">
+        <section class="card">
 
-        <h2>
-            ⚙️ اطلاعات ربات
-        </h2>
+            <h2>📚 سوابق مراجعه</h2>
 
-        <div class="form-grid">
+            <div id="history"></div>
 
-
-            <div class="field">
-
-                <label>
-                    مدل ربات
-                </label>
-
-                <input
-                    type="text"
-                    id="robotModel"
-                    readonly
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    Serial Number
-                </label>
-
-                <input
-                    type="text"
-                    id="robotSerial"
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    IP Address
-                </label>
-
-                <input
-                    type="text"
-                    id="robotIP"
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    MAC Address
-                </label>
-
-                <input
-                    type="text"
-                    id="robotMAC"
-                >
-
-            </div>
-
-
-        </div>
+        </section>
 
     </section>
-
-
-    <!-- چک لیست -->
-
-    <section class="card">
-
-        <h2>
-            ✅ کارهای ثابت
-        </h2>
-
-        <p>
-            کارهای انجام‌شده را تیک بزنید.
-        </p>
-
-        <div
-            id="checklist"
-            class="checklist"
-        ></div>
-
-    </section>
-
-
-    <!-- کار متفرقه -->
-
-    <section class="card">
-
-        <h2>
-            📝 کارهای متفرقه
-        </h2>
-
-        <div class="field">
-
-            <label>
-                کارهایی که جزو موارد ثابت نبود
-            </label>
-
-            <textarea
-                id="extraWork"
-                placeholder="هر کار دیگری که انجام شد..."
-            ></textarea>
-
-        </div>
-
-    </section>
-
-
-    <!-- عملیات -->
-
-    <section class="card action-card">
-
-        <button
-            type="button"
-            id="saveVisitBtn"
-            class="btn btn-primary"
-        >
-            💾 ذخیره مراجعه
-        </button>
-
-
-        <button
-            type="button"
-            id="printReportBtn"
-            class="btn btn-blue"
-        >
-            🖨️ گزارش کار / PDF
-        </button>
-
-    </section>
-
-
-    <!-- تاریخچه -->
-
-    <section class="card">
-
-        <h2>
-            📚 سوابق مراجعه
-        </h2>
-
-        <div
-            id="history"
-            class="history"
-        ></div>
-
-    </section>
-
-
-</section>
-
 
 </main>
-
 
 <script src="script.js"></script>
 
 </body>
-
 </html>
