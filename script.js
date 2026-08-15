@@ -1,8 +1,10 @@
 /* =========================================================
    مدیریت مراکز و گزارش کار
-   Supabase
-   ساختار:
-   centers -> devices -> visits
+   نسخه هماهنگ با Supabase
+   Tables:
+   centers
+   devices
+   visits
 ========================================================= */
 
 
@@ -16,18 +18,15 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
     "sb_publishable_oLvZjzdOpAdErVP1sjPtzw_X5CGceRk";
 
-const PASSWORD =
-    "0111";
+const PASSWORD = "0111";
 
-const MAX_ATTEMPTS =
-    3;
+const MAX_ATTEMPTS = 3;
 
-const LOCK_TIME =
-    30 * 60 * 1000;
+const LOCK_TIME = 30 * 60 * 1000;
 
 
 /* =========================================================
-   اتصال Supabase
+   Supabase
 ========================================================= */
 
 let supabaseClient = null;
@@ -75,21 +74,28 @@ const provinces = [
 
 
 /* =========================================================
-   وضعیت
+   وضعیت برنامه
 ========================================================= */
 
 let database = {
-    centers: []
+    centers: [],
+    devices: [],
+    visits: []
 };
 
 let currentProvince = "";
+
 let currentCenter = null;
+
 let currentDevices = [];
+
+let currentVisits = [];
+
 let showAllHistory = false;
 
 
 /* =========================================================
-   DOM
+   ابزار DOM
 ========================================================= */
 
 function getElement(id) {
@@ -101,12 +107,13 @@ function getElement(id) {
 
 function setValue(id, value) {
 
-    const element =
-        getElement(id);
+    const element = getElement(id);
 
     if (element) {
+
         element.value =
             value ?? "";
+
     }
 
 }
@@ -114,8 +121,7 @@ function setValue(id, value) {
 
 function getValue(id) {
 
-    const element =
-        getElement(id);
+    const element = getElement(id);
 
     if (!element) {
         return "";
@@ -134,8 +140,7 @@ function getValue(id) {
 
 function getTodayISO() {
 
-    const now =
-        new Date();
+    const now = new Date();
 
     const year =
         now.getFullYear();
@@ -150,7 +155,13 @@ function getTodayISO() {
             now.getDate()
         ).padStart(2, "0");
 
-    return `${year}-${month}-${day}`;
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+    );
 
 }
 
@@ -164,30 +175,28 @@ function setDefaultDates() {
         "visitDate",
         "problemDate",
         "expertDate"
-    ].forEach(
-        function(id) {
+    ].forEach(function(id) {
 
-            const element =
-                getElement(id);
+        const element =
+            getElement(id);
 
-            if (
-                element &&
-                !element.value
-            ) {
+        if (
+            element &&
+            !element.value
+        ) {
 
-                element.value =
-                    today;
-
-            }
+            element.value =
+                today;
 
         }
-    );
+
+    });
 
 }
 
 
 /* =========================================================
-   Supabase
+   اتصال Supabase
 ========================================================= */
 
 function initSupabase() {
@@ -206,15 +215,32 @@ function initSupabase() {
 
     }
 
+    if (supabaseClient) {
 
-    supabaseClient =
-        window.supabase.createClient(
-            SUPABASE_URL,
-            SUPABASE_KEY
+        return true;
+
+    }
+
+    try {
+
+        supabaseClient =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Supabase initialization error:",
+            error
         );
 
+        return false;
 
-    return true;
+    }
 
 }
 
@@ -246,9 +272,9 @@ function checkLogin() {
 
 
     const password =
-        getElement(
+        getValue(
             "passwordInput"
-        )?.value || "";
+        );
 
 
     if (
@@ -264,18 +290,45 @@ function checkLogin() {
         );
 
 
-        getElement(
-            "loginPage"
-        )?.classList.add(
-            "hidden"
-        );
+        const loginPage =
+            getElement(
+                "loginPage"
+            );
+
+        const app =
+            getElement(
+                "app"
+            );
 
 
-        getElement(
-            "app"
-        )?.classList.remove(
-            "hidden"
-        );
+        if (loginPage) {
+
+            loginPage.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        if (app) {
+
+            app.classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        const message =
+            getElement(
+                "loginMessage"
+            );
+
+        if (message) {
+
+            message.textContent = "";
+
+        }
 
 
         renderProvinces();
@@ -381,9 +434,13 @@ function showLockMessage() {
         Date.now();
 
 
-    if (
-        diff <= 0
-    ) {
+    const message =
+        getElement(
+            "loginMessage"
+        );
+
+
+    if (diff <= 0) {
 
         localStorage.removeItem(
             "site_lock_until"
@@ -394,14 +451,10 @@ function showLockMessage() {
         );
 
 
-        const message =
-            getElement(
-                "loginMessage"
-            );
-
         if (message) {
-            message.textContent =
-                "";
+
+            message.textContent = "";
+
         }
 
         return;
@@ -412,12 +465,6 @@ function showLockMessage() {
     const minutes =
         Math.ceil(
             diff / 60000
-        );
-
-
-    const message =
-        getElement(
-            "loginMessage"
         );
 
 
@@ -444,14 +491,12 @@ function renderProvinces() {
             "provinceGrid"
         );
 
-
     if (!grid) {
         return;
     }
 
 
-    grid.innerHTML =
-        "";
+    grid.innerHTML = "";
 
 
     provinces.forEach(
@@ -462,9 +507,7 @@ function renderProvinces() {
                     "button"
                 );
 
-
-            button.type =
-                "button";
+            button.type = "button";
 
             button.className =
                 "province-card";
@@ -502,54 +545,183 @@ function renderProvinces() {
 
 async function loadCenters() {
 
-    if (!supabaseClient) {
+    if (!initSupabase()) {
 
-        if (!initSupabase()) {
-
-            return false;
-
-        }
+        throw new Error(
+            "Supabase بارگذاری نشده است."
+        );
 
     }
 
 
+    const result =
+        await supabaseClient
+            .from("centers")
+            .select("*")
+            .order(
+                "created_at",
+                {
+                    ascending: true
+                }
+            );
+
+
+    if (result.error) {
+
+        console.error(
+            result.error
+        );
+
+        throw result.error;
+
+    }
+
+
+    database.centers =
+        result.data || [];
+
+
+    return database.centers;
+
+}
+
+
+/* =========================================================
+   دریافت دستگاه‌ها
+========================================================= */
+
+async function loadDevicesForCenter(
+    centerId
+) {
+
+    if (!initSupabase()) {
+
+        throw new Error(
+            "Supabase بارگذاری نشده است."
+        );
+
+    }
+
+
+    const result =
+        await supabaseClient
+            .from("devices")
+            .select("*")
+            .eq(
+                "center_id",
+                centerId
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: true
+                }
+            );
+
+
+    if (result.error) {
+
+        console.error(
+            result.error
+        );
+
+        throw result.error;
+
+    }
+
+
+    currentDevices =
+        result.data || [];
+
+
+    return currentDevices;
+
+}
+
+
+/* =========================================================
+   دریافت سوابق
+========================================================= */
+
+async function loadVisitsForCenter(
+    centerId
+) {
+
+    if (!initSupabase()) {
+
+        throw new Error(
+            "Supabase بارگذاری نشده است."
+        );
+
+    }
+
+
+    const result =
+        await supabaseClient
+            .from("visits")
+            .select("*")
+            .eq(
+                "center_id",
+                centerId
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (result.error) {
+
+        console.error(
+            result.error
+        );
+
+        throw result.error;
+
+    }
+
+
+    currentVisits =
+        result.data || [];
+
+
+    return currentVisits;
+
+}
+
+
+/* =========================================================
+   بارگذاری کامل مرکز
+========================================================= */
+
+async function loadCenterData(
+    center
+) {
+
+    currentCenter =
+        center;
+
+
+    currentDevices = [];
+
+    currentVisits = [];
+
+
     try {
 
-        const result =
-            await supabaseClient
-                .from("centers")
-                .select(
-                    "id, province, name, section, phone, manager, created_at"
-                )
-                .order(
-                    "created_at",
-                    {
-                        ascending: true
-                    }
-                );
+        await Promise.all([
 
+            loadDevicesForCenter(
+                center.id
+            ),
 
-        if (result.error) {
+            loadVisitsForCenter(
+                center.id
+            )
 
-            console.error(
-                result.error
-            );
-
-            alert(
-                "خطا در دریافت مراکز:\n" +
-                result.error.message
-            );
-
-            return false;
-
-        }
-
-
-        database.centers =
-            result.data || [];
-
-
-        return true;
+        ]);
 
     } catch (error) {
 
@@ -558,242 +730,9 @@ async function loadCenters() {
         );
 
         alert(
-            "ارتباط با پایگاه داده برقرار نشد."
+            "خطا در دریافت اطلاعات مرکز:\n" +
+            error.message
         );
-
-        return false;
-
-    }
-
-}
-
-
-/* =========================================================
-   دریافت دستگاه‌های یک مرکز
-========================================================= */
-
-async function loadDevices(
-    centerId
-) {
-
-    if (!supabaseClient) {
-
-        if (!initSupabase()) {
-            return [];
-        }
-
-    }
-
-
-    try {
-
-        const result =
-            await supabaseClient
-                .from("devices")
-                .select(
-                    "id, center_id, model, serial, created_at"
-                )
-                .eq(
-                    "center_id",
-                    centerId
-                )
-                .order(
-                    "created_at",
-                    {
-                        ascending: true
-                    }
-                );
-
-
-        if (result.error) {
-
-            console.error(
-                "Devices error:",
-                result.error
-            );
-
-            alert(
-                "خطا در دریافت دستگاه‌ها:\n" +
-                result.error.message
-            );
-
-            return [];
-
-        }
-
-
-        currentDevices =
-            result.data || [];
-
-
-        return currentDevices;
-
-    } catch (error) {
-
-        console.error(
-            error
-        );
-
-        return [];
-
-    }
-
-}
-
-
-/* =========================================================
-   دریافت گزارش‌های یک مرکز
-========================================================= */
-
-async function loadVisits(
-    centerId
-) {
-
-    if (!supabaseClient) {
-
-        if (!initSupabase()) {
-            return [];
-        }
-
-    }
-
-
-    try {
-
-        const result =
-            await supabaseClient
-                .from("visits")
-                .select(
-                    `
-                    id,
-                    center_id,
-                    device_id,
-                    visit_date,
-                    problem_subject,
-                    reported_by,
-                    problem_date,
-                    description,
-                    expert_name,
-                    entry_time,
-                    exit_time,
-                    receiver_name,
-                    expert_signature,
-                    created_at,
-                    devices (
-                        model,
-                        serial
-                    )
-                    `
-                )
-                .eq(
-                    "center_id",
-                    centerId
-                )
-                .order(
-                    "created_at",
-                    {
-                        ascending: false
-                    }
-                );
-
-
-        if (result.error) {
-
-            console.error(
-                "Visits error:",
-                result.error
-            );
-
-            alert(
-                "خطا در دریافت سوابق:\n" +
-                result.error.message
-            );
-
-            return [];
-
-        }
-
-
-        return result.data || [];
-
-    } catch (error) {
-
-        console.error(
-            error
-        );
-
-        return [];
-
-    }
-
-}
-
-
-/* =========================================================
-   ذخیره مرکز جدید
-========================================================= */
-
-async function createCenter(
-    name
-) {
-
-    if (!supabaseClient) {
-
-        if (!initSupabase()) {
-            return null;
-        }
-
-    }
-
-
-    try {
-
-        const result =
-            await supabaseClient
-                .from("centers")
-                .insert(
-                    {
-                        province:
-                            currentProvince,
-
-                        name:
-                            name
-                    }
-                )
-                .select()
-                .single();
-
-
-        if (result.error) {
-
-            console.error(
-                "Center insert error:",
-                result.error
-            );
-
-            alert(
-                "ثبت مرکز انجام نشد:\n" +
-                result.error.message
-            );
-
-            return null;
-
-        }
-
-
-        return result.data;
-
-    } catch (error) {
-
-        console.error(
-            error
-        );
-
-        alert(
-            "خطا هنگام ثبت مرکز."
-        );
-
-        return null;
 
     }
 
@@ -815,20 +754,12 @@ async function openProvince(
     currentCenter =
         null;
 
-    currentDevices =
-        [];
+    currentDevices = [];
+
+    currentVisits = [];
 
     showAllHistory =
         false;
-
-
-    const loaded =
-        await loadCenters();
-
-
-    if (!loaded) {
-        return;
-    }
 
 
     getElement(
@@ -867,12 +798,41 @@ async function openProvince(
     if (title) {
 
         title.textContent =
-            "مراکز " + name;
+            "مراکز " +
+            name;
 
     }
 
 
-    renderCenters();
+    await refreshCenters();
+
+}
+
+
+/* =========================================================
+   دریافت و نمایش مراکز
+========================================================= */
+
+async function refreshCenters() {
+
+    try {
+
+        await loadCenters();
+
+        renderCenters();
+
+    } catch (error) {
+
+        console.error(
+            error
+        );
+
+        alert(
+            "خطا در دریافت مراکز:\n" +
+            error.message
+        );
+
+    }
 
 }
 
@@ -899,15 +859,14 @@ function renderCenters() {
     }
 
 
+    grid.innerHTML = "";
+
+
     const query =
         getValue(
             "centerSearch"
         )
             .toLowerCase();
-
-
-    grid.innerHTML =
-        "";
 
 
     let centers =
@@ -990,7 +949,23 @@ function renderCenters() {
 
             title.textContent =
                 "🏥 " +
-                center.name;
+                (
+                    center.name ||
+                    "بدون نام"
+                );
+
+
+            const section =
+                document.createElement(
+                    "p"
+                );
+
+            section.textContent =
+                "بخش: " +
+                (
+                    center.section ||
+                    "-"
+                );
 
 
             const button =
@@ -1025,8 +1000,13 @@ function renderCenters() {
             );
 
             box.appendChild(
+                section
+            );
+
+            box.appendChild(
                 button
             );
+
 
             grid.appendChild(
                 box
@@ -1047,8 +1027,9 @@ function createNewCenter() {
     currentCenter =
         null;
 
-    currentDevices =
-        [];
+    currentDevices = [];
+
+    currentVisits = [];
 
     showAllHistory =
         false;
@@ -1106,18 +1087,6 @@ function createNewCenter() {
     );
 
 
-    setValue(
-        "expertName",
-        "حیدریانی"
-    );
-
-
-    setValue(
-        "signatureExpertName",
-        "حیدریانی"
-    );
-
-
     renderHistory();
 
 }
@@ -1130,50 +1099,6 @@ function createNewCenter() {
 async function openExistingCenter(
     center
 ) {
-
-    const loaded =
-        await loadCenters();
-
-
-    if (!loaded) {
-        return;
-    }
-
-
-    currentCenter =
-        database.centers.find(
-            function(item) {
-
-                return String(
-                    item.id
-                ) ===
-                String(
-                    center.id
-                );
-
-            }
-        );
-
-
-    if (!currentCenter) {
-
-        alert(
-            "مرکز پیدا نشد."
-        );
-
-        return;
-
-    }
-
-
-    await loadDevices(
-        currentCenter.id
-    );
-
-
-    showAllHistory =
-        false;
-
 
     getElement(
         "centersPage"
@@ -1198,7 +1123,7 @@ async function openExistingCenter(
     if (title) {
 
         title.textContent =
-            currentCenter.name;
+            center.name;
 
     }
 
@@ -1212,7 +1137,7 @@ async function openExistingCenter(
     if (nameInput) {
 
         nameInput.value =
-            currentCenter.name;
+            center.name || "";
 
         nameInput.setAttribute(
             "readonly",
@@ -1222,16 +1147,31 @@ async function openExistingCenter(
     }
 
 
+    currentCenter =
+        center;
+
+
+    showAllHistory =
+        false;
+
+
     clearVisitFields();
 
 
     setValue(
         "centerName",
-        currentCenter.name
+        center.name
     );
 
 
-    await renderHistory();
+    await loadCenterData(
+        center
+    );
+
+
+    loadSerialNumbers();
+
+    renderHistory();
 
 }
 
@@ -1245,7 +1185,8 @@ function clearVisitFields() {
     setValue(
         "sectionName",
         currentCenter
-            ?.section || ""
+            ? currentCenter.section
+            : ""
     );
 
 
@@ -1340,7 +1281,7 @@ function clearVisitFields() {
 
 
 /* =========================================================
-   سریال
+   سریال‌ها
 ========================================================= */
 
 function resetSerialSelect() {
@@ -1356,8 +1297,7 @@ function resetSerialSelect() {
     }
 
 
-    select.innerHTML =
-        "";
+    select.innerHTML = "";
 
 
     const option =
@@ -1366,8 +1306,7 @@ function resetSerialSelect() {
         );
 
 
-    option.value =
-        "";
+    option.value = "";
 
     option.textContent =
         "ابتدا مدل دستگاه را انتخاب کنید";
@@ -1380,26 +1319,16 @@ function resetSerialSelect() {
 }
 
 
-/* =========================================================
-   سریال‌های مرکز
-========================================================= */
-
 function getCenterSerials(
     model
 ) {
-
-    if (!currentCenter) {
-        return [];
-    }
-
 
     return currentDevices
         .filter(
             function(device) {
 
                 return (
-                    device.model ===
-                    model
+                    device.model === model
                 );
 
             }
@@ -1416,8 +1345,9 @@ function getCenterSerials(
 
                 return (
                     serial &&
-                    array.indexOf(serial) ===
-                    index
+                    array.indexOf(
+                        serial
+                    ) === index
                 );
 
             }
@@ -1425,10 +1355,6 @@ function getCenterSerials(
 
 }
 
-
-/* =========================================================
-   بارگذاری سریال‌ها
-========================================================= */
 
 function loadSerialNumbers() {
 
@@ -1449,8 +1375,7 @@ function loadSerialNumbers() {
     }
 
 
-    select.innerHTML =
-        "";
+    select.innerHTML = "";
 
 
     if (!model) {
@@ -1468,8 +1393,7 @@ function loadSerialNumbers() {
         );
 
 
-    first.value =
-        "";
+    first.value = "";
 
     first.textContent =
         "انتخاب شماره سریال";
@@ -1546,10 +1470,6 @@ function toggleNewSerial() {
 }
 
 
-/* =========================================================
-   سریال انتخابی
-========================================================= */
-
 function getSelectedSerial() {
 
     const newInput =
@@ -1562,11 +1482,17 @@ function getSelectedSerial() {
         newInput &&
         !newInput.classList.contains(
             "hidden"
-        ) &&
-        newInput.value.trim()
+        )
     ) {
 
-        return newInput.value.trim();
+        const value =
+            newInput.value.trim();
+
+        if (value) {
+
+            return value;
+
+        }
 
     }
 
@@ -1579,97 +1505,70 @@ function getSelectedSerial() {
 
 
 /* =========================================================
-   پیدا کردن یا ساخت دستگاه
+   پیدا کردن دستگاه
 ========================================================= */
 
-async function getOrCreateDevice(
+function findDevice(
     model,
     serial
 ) {
 
-    if (!currentCenter) {
-        return null;
-    }
+    return currentDevices.find(
+        function(device) {
 
-
-    const existing =
-        currentDevices.find(
-            function(device) {
-
-                return (
-                    device.model === model &&
-                    device.serial === serial
-                );
-
-            }
-        );
-
-
-    if (existing) {
-
-        return existing;
-
-    }
-
-
-    try {
-
-        const result =
-            await supabaseClient
-                .from("devices")
-                .insert(
-                    {
-                        center_id:
-                            currentCenter.id,
-
-                        model:
-                            model,
-
-                        serial:
-                            serial
-                    }
-                )
-                .select()
-                .single();
-
-
-        if (result.error) {
-
-            console.error(
-                "Device insert error:",
-                result.error
+            return (
+                device.model === model &&
+                device.serial === serial
             );
-
-            alert(
-                "ثبت دستگاه انجام نشد:\n" +
-                result.error.message
-            );
-
-            return null;
 
         }
+    );
+
+}
 
 
-        currentDevices.push(
-            result.data
-        );
+/* =========================================================
+   ایجاد دستگاه
+========================================================= */
+
+async function createDevice(
+    centerId,
+    model,
+    serial
+) {
+
+    const result =
+        await supabaseClient
+            .from("devices")
+            .insert(
+                {
+                    center_id:
+                        centerId,
+
+                    model:
+                        model,
+
+                    serial:
+                        serial
+                }
+            )
+            .select()
+            .single();
 
 
-        return result.data;
+    if (result.error) {
 
-    } catch (error) {
-
-        console.error(
-            error
-        );
-
-        alert(
-            "خطا هنگام ثبت دستگاه."
-        );
-
-        return null;
+        throw result.error;
 
     }
+
+
+    currentDevices.push(
+        result.data
+    );
+
+
+    return result.data;
 
 }
 
@@ -1761,6 +1660,50 @@ function getFormData() {
 
 
 /* =========================================================
+   ساخت مرکز
+========================================================= */
+
+async function createCenter(
+    data
+) {
+
+    const result =
+        await supabaseClient
+            .from("centers")
+            .insert(
+                {
+                    province:
+                        currentProvince,
+
+                    name:
+                        data.centerName,
+
+                    section:
+                        data.section
+                }
+            )
+            .select()
+            .single();
+
+
+    if (result.error) {
+
+        throw result.error;
+
+    }
+
+
+    database.centers.push(
+        result.data
+    );
+
+
+    return result.data;
+
+}
+
+
+/* =========================================================
    ذخیره گزارش
 ========================================================= */
 
@@ -1803,186 +1746,200 @@ async function saveVisit() {
     }
 
 
-    if (!supabaseClient) {
+    if (!initSupabase()) {
 
-        if (!initSupabase()) {
-            return;
-        }
+        alert(
+            "اتصال به Supabase برقرار نیست."
+        );
 
-    }
-
-
-    /* -----------------------------------------
-       اگر مرکز جدید است
-    ----------------------------------------- */
-
-    if (!currentCenter) {
-
-        const newCenter =
-            await createCenter(
-                data.centerName
-            );
-
-
-        if (!newCenter) {
-            return;
-        }
-
-
-        currentCenter =
-            newCenter;
+        return;
 
     }
 
 
-    /* -----------------------------------------
-       اگر نام مرکز عوض نشده باشد
-    ----------------------------------------- */
+    const saveButton =
+        getElement(
+            "saveVisitBtn"
+        );
 
-    if (
-        currentCenter.name !==
-        data.centerName
-    ) {
 
-        const updateResult =
-            await supabaseClient
-                .from("centers")
-                .update(
-                    {
-                        name:
-                            data.centerName
+    if (saveButton) {
+
+        saveButton.disabled =
+            true;
+
+        saveButton.textContent =
+            "⏳ در حال ذخیره...";
+
+    }
+
+
+    try {
+
+        /*
+           اگر مرکز جدید است،
+           ابتدا خود مرکز ساخته می‌شود.
+        */
+
+        if (!currentCenter) {
+
+            /*
+               جلوگیری از ثبت مرکز تکراری
+            */
+
+            const existing =
+                database.centers.find(
+                    function(center) {
+
+                        return (
+                            center.province ===
+                            currentProvince &&
+
+                            String(
+                                center.name || ""
+                            )
+                                .trim()
+                                .toLowerCase() ===
+
+                            String(
+                                data.centerName
+                            )
+                                .trim()
+                                .toLowerCase()
+                        );
+
                     }
-                )
-                .eq(
-                    "id",
-                    currentCenter.id
                 );
 
 
-        if (updateResult.error) {
+            if (existing) {
 
-            alert(
-                "ویرایش نام مرکز انجام نشد:\n" +
-                updateResult.error.message
-            );
+                currentCenter =
+                    existing;
 
-            return;
+            } else {
+
+                currentCenter =
+                    await createCenter(
+                        data
+                    );
+
+            }
 
         }
 
 
-        currentCenter.name =
-            data.centerName;
+        /*
+           اگر بخش مرکز خالی نباشد،
+           اطلاعات بخش مرکز نیز به‌روز می‌شود.
+        */
 
-    }
+        if (
+            data.section &&
+            data.section !==
+            currentCenter.section
+        ) {
 
-
-    /* -----------------------------------------
-       ذخیره بخش در centers
-    ----------------------------------------- */
-
-    if (
-        data.section !==
-        (
-            currentCenter.section ||
-            ""
-        )
-    ) {
-
-        const sectionResult =
-            await supabaseClient
-                .from("centers")
-                .update(
-                    {
-                        section:
-                            data.section
-                    }
-                )
-                .eq(
-                    "id",
-                    currentCenter.id
-                );
+            const updateResult =
+                await supabaseClient
+                    .from("centers")
+                    .update(
+                        {
+                            section:
+                                data.section
+                        }
+                    )
+                    .eq(
+                        "id",
+                        currentCenter.id
+                    );
 
 
-        if (sectionResult.error) {
+            if (updateResult.error) {
 
-            console.error(
-                sectionResult.error
-            );
+                throw updateResult.error;
 
-        } else {
+            }
+
 
             currentCenter.section =
                 data.section;
 
         }
 
-    }
+
+        /*
+           پیدا کردن دستگاه
+        */
+
+        let device =
+            findDevice(
+                data.deviceModel,
+                data.serialNumber
+            );
 
 
-    /* -----------------------------------------
-       دستگاه
-    ----------------------------------------- */
+        /*
+           اگر دستگاه وجود نداشت،
+           ساخته می‌شود.
+        */
 
-    const device =
-        await getOrCreateDevice(
-            data.deviceModel,
-            data.serialNumber
-        );
+        if (!device) {
 
+            device =
+                await createDevice(
+                    currentCenter.id,
+                    data.deviceModel,
+                    data.serialNumber
+                );
 
-    if (!device) {
-        return;
-    }
-
-
-    /* -----------------------------------------
-       گزارش جدید
-       هر بار یک رکورد جدید
-    ----------------------------------------- */
-
-    const visitData = {
-
-        center_id:
-            currentCenter.id,
-
-        device_id:
-            device.id,
-
-        visit_date:
-            data.date || null,
-
-        problem_subject:
-            data.problemSubject || null,
-
-        reported_by:
-            data.reportedBy || null,
-
-        problem_date:
-            data.problemDate || null,
-
-        description:
-            data.description || null,
-
-        expert_name:
-            data.expertName || null,
-
-        entry_time:
-            data.entryTime || null,
-
-        exit_time:
-            data.exitTime || null,
-
-        receiver_name:
-            data.receiverName || null,
-
-        expert_signature:
-            data.signatureExpertName || null
-
-    };
+        }
 
 
-    try {
+        /*
+           ذخیره گزارش در visits
+        */
+
+        const visitData = {
+
+            center_id:
+                currentCenter.id,
+
+            device_id:
+                device.id,
+
+            visit_date:
+                data.date || null,
+
+            problem_subject:
+                data.problemSubject || null,
+
+            reported_by:
+                data.reportedBy || null,
+
+            problem_date:
+                data.problemDate || null,
+
+            description:
+                data.description || null,
+
+            expert_name:
+                data.expertName || null,
+
+            entry_time:
+                data.entryTime || null,
+
+            exit_time:
+                data.exitTime || null,
+
+            receiver_name:
+                data.receiverName || null,
+
+            expert_signature:
+                data.signatureExpertName || null
+
+        };
+
 
         const result =
             await supabaseClient
@@ -1996,55 +1953,27 @@ async function saveVisit() {
 
         if (result.error) {
 
-            console.error(
-                "Visit insert error:",
-                result.error
-            );
-
-            alert(
-                "ذخیره گزارش انجام نشد:\n" +
-                result.error.message
-            );
-
-            return;
+            throw result.error;
 
         }
 
 
-        /* -------------------------------------
-           به‌روزرسانی اطلاعات
-        ------------------------------------- */
+        /*
+           اطلاعات جدید را دوباره دریافت می‌کنیم
+        */
 
-        await loadCenters();
-
-        await loadDevices(
-            currentCenter.id
+        await loadCenterData(
+            currentCenter
         );
-
-
-        currentCenter =
-            database.centers.find(
-                function(center) {
-
-                    return String(
-                        center.id
-                    ) ===
-                    String(
-                        currentCenter.id
-                    );
-
-                }
-            );
 
 
         showAllHistory =
             false;
 
 
+        renderHistory();
+
         loadSerialNumbers();
-
-
-        await renderHistory();
 
 
         alert(
@@ -2052,41 +1981,34 @@ async function saveVisit() {
         );
 
 
-        /* -------------------------------------
-           فرم مراجعه جدید
-           اطلاعات قبلی پاک می‌شود
-           مرکز باقی می‌ماند
-        ------------------------------------- */
-
-        clearVisitFields();
-
-        setValue(
-            "centerName",
-            currentCenter?.name || data.centerName
-        );
-
-        const nameInput =
-            getElement(
-                "centerName"
-            );
-
-        nameInput?.setAttribute(
-            "readonly",
-            "readonly"
-        );
-
-
-        await renderHistory();
-
     } catch (error) {
 
         console.error(
+            "Save visit error:",
             error
         );
 
+
         alert(
-            "خطا هنگام ذخیره گزارش."
+            "ذخیره گزارش انجام نشد:\n\n" +
+            (
+                error.message ||
+                "خطای نامشخص"
+            )
         );
+
+
+    } finally {
+
+        if (saveButton) {
+
+            saveButton.disabled =
+                false;
+
+            saveButton.textContent =
+                "💾 ذخیره گزارش";
+
+        }
 
     }
 
@@ -2097,7 +2019,27 @@ async function saveVisit() {
    تاریخچه
 ========================================================= */
 
-async function renderHistory() {
+function getDeviceForVisit(
+    visit
+) {
+
+    return currentDevices.find(
+        function(device) {
+
+            return String(
+                device.id
+            ) ===
+            String(
+                visit.device_id
+            );
+
+        }
+    ) || null;
+
+}
+
+
+function renderHistory() {
 
     const history =
         getElement(
@@ -2110,8 +2052,7 @@ async function renderHistory() {
     }
 
 
-    history.innerHTML =
-        "";
+    history.innerHTML = "";
 
 
     if (!currentCenter) {
@@ -2125,9 +2066,7 @@ async function renderHistory() {
 
 
     const visits =
-        await loadVisits(
-            currentCenter.id
-        );
+        currentVisits || [];
 
 
     if (!visits.length) {
@@ -2159,7 +2098,6 @@ async function renderHistory() {
                     "div"
                 );
 
-
             box.className =
                 "history-item";
 
@@ -2174,7 +2112,9 @@ async function renderHistory() {
                 showAllHistory
                     ?
                     "گزارش " +
-                    (index + 1) +
+                    (
+                        index + 1
+                    ) +
                     " — " +
                     (
                         visit.visit_date ||
@@ -2194,7 +2134,9 @@ async function renderHistory() {
 
 
             const device =
-                visit.devices || {};
+                getDeviceForVisit(
+                    visit
+                );
 
 
             const info =
@@ -2206,12 +2148,12 @@ async function renderHistory() {
             info.textContent =
                 "دستگاه: " +
                 (
-                    device.model ||
+                    device?.model ||
                     "-"
                 ) +
                 " | سریال: " +
                 (
-                    device.serial ||
+                    device?.serial ||
                     "-"
                 );
 
@@ -2238,6 +2180,28 @@ async function renderHistory() {
 
                 box.appendChild(
                     subject
+                );
+
+            }
+
+
+            if (
+                visit.reported_by
+            ) {
+
+                const reported =
+                    document.createElement(
+                        "p"
+                    );
+
+
+                reported.textContent =
+                    "گزارش شده توسط: " +
+                    visit.reported_by;
+
+
+                box.appendChild(
+                    reported
                 );
 
             }
@@ -2294,12 +2258,12 @@ async function renderHistory() {
 
         moreButton.addEventListener(
             "click",
-            async function() {
+            function() {
 
                 showAllHistory =
                     !showAllHistory;
 
-                await renderHistory();
+                renderHistory();
 
             }
         );
@@ -2315,7 +2279,7 @@ async function renderHistory() {
 
 
 /* =========================================================
-   متن توضیحات
+   متن گزارش
 ========================================================= */
 
 function makeDescription(
@@ -2323,7 +2287,7 @@ function makeDescription(
 ) {
 
     return (
-        "با مراجعه به مرکز و بررسی ربات,\n\n" +
+        "با مراجعه به مرکز و بررسی ربات،\n\n" +
         (
             description ||
             ""
@@ -2339,7 +2303,7 @@ function makeDescription(
    چاپ گزارش
 ========================================================= */
 
-function printReport() {
+async function printReport() {
 
     const data =
         getFormData();
@@ -2406,18 +2370,13 @@ function printReport() {
 
 <!DOCTYPE html>
 
-<html
-    lang="fa"
-    dir="rtl"
->
+<html lang="fa" dir="rtl">
 
 <head>
 
 <meta charset="UTF-8">
 
-<title>
-گزارش کار
-</title>
+<title>گزارش کار</title>
 
 <style>
 
@@ -2476,6 +2435,7 @@ h1 {
 .value {
     padding: 9px;
     min-height: 28px;
+    white-space: pre-wrap;
 }
 
 .description-section {
@@ -2520,9 +2480,8 @@ h1 {
 
 <body>
 
-<h1>
-گزارش کار
-</h1>
+<h1>گزارش کار</h1>
+
 
 <div class="row row-3">
 
@@ -2549,6 +2508,7 @@ ${escapeHTML(data.date)}
 
 </div>
 
+
 <div class="row row-2">
 
 <div class="field">
@@ -2566,6 +2526,7 @@ ${escapeHTML(data.serialNumber)}
 </div>
 
 </div>
+
 
 <div class="row row-3">
 
@@ -2592,6 +2553,7 @@ ${escapeHTML(data.problemDate)}
 
 </div>
 
+
 <div class="description-section">
 
 <div class="description-title">
@@ -2603,6 +2565,7 @@ ${escapeHTML(description)}
 </div>
 
 </div>
+
 
 <div class="row row-4">
 
@@ -2636,6 +2599,7 @@ ${escapeHTML(data.exitTime)}
 
 </div>
 
+
 <div class="signatures">
 
 <div class="signature">
@@ -2652,6 +2616,7 @@ ${escapeHTML(data.receiverName)}
 
 </div>
 
+
 <div class="signature">
 
 <strong>
@@ -2667,6 +2632,7 @@ ${escapeHTML(data.signatureExpertName)}
 </div>
 
 </div>
+
 
 <script>
 
@@ -2740,46 +2706,70 @@ function escapeHTML(value) {
 
 document.addEventListener(
     "DOMContentLoaded",
-    async function() {
+    function() {
 
         console.log(
             "Site loaded"
         );
 
 
+        /*
+           Supabase
+        */
+
         initSupabase();
 
 
-        /* ورود */
+        /*
+           ورود
+        */
 
-        getElement(
-            "loginBtn"
-        )?.addEventListener(
-            "click",
-            checkLogin
-        );
+        const loginBtn =
+            getElement(
+                "loginBtn"
+            );
 
 
-        getElement(
-            "passwordInput"
-        )?.addEventListener(
-            "keydown",
-            function(event) {
+        if (loginBtn) {
 
-                if (
-                    event.key ===
-                    "Enter"
-                ) {
+            loginBtn.addEventListener(
+                "click",
+                checkLogin
+            );
 
-                    checkLogin();
+        }
+
+
+        const passwordInput =
+            getElement(
+                "passwordInput"
+            );
+
+
+        if (passwordInput) {
+
+            passwordInput.addEventListener(
+                "keydown",
+                function(event) {
+
+                    if (
+                        event.key ===
+                        "Enter"
+                    ) {
+
+                        checkLogin();
+
+                    }
 
                 }
+            );
 
-            }
-        );
+        }
 
 
-        /* وضعیت قفل */
+        /*
+           وضعیت قفل
+        */
 
         const lockUntil =
             Number(
@@ -2799,12 +2789,16 @@ document.addEventListener(
         }
 
 
-        /* استان‌ها */
+        /*
+           استان‌ها
+        */
 
         renderProvinces();
 
 
-        /* برگشت استان */
+        /*
+           برگشت استان
+        */
 
         getElement(
             "backProvinceBtn"
@@ -2824,17 +2818,21 @@ document.addEventListener(
                     "hidden"
                 );
 
+
                 currentCenter =
                     null;
 
-                currentDevices =
-                    [];
+                currentDevices = [];
+
+                currentVisits = [];
 
             }
         );
 
 
-        /* مرکز جدید */
+        /*
+           مرکز جدید
+        */
 
         getElement(
             "newCenterBtn"
@@ -2844,13 +2842,15 @@ document.addEventListener(
         );
 
 
-        /* برگشت مراکز */
+        /*
+           برگشت مراکز
+        */
 
         getElement(
             "backCentersBtn"
         )?.addEventListener(
             "click",
-            async function() {
+            function() {
 
                 getElement(
                     "reportPage"
@@ -2868,11 +2868,10 @@ document.addEventListener(
                 currentCenter =
                     null;
 
-                currentDevices =
-                    [];
+                currentDevices = [];
 
+                currentVisits = [];
 
-                await loadCenters();
 
                 renderCenters();
 
@@ -2880,7 +2879,9 @@ document.addEventListener(
         );
 
 
-        /* جستجو */
+        /*
+           جستجو
+        */
 
         getElement(
             "centerSearch"
@@ -2890,7 +2891,9 @@ document.addEventListener(
         );
 
 
-        /* مدل */
+        /*
+           مدل دستگاه
+        */
 
         getElement(
             "deviceModel"
@@ -2900,7 +2903,9 @@ document.addEventListener(
         );
 
 
-        /* سریال جدید */
+        /*
+           سریال جدید
+        */
 
         getElement(
             "newSerialBtn"
@@ -2910,7 +2915,9 @@ document.addEventListener(
         );
 
 
-        /* ذخیره */
+        /*
+           ذخیره گزارش
+        */
 
         getElement(
             "saveVisitBtn"
@@ -2920,7 +2927,9 @@ document.addEventListener(
         );
 
 
-        /* چاپ */
+        /*
+           چاپ
+        */
 
         getElement(
             "printReportBtn"
@@ -2930,50 +2939,11 @@ document.addEventListener(
         );
 
 
-        /* تاریخ */
+        /*
+           تاریخ
+        */
 
         setDefaultDates();
 
     }
-);[
-  {
-    "table_name": "devices",
-    "column_name": "id",
-    "data_type": "bigint"
-  },
-  {
-    "table_name": "devices",
-    "column_name": "center_id",
-    "data_type": "bigint"
-  },
-  {
-    "table_name": "devices",
-    "column_name": "model",
-    "data_type": "text"
-  },
-  {
-    "table_name": "devices",
-    "column_name": "serial",
-    "data_type": "text"
-  },
-  {
-    "table_name": "devices",
-    "column_name": "created_at",
-    "data_type": "timestamp with time zone"
-  }
-]| column_name      | data_type                |
-| ---------------- | ------------------------ |
-| id               | bigint                   |
-| center_id        | bigint                   |
-| device_id        | bigint                   |
-| visit_date       | date                     |
-| problem_subject  | text                     |
-| reported_by      | text                     |
-| problem_date     | date                     |
-| description      | text                     |
-| expert_name      | text                     |
-| entry_time       | time without time zone   |
-| exit_time        | time without time zone   |
-| receiver_name    | text                     |
-| expert_signature | text                     |
-| created_at       | timestamp with time zone |
+);
