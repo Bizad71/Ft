@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>مدیریت مراکز و گزارش کار</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <!-- =========================
-     صفحه ورود
+     ورود
 ========================= -->
+
 <div id="loginPage" class="login-page">
 
     <div class="login-box">
@@ -28,11 +32,18 @@
             autocomplete="off"
         >
 
-        <button id="loginBtn" class="btn btn-primary">
+        <button
+            id="loginBtn"
+            class="btn btn-primary"
+            type="button"
+        >
             ورود
         </button>
 
-        <div id="loginMessage" class="login-message"></div>
+        <div
+            id="loginMessage"
+            class="login-message"
+        ></div>
 
     </div>
 
@@ -40,8 +51,9 @@
 
 
 <!-- =========================
-     برنامه اصلی
+     برنامه
 ========================= -->
+
 <div id="app" class="hidden">
 
 <header class="header">
@@ -53,32 +65,51 @@
 
 
 <!-- =========================
-     صفحه استان‌ها
+     استان‌ها
 ========================= -->
+
 <section id="provincePage">
 
     <div class="card intro-card">
+
         <h2>🏥 انتخاب استان</h2>
-        <p>استان موردنظر را انتخاب کنید.</p>
+
+        <p>
+            استان موردنظر را انتخاب کنید.
+        </p>
+
     </div>
 
-    <div id="provinceGrid" class="province-grid"></div>
+    <div
+        id="provinceGrid"
+        class="province-grid"
+    ></div>
 
 </section>
 
 
 <!-- =========================
-     صفحه مراکز
+     مراکز
 ========================= -->
-<section id="centersPage" class="hidden">
+
+<section
+    id="centersPage"
+    class="hidden"
+>
 
     <div class="card page-toolbar">
 
-        <button id="backProvinceBtn" class="btn btn-gray">
+        <button
+            id="backProvinceBtn"
+            class="btn btn-gray"
+            type="button"
+        >
             ← استان‌ها
         </button>
 
-        <h2 id="provinceTitle">مراکز</h2>
+        <h2 id="provinceTitle">
+            مراکز
+        </h2>
 
     </div>
 
@@ -99,7 +130,11 @@
 
     <div class="card">
 
-        <button id="newCenterBtn" class="btn btn-primary">
+        <button
+            id="newCenterBtn"
+            class="btn btn-primary"
+            type="button"
+        >
             ➕ مرکز جدید
         </button>
 
@@ -110,9 +145,15 @@
 
         <h2>🏥 مراکز</h2>
 
-        <div id="centersGrid" class="centers-grid"></div>
+        <div
+            id="centersGrid"
+            class="centers-grid"
+        ></div>
 
-        <div id="emptyCenters" class="empty-message">
+        <div
+            id="emptyCenters"
+            class="empty-message"
+        >
             هنوز مرکزی ثبت نشده است.
         </div>
 
@@ -122,13 +163,21 @@
 
 
 <!-- =========================
-     صفحه گزارش
+     گزارش
 ========================= -->
-<section id="reportPage" class="hidden">
+
+<section
+    id="reportPage"
+    class="hidden"
+>
 
     <div class="card page-toolbar">
 
-        <button id="backCentersBtn" class="btn btn-gray">
+        <button
+            id="backCentersBtn"
+            class="btn btn-gray"
+            type="button"
+        >
             ← مراکز
         </button>
 
@@ -140,8 +189,9 @@
 
 
     <!-- =====================
-         اطلاعات ثابت مرکز
+         اطلاعات مرکز
     ====================== -->
+
     <section class="card">
 
         <h2>🏢 اطلاعات مرکز</h2>
@@ -150,12 +200,14 @@
 
             <div class="field">
 
-                <label>نام مرکز</label>
+                <label>
+                    نام مرکز
+                </label>
 
                 <input
                     type="text"
                     id="centerName"
-                    readonly
+                    autocomplete="off"
                 >
 
             </div>
@@ -168,11 +220,13 @@
     <!-- =====================
          اطلاعات مراجعه
     ====================== -->
+
     <section class="card">
 
         <h2>📋 اطلاعات مراجعه</h2>
 
         <div class="form-grid">
+
 
             <div class="field">
 
@@ -196,10 +250,8 @@
                 </label>
 
                 <input
-                    type="text"
+                    type="date"
                     id="visitDate"
-                    placeholder="مثلاً ۱۴۰۵/۰۵/۲۴"
-                    autocomplete="off"
                 >
 
             </div>
@@ -252,7 +304,7 @@
                     type="text"
                     id="newSerialNumber"
                     class="serial-new-input hidden"
-                    placeholder="شماره سریال جدید را وارد کنید"
+                    placeholder="شماره سریال جدید"
                     autocomplete="off"
                 >
 
@@ -304,10 +356,8 @@
                 </label>
 
                 <input
-                    type="text"
+                    type="date"
                     id="problemDate"
-                    placeholder="مثلاً ۱۴۰۵/۰۵/۲۴"
-                    autocomplete="off"
                 >
 
             </div>
@@ -320,6 +370,7 @@
     <!-- =====================
          توضیحات
     ====================== -->
+
     <section class="card">
 
         <h2>📝 توضیحات</h2>
@@ -345,8 +396,9 @@
 
 
     <!-- =====================
-         اطلاعات کارشناس
+         کارشناس
     ====================== -->
+
     <section class="card">
 
         <h2>👨‍🔧 اطلاعات کارشناس</h2>
@@ -375,9 +427,8 @@
                 </label>
 
                 <input
-                    type="text"
+                    type="date"
                     id="expertDate"
-                    placeholder="تاریخ"
                 >
 
             </div>
@@ -416,8 +467,9 @@
 
 
     <!-- =====================
-         امضاها
+         امضا
     ====================== -->
+
     <section class="card">
 
         <h2>✍️ تحویل و امضا</h2>
@@ -436,6 +488,7 @@
                 >
 
             </div>
+
 
             <div class="field">
 
@@ -459,11 +512,13 @@
     <!-- =====================
          دکمه‌ها
     ====================== -->
+
     <section class="card action-card">
 
         <button
             id="saveVisitBtn"
             class="btn btn-primary"
+            type="button"
         >
             💾 ذخیره گزارش
         </button>
@@ -471,6 +526,7 @@
         <button
             id="printReportBtn"
             class="btn btn-blue"
+            type="button"
         >
             🖨️ گزارش کار / PDF
         </button>
@@ -481,6 +537,7 @@
     <!-- =====================
          سوابق
     ====================== -->
+
     <section class="card">
 
         <h2>📚 سوابق مراجعه</h2>
@@ -495,8 +552,16 @@
 
 </div>
 
-<script src="script.js"></script>
+
+<!-- =====================================================
+     خیلی مهم:
+     اول Supabase
+     بعد script.js
+====================================================== -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="script.js"></script>
+
 </body>
-                    </html>
+</html>
