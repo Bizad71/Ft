@@ -1,28 +1,23 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>مدیریت مراکز و ربات‌ها</title>
-
+    <title>مدیریت مراکز و گزارش کار</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- =========================
-     صفحه ورود
-========================= -->
+<!-- ================= رمز ورود ================= -->
 
-<section id="loginPage" class="login-page">
+<div id="loginPage" class="login-page">
 
     <div class="login-box">
 
         <div class="login-icon">🔐</div>
 
-        <h1>مدیریت مراکز و ربات‌ها</h1>
+        <h1>مدیریت مراکز</h1>
 
         <p>برای ورود رمز عبور را وارد کنید</p>
 
@@ -41,32 +36,25 @@
             ورود
         </button>
 
-        <div id="loginError" class="login-error">
-            رمز عبور اشتباه است.
-        </div>
+        <div id="loginMessage" class="login-message"></div>
 
     </div>
 
-</section>
+</div>
 
 
-<!-- =========================
-     برنامه اصلی
-========================= -->
+<!-- ================= سایت اصلی ================= -->
 
 <div id="app" class="hidden">
 
     <header class="header">
 
-        <div>
-            <h1>مدیریت مراکز و ربات‌ها</h1>
-            <span>سیستم ثبت گزارش کار</span>
-        </div>
+        <h1>مدیریت مراکز و ربات‌ها</h1>
 
         <button
             type="button"
             id="logoutBtn"
-            class="btn btn-gray"
+            class="logout-btn"
         >
             خروج
         </button>
@@ -77,23 +65,17 @@
     <main class="container">
 
 
-        <!-- =========================
-             صفحه استان‌ها
-        ========================= -->
+        <!-- ================= صفحه استان‌ها ================= -->
 
         <section id="provincePage">
 
             <div class="card intro-card">
 
-                <div class="intro-icon">🇮🇷</div>
+                <h2>🏢 انتخاب استان</h2>
 
-                <div>
-                    <h2>انتخاب استان</h2>
-
-                    <p>
-                        استان موردنظر را انتخاب کنید.
-                    </p>
-                </div>
+                <p>
+                    استان موردنظر را انتخاب کنید.
+                </p>
 
             </div>
 
@@ -106,9 +88,7 @@
         </section>
 
 
-        <!-- =========================
-             صفحه مراکز
-        ========================= -->
+        <!-- ================= صفحه مراکز ================= -->
 
         <section
             id="centersPage"
@@ -126,7 +106,7 @@
                 </button>
 
                 <h2 id="provinceTitle">
-                    مراکز
+                    مراکز استان
                 </h2>
 
             </div>
@@ -137,7 +117,8 @@
                 <div class="section-header">
 
                     <div>
-                        <h2>🏥 مراکز استان</h2>
+                        <h2>🏥 مراکز</h2>
+
                         <p>
                             مرکز موردنظر را انتخاب کنید.
                         </p>
@@ -157,7 +138,7 @@
                 <input
                     type="search"
                     id="centerSearch"
-                    placeholder="🔎 جستجوی نام مرکز..."
+                    placeholder="جستجوی نام مرکز..."
                     autocomplete="off"
                 >
 
@@ -172,7 +153,7 @@
 
             <div
                 id="emptyCenters"
-                class="empty-message hidden"
+                class="empty-message"
             >
                 هنوز مرکزی ثبت نشده است.
             </div>
@@ -180,12 +161,10 @@
         </section>
 
 
-        <!-- =========================
-             صفحه ثبت گزارش
-        ========================= -->
+        <!-- ================= صفحه مرکز ================= -->
 
         <section
-            id="reportPage"
+            id="centerPage"
             class="hidden"
         >
 
@@ -199,20 +178,28 @@
                     ← مراکز
                 </button>
 
-                <h2 id="reportPageTitle">
-                    گزارش کار
+                <h2 id="centerPageTitle">
+                    مرکز جدید
                 </h2>
 
             </div>
 
 
-            <!-- اطلاعات مرکز -->
+            <!-- ================= اطلاعات ثابت مرکز ================= -->
 
             <section class="card">
 
-                <div class="card-title">
+                <div class="section-title">
+
                     <span>🏢</span>
-                    <h2>اطلاعات مرکز</h2>
+
+                    <div>
+                        <h2>اطلاعات مرکز</h2>
+                        <small>
+                            این اطلاعات برای مرکز ذخیره می‌شود.
+                        </small>
+                    </div>
+
                 </div>
 
 
@@ -220,13 +207,14 @@
 
                     <div class="field">
 
-                        <label for="centerName">
+                        <label>
                             نام مرکز
                         </label>
 
                         <input
                             type="text"
                             id="centerName"
+                            autocomplete="off"
                         >
 
                     </div>
@@ -234,56 +222,30 @@
 
                     <div class="field">
 
-                        <label for="centerCity">
-                            شهر
-                        </label>
-
-                        <input
-                            type="text"
-                            id="centerCity"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label for="centerManager">
-                            اسم مسئول
-                        </label>
-
-                        <input
-                            type="text"
-                            id="centerManager"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label for="centerPhone">
+                        <label>
                             شماره تماس
                         </label>
 
                         <input
                             type="tel"
                             id="centerPhone"
+                            autocomplete="off"
                         >
 
                     </div>
 
 
-                    <div class="field full">
+                    <div class="field">
 
-                        <label for="centerAddress">
-                            آدرس
+                        <label>
+                            نام مسئول
                         </label>
 
-                        <textarea
-                            id="centerAddress"
-                            rows="3"
-                        ></textarea>
+                        <input
+                            type="text"
+                            id="centerManager"
+                            autocomplete="off"
+                        >
 
                     </div>
 
@@ -292,13 +254,21 @@
             </section>
 
 
-            <!-- انتخاب ربات -->
+            <!-- ================= اطلاعات ثابت ربات ================= -->
 
             <section class="card">
 
-                <div class="card-title">
+                <div class="section-title">
+
                     <span>🤖</span>
-                    <h2>انتخاب ربات</h2>
+
+                    <div>
+                        <h2>اطلاعات ربات</h2>
+                        <small>
+                            اطلاعات دستگاه برای این مرکز ذخیره می‌شود.
+                        </small>
+                    </div>
+
                 </div>
 
 
@@ -309,8 +279,7 @@
                         class="robot-card"
                         data-robot="4102"
                     >
-                        <strong>4102</strong>
-                        <span>Robot</span>
+                        <span>4102</span>
                     </button>
 
 
@@ -319,8 +288,7 @@
                         class="robot-card"
                         data-robot="4202"
                     >
-                        <strong>4202</strong>
-                        <span>Robot</span>
+                        <span>4202</span>
                     </button>
 
 
@@ -329,22 +297,9 @@
                         class="robot-card"
                         data-robot="Rimage"
                     >
-                        <strong>Rimage</strong>
-                        <span>Robot</span>
+                        <span>Rimage</span>
                     </button>
 
-                </div>
-
-            </section>
-
-
-            <!-- اطلاعات دستگاه -->
-
-            <section class="card">
-
-                <div class="card-title">
-                    <span>⚙️</span>
-                    <h2>اطلاعات دستگاه</h2>
                 </div>
 
 
@@ -352,8 +307,8 @@
 
                     <div class="field">
 
-                        <label for="robotModel">
-                            مدل دستگاه
+                        <label>
+                            مدل ربات
                         </label>
 
                         <input
@@ -367,27 +322,14 @@
 
                     <div class="field">
 
-                        <label for="robotSerial">
-                            شماره سریال دستگاه
+                        <label>
+                            Serial Number
                         </label>
 
                         <input
                             type="text"
                             id="robotSerial"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label for="robotIP">
-                            IP Address
-                        </label>
-
-                        <input
-                            type="text"
-                            id="robotIP"
+                            autocomplete="off"
                         >
 
                     </div>
@@ -395,33 +337,58 @@
                 </div>
 
 
-                <div class="label-info">
+                <!-- لینک لیبل ثابت مرکز -->
 
-                    <span>🏷️ لینک لیبل:</span>
+                <div
+                    id="labelSection"
+                    class="label-section hidden"
+                >
 
-                    <strong id="labelLinkPreview">
-                        پس از وارد کردن شماره سریال ایجاد می‌شود
-                    </strong>
+                    <div class="label-icon">
+                        🏷️
+                    </div>
+
+                    <div class="label-info">
+
+                        <strong>
+                            فایل لیبل دستگاه
+                        </strong>
+
+                        <span id="labelText">
+                            هنوز Serial Number ثبت نشده است.
+                        </span>
+
+                    </div>
+
+
+                    <a
+                        id="labelDownload"
+                        href="#"
+                        target="_blank"
+                        class="btn btn-blue hidden"
+                    >
+                        دانلود لیبل
+                    </a>
 
                 </div>
 
             </section>
 
 
-            <!-- چک لیست -->
+            <!-- ================= گزارش مراجعه جدید ================= -->
 
             <section class="card">
 
-                <div class="card-title">
+                <div class="section-title">
 
-                    <span>✅</span>
+                    <span>📋</span>
 
                     <div>
-                        <h2>کارهای انجام‌شده</h2>
+                        <h2>گزارش کار جدید</h2>
 
-                        <p>
-                            موارد انجام‌شده را علامت بزنید.
-                        </p>
+                        <small>
+                            موارد انجام‌شده در این مراجعه را انتخاب کنید.
+                        </small>
                     </div>
 
                 </div>
@@ -432,45 +399,40 @@
                     class="checklist"
                 ></div>
 
-            </section>
 
+                <div class="field extra-field">
 
-            <!-- کار متفرقه -->
+                    <label>
+                        کارهای متفرقه
+                    </label>
 
-            <section class="card">
+                    <textarea
+                        id="extraWork"
+                        placeholder="کارهای دیگری که انجام شده..."
+                    ></textarea>
 
-                <div class="card-title">
-                    <span>📝</span>
-                    <h2>کارهای متفرقه</h2>
                 </div>
 
-
-                <textarea
-                    id="extraWork"
-                    rows="5"
-                    placeholder="اگر کار دیگری انجام شده است اینجا بنویسید..."
-                ></textarea>
-
             </section>
 
 
-            <!-- دکمه‌ها -->
+            <!-- ================= عملیات ================= -->
 
             <section class="card action-card">
 
                 <button
                     type="button"
-                    id="saveVisitBtn"
-                    class="btn btn-primary big-btn"
+                    id="saveBtn"
+                    class="btn btn-primary"
                 >
-                    💾 ذخیره گزارش
+                    💾 ذخیره مراجعه
                 </button>
 
 
                 <button
                     type="button"
-                    id="printReportBtn"
-                    class="btn btn-blue big-btn"
+                    id="reportBtn"
+                    class="btn btn-blue"
                 >
                     🖨️ گزارش کار / PDF
                 </button>
@@ -478,17 +440,25 @@
             </section>
 
 
-            <!-- سوابق -->
+            <!-- ================= سوابق ================= -->
 
             <section class="card">
 
-                <div class="card-title">
+                <div class="section-title">
+
                     <span>📚</span>
-                    <h2>سوابق مراجعه</h2>
+
+                    <div>
+                        <h2>سوابق مراجعه</h2>
+                    </div>
+
                 </div>
 
 
-                <div id="history"></div>
+                <div
+                    id="history"
+                    class="history"
+                ></div>
 
             </section>
 
