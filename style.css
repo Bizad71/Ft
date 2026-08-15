@@ -29,7 +29,9 @@ button {
 }
 
 
-/* ================= ورود ================= */
+/* =========================================================
+   ورود
+========================================================= */
 
 .login-page {
     min-height: 100vh;
@@ -72,7 +74,9 @@ button {
 }
 
 
-/* ================= Header ================= */
+/* =========================================================
+   Header
+========================================================= */
 
 .header {
     background: #161b22;
@@ -87,7 +91,9 @@ button {
 }
 
 
-/* ================= Container ================= */
+/* =========================================================
+   Container
+========================================================= */
 
 .container {
     width: 100%;
@@ -97,7 +103,9 @@ button {
 }
 
 
-/* ================= Card ================= */
+/* =========================================================
+   Card
+========================================================= */
 
 .card {
     background: #161b22;
@@ -116,7 +124,9 @@ button {
 }
 
 
-/* ================= استان ================= */
+/* =========================================================
+   استان
+========================================================= */
 
 .province-grid {
     display: grid;
@@ -143,7 +153,9 @@ button {
 }
 
 
-/* ================= Toolbar ================= */
+/* =========================================================
+   Toolbar
+========================================================= */
 
 .page-toolbar {
     display: flex;
@@ -157,116 +169,243 @@ button {
 }
 
 
-/* ================= جستجوی پیشرفته ================= */
+/* =========================================================
+   مسیر
+========================================================= */
 
-.advanced-search {
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
     margin-bottom: 18px;
-}
-
-.advanced-search h2 {
-    margin-bottom: 15px;
-}
-
-.search-row {
-    display: grid;
-    grid-template-columns: 260px 1fr auto;
-    gap: 10px;
-}
-
-.search-row select,
-.search-row input {
-    min-height: 46px;
-}
-
-
-/* ================= مراکز ================= */
-
-.centers-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-}
-
-.center-box {
-    background: #0d1117;
-    border: 1px solid #30363d;
-    border-radius: 15px;
-    padding: 18px;
-}
-
-.center-box h3 {
-    margin-top: 0;
-    margin-bottom: 12px;
-}
-
-.center-box p {
-    color: #8b949e;
-}
-
-.center-box .btn {
-    width: 100%;
-    margin-top: 8px;
-}
-
-
-/* ================= اطلاعات بخش / ربات ================= */
-
-.section-info {
-    margin-top: 15px;
-    padding: 14px;
+    padding: 12px 16px;
     background: #161b22;
     border: 1px solid #30363d;
     border-radius: 12px;
-}
-
-.section-info h4 {
-    margin: 0 0 10px;
-    color: #58a6ff;
-}
-
-.robot-section {
-    margin-top: 12px;
-    padding: 14px;
-    background: #0d1117;
-    border: 1px solid #30363d;
-    border-radius: 12px;
-}
-
-.robot-section-title {
-    font-weight: bold;
-    color: #58a6ff;
-    margin-bottom: 8px;
-}
-
-.robot-section-info {
     color: #c9d1d9;
-    line-height: 1.9;
 }
 
-.robot-links {
+.breadcrumb span {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.breadcrumb-arrow {
+    color: #58a6ff;
+    font-size: 20px !important;
+}
+
+
+/* =========================================================
+   Toolbar ساختار
+========================================================= */
+
+.hierarchy-toolbar {
     display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.hierarchy-toolbar h2 {
+    margin: 0 0 8px;
+}
+
+.hierarchy-toolbar p {
+    margin: 0;
+}
+
+
+/* =========================================================
+   بیمارستان‌ها
+========================================================= */
+
+.hierarchy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.hospital-card {
+    min-height: 150px;
+    padding: 25px 18px;
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 16px;
+    color: #fff;
+    text-align: center;
+    transition: .2s;
+}
+
+.hospital-card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff;
+    background: #1c2128;
+}
+
+.hospital-icon {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.hospital-title {
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.hospital-info {
     margin-top: 10px;
+    color: #8b949e;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   بخش‌ها
+========================================================= */
+
+.section-card {
+    min-height: 145px;
+    padding: 22px;
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 16px;
+    color: #fff;
+    text-align: center;
+    transition: .2s;
+}
+
+.section-card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff;
+    background: #1c2128;
+}
+
+.section-icon {
+    font-size: 38px;
+    margin-bottom: 10px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.section-info-count {
+    margin-top: 10px;
+    color: #8b949e;
+}
+
+
+/* =========================================================
+   ربات‌ها
+========================================================= */
+
+.robot-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.robot-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.robot-card h3 {
+    margin-top: 0;
+    color: #58a6ff;
+    font-size: 19px;
+}
+
+.robot-detail {
+    padding: 8px 0;
+    color: #c9d1d9;
+    border-bottom: 1px solid #21262d;
+}
+
+.robot-detail strong {
+    color: #8b949e;
 }
 
 .robot-link {
-    display: inline-block;
-    padding: 8px 12px;
-    border-radius: 8px;
+    display: block;
+    margin-top: 14px;
+    padding: 11px 14px;
+    border-radius: 10px;
     background: #1f6feb;
     color: #fff;
     text-decoration: none;
-    font-size: 13px;
+    text-align: center;
     font-weight: bold;
+    font-size: 13px;
 }
 
 .robot-link:hover {
     opacity: .9;
 }
 
+.no-link {
+    margin-top: 14px;
+    padding: 10px;
+    border-radius: 10px;
+    background: #21262d;
+    color: #8b949e;
+    text-align: center;
+    font-size: 13px;
+}
 
-/* ================= فرم ================= */
+.robot-report-button {
+    width: 100%;
+    margin-top: 14px;
+}
+
+
+/* =========================================================
+   سابقه هر ربات
+========================================================= */
+
+.robot-history-title {
+    margin: 20px 0 10px;
+    padding-top: 15px;
+    border-top: 1px solid #30363d;
+    color: #c9d1d9;
+}
+
+.robot-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.robot-history-item {
+    padding: 13px;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 11px;
+}
+
+.robot-history-item strong {
+    color: #58a6ff;
+}
+
+.no-history {
+    padding: 12px;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    color: #8b949e;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   فرم
+========================================================= */
 
 .form-grid {
     display: grid;
@@ -306,7 +445,9 @@ input[readonly] {
 }
 
 
-/* ================= توضیحات ================= */
+/* =========================================================
+   توضیحات
+========================================================= */
 
 .description-box {
     border: 1px solid #30363d;
@@ -332,7 +473,9 @@ input[readonly] {
 }
 
 
-/* ================= سریال ================= */
+/* =========================================================
+   سریال
+========================================================= */
 
 .serial-new-input {
     margin-top: 10px;
@@ -345,7 +488,9 @@ input[readonly] {
 }
 
 
-/* ================= دکمه ================= */
+/* =========================================================
+   دکمه‌ها
+========================================================= */
 
 .btn {
     border: none;
@@ -387,7 +532,9 @@ input[readonly] {
 }
 
 
-/* ================= سوابق ================= */
+/* =========================================================
+   سوابق
+========================================================= */
 
 .history-item {
     padding: 18px;
@@ -416,7 +563,7 @@ input[readonly] {
 
 .history-actions .btn {
     flex: 1;
-    min-width: 100px;
+    min-width: 90px;
 }
 
 .empty-message {
@@ -426,10 +573,23 @@ input[readonly] {
 }
 
 
-/* ================= نمایش کامل گزارش ================= */
+/* =========================================================
+   نمایش کامل گزارش
+========================================================= */
 
 .visit-details {
-    line-height: 2;
+    margin-bottom: 20px;
+}
+
+.visit-details-card {
+    padding: 20px;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 14px;
+}
+
+.visit-details-card h2 {
+    margin-top: 0;
 }
 
 .visit-details-row {
@@ -440,7 +600,7 @@ input[readonly] {
 }
 
 .visit-detail {
-    background: #0d1117;
+    background: #161b22;
     border: 1px solid #30363d;
     border-radius: 10px;
     padding: 12px;
@@ -452,14 +612,28 @@ input[readonly] {
     margin-bottom: 5px;
 }
 
+.visit-file-box {
+    margin: 15px 0;
+    padding: 15px;
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+}
 
-/* ================= لینک فایل ================= */
+.visit-file-box strong {
+    display: block;
+    margin-bottom: 8px;
+}
+
+
+/* =========================================================
+   لینک فایل
+========================================================= */
 
 .file-link {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    margin-top: 8px;
     padding: 9px 13px;
     border-radius: 9px;
     background: #1f6feb;
@@ -474,7 +648,9 @@ input[readonly] {
 }
 
 
-/* ================= پیام ================= */
+/* =========================================================
+   پیام
+========================================================= */
 
 .success-message {
     padding: 12px;
@@ -493,29 +669,28 @@ input[readonly] {
 }
 
 
-/* ================= موبایل ================= */
+/* =========================================================
+   موبایل
+========================================================= */
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
 
     .province-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .hierarchy-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .centers-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .search-row {
+    .robot-grid {
         grid-template-columns: 1fr;
     }
 
-    .visit-details-row {
-        grid-template-columns: 1fr;
-    }
 }
 
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
 
     .container {
         padding: 12px;
@@ -530,13 +705,7 @@ input[readonly] {
         gap: 10px;
     }
 
-    .province-card {
-        min-height: 75px;
-        font-size: 15px;
-        padding: 10px;
-    }
-
-    .centers-grid {
+    .hierarchy-grid {
         grid-template-columns: 1fr;
     }
 
@@ -551,6 +720,16 @@ input[readonly] {
     .page-toolbar h2 {
         order: -1;
         text-align: center;
+    }
+
+    .hierarchy-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+
+    .hierarchy-toolbar .btn {
+        width: 100%;
     }
 
     .action-card {
@@ -573,16 +752,12 @@ input[readonly] {
         font-size: 20px;
     }
 
-    .search-row {
+    .visit-details-row {
         grid-template-columns: 1fr;
     }
 
-    .robot-links {
-        flex-direction: column;
+    .breadcrumb {
+        justify-content: center;
     }
 
-    .robot-link {
-        width: 100%;
-        text-align: center;
-    }
-}
+        }
