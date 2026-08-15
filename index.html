@@ -86,7 +86,7 @@
     </div>
 
 
-    <!-- جستجوی پیشرفته -->
+    <!-- ================= جستجوی پیشرفته ================= -->
 
     <div class="card advanced-search">
 
@@ -113,6 +113,7 @@
                 placeholder="نام مرکز را وارد کنید..."
                 autocomplete="off"
             >
+
 
             <button
                 id="clearSearchBtn"
@@ -179,7 +180,7 @@
     </div>
 
 
-    <!-- اطلاعات مرکز -->
+    <!-- ================= اطلاعات مرکز ================= -->
 
     <section class="card">
 
@@ -198,6 +199,7 @@
 
             </div>
 
+
             <div class="field">
 
                 <label>بخش</label>
@@ -214,7 +216,7 @@
     </section>
 
 
-    <!-- اطلاعات مراجعه -->
+    <!-- ================= اطلاعات مراجعه ================= -->
 
     <section class="card">
 
@@ -222,6 +224,8 @@
 
         <div class="form-grid">
 
+
+            <!-- تاریخ مراجعه -->
 
             <div class="field">
 
@@ -237,6 +241,8 @@
 
             </div>
 
+
+            <!-- مدل دستگاه -->
 
             <div class="field">
 
@@ -265,6 +271,8 @@
             </div>
 
 
+            <!-- شماره سریال -->
+
             <div class="field">
 
                 <label>شماره سریال</label>
@@ -277,12 +285,14 @@
 
                 </select>
 
+
                 <input
                     type="text"
                     id="newSerialNumber"
                     class="serial-new-input hidden"
                     placeholder="شماره سریال جدید"
                 >
+
 
                 <button
                     id="newSerialBtn"
@@ -294,6 +304,39 @@
 
             </div>
 
+
+            <!-- بخش ربات -->
+
+            <div class="field">
+
+                <label>بخش ربات</label>
+
+                <input
+                    type="text"
+                    id="deviceSection"
+                    placeholder="مثلاً قلب، ICU، رادیولوژی..."
+                >
+
+            </div>
+
+
+            <!-- لینک مشخصات ربات -->
+
+            <div class="field">
+
+                <label>لینک مشخصات ربات</label>
+
+                <input
+                    type="url"
+                    id="deviceSpecLink"
+                    placeholder="لینک GitHub یا فایل ZIP"
+                    dir="ltr"
+                >
+
+            </div>
+
+
+            <!-- موضوع مشکل -->
 
             <div class="field">
 
@@ -307,6 +350,8 @@
             </div>
 
 
+            <!-- گزارش شده توسط -->
+
             <div class="field">
 
                 <label>گزارش شده توسط</label>
@@ -318,6 +363,8 @@
 
             </div>
 
+
+            <!-- تاریخ اعلام مشکل -->
 
             <div class="field">
 
@@ -338,7 +385,7 @@
     </section>
 
 
-    <!-- توضیحات -->
+    <!-- ================= توضیحات ================= -->
 
     <section class="card">
 
@@ -364,7 +411,7 @@
     </section>
 
 
-    <!-- کارشناس -->
+    <!-- ================= کارشناس ================= -->
 
     <section class="card">
 
@@ -428,7 +475,7 @@
     </section>
 
 
-    <!-- تحویل -->
+    <!-- ================= تحویل ================= -->
 
     <section class="card">
 
@@ -465,7 +512,7 @@
     </section>
 
 
-    <!-- دکمه‌ها -->
+    <!-- ================= دکمه‌ها ================= -->
 
     <section class="card action-card">
 
@@ -486,7 +533,7 @@
     </section>
 
 
-    <!-- سوابق -->
+    <!-- ================= سوابق ================= -->
 
     <section class="card">
 
@@ -503,9 +550,12 @@
 </div>
 
 
+<!-- ================= Supabase ================= -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="script.js"></script>
 
 </body>
+
 </html>
