@@ -1439,6 +1439,37 @@ function renderDevices() {
                 "📦 فایل مشخصات";
 
 
+            /* =================================================
+               حذف ربات
+            ================================================= */
+
+            const deleteBtn =
+                document.createElement(
+                    "button"
+                );
+
+            deleteBtn.type =
+                "button";
+
+            deleteBtn.className =
+                "btn btn-danger";
+
+            deleteBtn.textContent =
+                "🗑 حذف ربات";
+
+
+            deleteBtn.onclick =
+                function(event) {
+
+                    event.stopPropagation();
+
+                    deleteDevice(
+                        device.id
+                    );
+
+                };
+
+
             box.appendChild(
                 model
             );
@@ -1453,6 +1484,10 @@ function renderDevices() {
 
             box.appendChild(
                 open
+            );
+
+            box.appendChild(
+                deleteBtn
             );
 
 
@@ -2463,13 +2498,6 @@ function viewVisit(
         );
 
 
-    if (!content) {
-
-        return;
-
-    }
-
-
     content.textContent =
         visit.description ||
         "توضیحی برای این گزارش ثبت نشده است.";
@@ -2653,6 +2681,128 @@ async function deleteVisit(
 
         alert(
             "حذف گزارش انجام نشد:\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   حذف ربات
+========================================================= */
+
+async function deleteDevice(
+    id
+) {
+
+    const device =
+        database.devices.find(
+            function(device) {
+
+                return String(
+                    device.id
+                ) ===
+                String(id);
+
+            }
+        );
+
+
+    if (!device) {
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            "آیا از حذف ربات «" +
+            (
+                device.model ||
+                "ربات"
+            ) +
+            "» با سریال «" +
+            (
+                device.serial ||
+                "-"
+            ) +
+            "» مطمئن هستید؟\n\n" +
+            "تمام گزارش‌های این ربات نیز حذف خواهند شد."
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        /* حذف گزارش‌های مربوط به ربات */
+
+        const visitsResult =
+            await supabaseClient
+                .from("visits")
+                .delete()
+                .eq(
+                    "device_id",
+                    id
+                );
+
+
+        if (visitsResult.error) {
+
+            throw visitsResult.error;
+
+        }
+
+
+        /* حذف خود ربات */
+
+        const deviceResult =
+            await supabaseClient
+                .from("devices")
+                .delete()
+                .eq(
+                    "id",
+                    id
+                );
+
+
+        if (deviceResult.error) {
+
+            throw deviceResult.error;
+
+        }
+
+
+        /* بروزرسانی اطلاعات */
+
+        await loadDatabase();
+
+
+        alert(
+            "ربات با موفقیت حذف شد."
+        );
+
+
+        renderDevices();
+
+
+    } catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        alert(
+            "حذف ربات انجام نشد:\n" +
             error.message
         );
 
