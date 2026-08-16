@@ -637,7 +637,9 @@ async function loadDatabase() {
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            error
+        );
 
         alert(
             "خطا در دریافت اطلاعات:\n" +
@@ -983,7 +985,7 @@ function renderCenters() {
         ).toLowerCase();
 
 
-    const centers =
+    let centers =
         database.centers.filter(
             function(center) {
 
@@ -997,7 +999,9 @@ function renderCenters() {
                         center.name || ""
                     )
                         .toLowerCase()
-                        .includes(query);
+                        .includes(
+                            query
+                        );
 
                 return (
                     sameProvince &&
@@ -1255,10 +1259,13 @@ function openSection(
     currentSection =
         section;
 
+
     currentDevice =
         null;
 
+
     hideAllPages();
+
 
     getElement(
         "devicesPage"
@@ -1266,11 +1273,13 @@ function openSection(
         "hidden"
     );
 
+
     getElement(
         "sectionTitle"
     ).textContent =
         "ربات‌های " +
         section;
+
 
     renderDevices();
 
@@ -1430,18 +1439,194 @@ function renderDevices() {
                 "📦 فایل مشخصات";
 
 
-            box.appendChild(model);
+            /* =================================================
+               حذف ربات
+            ================================================= */
 
-            box.appendChild(serial);
+            const deleteButton =
+                document.createElement(
+                    "button"
+                );
 
-            box.appendChild(zipLink);
+            deleteButton.type =
+                "button";
 
-            box.appendChild(open);
+            deleteButton.className =
+                "btn btn-danger";
 
-            grid.appendChild(box);
+            deleteButton.textContent =
+                "🗑 حذف ربات";
+
+            deleteButton.onclick =
+                function() {
+
+                    deleteDevice(
+                        device.id
+                    );
+
+                };
+
+
+            box.appendChild(
+                model
+            );
+
+            box.appendChild(
+                serial
+            );
+
+            box.appendChild(
+                zipLink
+            );
+
+            box.appendChild(
+                open
+            );
+
+            box.appendChild(
+                deleteButton
+            );
+
+
+            grid.appendChild(
+                box
+            );
 
         }
     );
+
+}
+
+
+/* =========================================================
+   حذف ربات
+========================================================= */
+
+async function deleteDevice(
+    id
+) {
+
+    const device =
+        database.devices.find(
+            function(item) {
+
+                return String(
+                    item.id
+                ) ===
+                String(id);
+
+            }
+        );
+
+
+    if (!device) {
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            "آیا از حذف ربات «" +
+            (
+                device.model ||
+                "ربات"
+            ) +
+            "» با سریال «" +
+            (
+                device.serial ||
+                "-"
+            ) +
+            "» مطمئن هستید؟"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const visits =
+            database.visits.filter(
+                function(visit) {
+
+                    return String(
+                        visit.device_id
+                    ) ===
+                    String(
+                        device.id
+                    );
+
+                }
+            );
+
+
+        if (visits.length) {
+
+            const visitResult =
+                await supabaseClient
+                    .from("visits")
+                    .delete()
+                    .eq(
+                        "device_id",
+                        device.id
+                    );
+
+
+            if (visitResult.error) {
+
+                throw visitResult.error;
+
+            }
+
+        }
+
+
+        const result =
+            await supabaseClient
+                .from("devices")
+                .delete()
+                .eq(
+                    "id",
+                    device.id
+                );
+
+
+        if (result.error) {
+
+            throw result.error;
+
+        }
+
+
+        await loadDatabase();
+
+
+        currentDevice =
+            null;
+
+
+        renderDevices();
+
+
+        alert(
+            "ربات با موفقیت حذف شد."
+        );
+
+
+    } catch (error) {
+
+        alert(
+            "حذف ربات انجام نشد:\n" +
+            error.message
+        );
+
+    }
 
 }
 
@@ -1476,13 +1661,16 @@ function openDevice(
     currentDevice =
         device;
 
+
     hideAllPages();
+
 
     getElement(
         "robotPage"
     )?.classList.remove(
         "hidden"
     );
+
 
     getElement(
         "robotTitle"
@@ -1491,17 +1679,20 @@ function openDevice(
         " — " +
         device.serial;
 
+
     getElement(
         "robotSectionText"
     ).textContent =
         device.section_name ||
         "-";
 
+
     getElement(
         "robotModelText"
     ).textContent =
         device.model ||
         "-";
+
 
     getElement(
         "robotSerialText"
@@ -1514,6 +1705,7 @@ function openDevice(
         getElement(
             "robotZipLink"
         );
+
 
     if (zip) {
 
@@ -1647,6 +1839,7 @@ async function saveNewCenter() {
             "centerModal"
         );
 
+
         renderCenters();
 
 
@@ -1666,22 +1859,262 @@ async function saveNewCenter() {
    ثبت دستگاه
 ========================================================= */
 
+function setupDeviceModalOptions() {
+
+    const sectionSelect =
+        getElement(
+            "newDeviceSection"
+        );
+
+    const modelSelect =
+        getElement(
+            "newDeviceModel"
+        );
+
+
+    if (sectionSelect) {
+
+        sectionSelect.innerHTML = "";
+
+        const sectionDefault =
+            document.createElement(
+                "option"
+            );
+
+        sectionDefault.value = "";
+
+        sectionDefault.textContent =
+            "انتخاب بخش";
+
+        sectionSelect.appendChild(
+            sectionDefault
+        );
+
+
+        const sections = [
+
+            "تصویربرداری",
+            "CatLab",
+            "PTscan",
+            "MRI",
+            "CTscan",
+            "سایر"
+
+        ];
+
+
+        sections.forEach(
+            function(section) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    section;
+
+                option.textContent =
+                    section;
+
+                sectionSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+
+    if (modelSelect) {
+
+        modelSelect.innerHTML = "";
+
+        const modelDefault =
+            document.createElement(
+                "option"
+            );
+
+        modelDefault.value = "";
+
+        modelDefault.textContent =
+            "انتخاب مدل";
+
+        modelSelect.appendChild(
+            modelDefault
+        );
+
+
+        const models = [
+
+            "4102",
+            "4102xpr",
+            "4202",
+            "4202xpr",
+            "RIMAGE"
+
+        ];
+
+
+        models.forEach(
+            function(model) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    model;
+
+                option.textContent =
+                    model;
+
+                modelSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+}
+
+
+function setupOtherSectionInput() {
+
+    const sectionSelect =
+        getElement(
+            "newDeviceSection"
+        );
+
+
+    if (!sectionSelect) {
+
+        return;
+
+    }
+
+
+    let otherField =
+        getElement(
+            "otherSectionField"
+        );
+
+
+    if (!otherField) {
+
+        otherField =
+            document.createElement(
+                "div"
+            );
+
+        otherField.id =
+            "otherSectionField";
+
+        otherField.className =
+            "field hidden";
+
+
+        const label =
+            document.createElement(
+                "label"
+            );
+
+        label.textContent =
+            "نام بخش";
+
+
+        const input =
+            document.createElement(
+                "input"
+            );
+
+        input.type =
+            "text";
+
+        input.id =
+            "newDeviceOtherSection";
+
+        input.placeholder =
+            "مثلاً CTAngio";
+
+
+        otherField.appendChild(
+            label
+        );
+
+        otherField.appendChild(
+            input
+        );
+
+
+        sectionSelect
+            .parentElement
+            ?.after(
+                otherField
+            );
+
+    }
+
+
+    sectionSelect.onchange =
+        function() {
+
+            const field =
+                getElement(
+                    "otherSectionField"
+                );
+
+            const input =
+                getElement(
+                    "newDeviceOtherSection"
+                );
+
+
+            if (
+                this.value ===
+                "سایر"
+            ) {
+
+                field?.classList.remove(
+                    "hidden"
+                );
+
+                input?.focus();
+
+            } else {
+
+                field?.classList.add(
+                    "hidden"
+                );
+
+                if (input) {
+
+                    input.value =
+                        "";
+
+                }
+
+            }
+
+        };
+
+}
+
+
 function openDeviceModal() {
+
+    setupDeviceModalOptions();
+
+    setupOtherSectionInput();
+
 
     setValue(
         "newDeviceSection",
         ""
-    );
-
-    setValue(
-        "customSectionName",
-        ""
-    );
-
-    getElement(
-        "customSectionField"
-    )?.classList.add(
-        "hidden"
     );
 
     setValue(
@@ -1691,7 +2124,28 @@ function openDeviceModal() {
 
     setValue(
         "newDeviceSerial",
-        "");
+        ""
+    );
+
+
+    const otherInput =
+        getElement(
+            "newDeviceOtherSection"
+        );
+
+    if (otherInput) {
+
+        otherInput.value =
+            "";
+
+    }
+
+
+    getElement(
+        "otherSectionField"
+    )?.classList.add(
+        "hidden"
+    );
 
 
     getElement(
@@ -1703,10 +2157,6 @@ function openDeviceModal() {
 }
 
 
-/* =========================================================
-   ذخیره دستگاه
-========================================================= */
-
 async function saveNewDevice() {
 
     if (!currentCenter) {
@@ -1716,40 +2166,10 @@ async function saveNewDevice() {
     }
 
 
-    const selectedSection =
+    let section =
         getValue(
             "newDeviceSection"
         );
-
-
-    let section =
-        selectedSection;
-
-
-    /* اگر سایر انتخاب شده باشد */
-
-    if (
-        selectedSection ===
-        "سایر"
-    ) {
-
-        section =
-            getValue(
-                "customSectionName"
-            );
-
-        if (!section) {
-
-            alert(
-                "نام بخش را وارد کنید."
-            );
-
-            return;
-
-        }
-
-    }
-
 
     const model =
         getValue(
@@ -1762,13 +2182,37 @@ async function saveNewDevice() {
         );
 
 
-    if (!selectedSection) {
+    if (!section) {
 
         alert(
             "بخش را انتخاب کنید."
         );
 
         return;
+
+    }
+
+
+    if (
+        section ===
+        "سایر"
+    ) {
+
+        section =
+            getValue(
+                "newDeviceOtherSection"
+            );
+
+
+        if (!section) {
+
+            alert(
+                "نام بخش را وارد کنید."
+            );
+
+            return;
+
+        }
 
     }
 
@@ -1809,12 +2253,8 @@ async function saveNewDevice() {
                     &&
                     String(
                         device.serial
-                    )
-                        .trim()
-                        .toLowerCase() ===
-                    serial
-                        .trim()
-                        .toLowerCase()
+                    ).trim().toLowerCase() ===
+                    serial.trim().toLowerCase()
                 );
 
             }
@@ -2171,10 +2611,6 @@ async function saveVisit() {
             null;
 
 
-        const currentDeviceId =
-            currentDevice.id;
-
-
         await loadDatabase();
 
 
@@ -2186,7 +2622,7 @@ async function saveVisit() {
                         device.id
                     ) ===
                     String(
-                        currentDeviceId
+                        currentDevice.id
                     );
 
                 }
@@ -2395,17 +2831,43 @@ function renderHistory() {
                 };
 
 
-            actions.appendChild(view);
-            actions.appendChild(edit);
-            actions.appendChild(print);
-            actions.appendChild(del);
+            actions.appendChild(
+                view
+            );
 
-            box.appendChild(title);
-            box.appendChild(subject);
-            box.appendChild(reporter);
-            box.appendChild(actions);
+            actions.appendChild(
+                edit
+            );
 
-            history.appendChild(box);
+            actions.appendChild(
+                print
+            );
+
+            actions.appendChild(
+                del
+            );
+
+
+            box.appendChild(
+                title
+            );
+
+            box.appendChild(
+                subject
+            );
+
+            box.appendChild(
+                reporter
+            );
+
+            box.appendChild(
+                actions
+            );
+
+
+            history.appendChild(
+                box
+            );
 
         }
     );
@@ -2459,13 +2921,6 @@ function viewVisit(
         getElement(
             "descriptionModalContent"
         );
-
-
-    if (!content) {
-
-        return;
-
-    }
 
 
     content.textContent =
@@ -2856,14 +3311,18 @@ function printVisit(
     const centerName =
         currentCenter?.name || "-";
 
+
     const section =
         device?.section_name || "-";
+
 
     const model =
         device?.model || "-";
 
+
     const serial =
         device?.serial || "-";
+
 
     const description =
         visit.description || "-";
@@ -2875,7 +3334,10 @@ function printVisit(
 
 <!DOCTYPE html>
 
-<html lang="fa" dir="rtl">
+<html
+    lang="fa"
+    dir="rtl"
+>
 
 <head>
 
@@ -2885,146 +3347,293 @@ function printVisit(
 گزارش کار - ${escapeHTML(centerName)}
 </title>
 
+
 <style>
 
 @page {
+
     size: A4;
+
     margin: 15mm;
+
 }
+
 
 * {
+
     box-sizing: border-box;
+
 }
+
 
 body {
-    font-family: Tahoma, Arial, sans-serif;
+
+    font-family:
+        Tahoma,
+        Arial,
+        sans-serif;
+
     color: #111;
+
     font-size: 13px;
+
     line-height: 1.8;
+
 }
+
 
 h1 {
+
     text-align: center;
+
     margin-bottom: 25px;
+
 }
+
 
 .info-grid {
+
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
     gap: 8px;
+
 }
+
 
 .field {
-    border: 1px solid #333;
+
+    border:
+        1px solid #333;
+
 }
+
 
 .label {
+
     background: #eee;
+
     padding: 6px;
+
     font-weight: bold;
-    border-bottom: 1px solid #333;
+
+    border-bottom:
+        1px solid #333;
+
 }
+
 
 .value {
+
     padding: 9px;
+
     min-height: 35px;
+
 }
+
 
 .description {
+
     margin-top: 15px;
-    border: 1px solid #333;
+
+    border:
+        1px solid #333;
+
 }
+
 
 .description-title {
+
     padding: 8px;
+
     background: #eee;
+
     font-weight: bold;
-    border-bottom: 1px solid #333;
+
+    border-bottom:
+        1px solid #333;
+
 }
+
 
 .description-text {
+
     min-height: 180px;
+
     padding: 15px;
+
     white-space: pre-wrap;
+
 }
+
 
 .signatures {
+
     display: flex;
-    justify-content: space-between;
+
+    justify-content:
+        space-between;
+
     margin-top: 70px;
+
 }
+
 
 .signature {
+
     width: 40%;
+
     text-align: center;
+
 }
 
+
 .line {
+
     margin-top: 50px;
-    border-bottom: 1px solid #111;
+
+    border-bottom:
+        1px solid #111;
+
 }
+
 
 </style>
 
 </head>
 
+
 <body>
+
 
 <h1>
 گزارش کار
 </h1>
 
+
 <div class="info-grid">
 
-<div class="field">
-<div class="label">نام مرکز</div>
-<div class="value">${escapeHTML(centerName)}</div>
-</div>
 
 <div class="field">
-<div class="label">بخش</div>
-<div class="value">${escapeHTML(section)}</div>
+
+<div class="label">
+نام مرکز
 </div>
 
-<div class="field">
-<div class="label">تاریخ مراجعه</div>
 <div class="value">
-${escapeHTML(isoToJalali(visit.visit_date))}
-</div>
-</div>
-
-<div class="field">
-<div class="label">مدل دستگاه</div>
-<div class="value">${escapeHTML(model)}</div>
+${escapeHTML(centerName)}
 </div>
 
-<div class="field">
-<div class="label">شماره سریال</div>
-<div class="value">${escapeHTML(serial)}</div>
 </div>
 
+
 <div class="field">
-<div class="label">موضوع مشکل</div>
+
+<div class="label">
+بخش
+</div>
+
 <div class="value">
-${escapeHTML(visit.problem_subject || "-")}
+${escapeHTML(section)}
 </div>
+
 </div>
+
 
 <div class="field">
-<div class="label">گزارش شده توسط</div>
+
+<div class="label">
+تاریخ مراجعه
+</div>
+
 <div class="value">
-${escapeHTML(visit.reported_by || "-")}
+${escapeHTML(
+    isoToJalali(
+        visit.visit_date
+    )
+)}
 </div>
+
 </div>
+
 
 <div class="field">
-<div class="label">تاریخ اعلام مشکل</div>
-<div class="value">
-${escapeHTML(isoToJalali(visit.problem_date))}
+
+<div class="label">
+مدل دستگاه
 </div>
+
+<div class="value">
+${escapeHTML(model)}
 </div>
 
 </div>
+
+
+<div class="field">
+
+<div class="label">
+شماره سریال
+</div>
+
+<div class="value">
+${escapeHTML(serial)}
+</div>
+
+</div>
+
+
+<div class="field">
+
+<div class="label">
+موضوع مشکل
+</div>
+
+<div class="value">
+${escapeHTML(
+    visit.problem_subject || "-"
+)}
+</div>
+
+</div>
+
+
+<div class="field">
+
+<div class="label">
+گزارش شده توسط
+</div>
+
+<div class="value">
+${escapeHTML(
+    visit.reported_by || "-"
+)}
+</div>
+
+</div>
+
+
+<div class="field">
+
+<div class="label">
+تاریخ اعلام مشکل
+</div>
+
+<div class="value">
+${escapeHTML(
+    isoToJalali(
+        visit.problem_date
+    )
+)}
+</div>
+
+</div>
+
+
+</div>
+
 
 <div class="description">
 
@@ -3038,46 +3647,92 @@ ${escapeHTML(description)}
 
 </div>
 
+
 <div class="info-grid">
 
-<div class="field">
-<div class="label">نام کارشناس</div>
-<div class="value">
-${escapeHTML(visit.expert_name || "-")}
-</div>
-</div>
 
 <div class="field">
-<div class="label">تاریخ کارشناس</div>
-<div class="value">
-${escapeHTML(isoToJalali(visit.created_at))}
-</div>
+
+<div class="label">
+نام کارشناس
 </div>
 
-<div class="field">
-<div class="label">ساعت ورود</div>
 <div class="value">
-${escapeHTML(visit.entry_time || "-")}
-</div>
-</div>
-
-<div class="field">
-<div class="label">ساعت خروج</div>
-<div class="value">
-${escapeHTML(visit.exit_time || "-")}
-</div>
-</div>
-
-<div class="field">
-<div class="label">نام تحویل گیرنده</div>
-<div class="value">
-${escapeHTML(visit.receiver_name || "-")}
-</div>
+${escapeHTML(
+    visit.expert_name || "-"
+)}
 </div>
 
 </div>
+
+
+<div class="field">
+
+<div class="label">
+تاریخ کارشناس
+</div>
+
+<div class="value">
+${escapeHTML(
+    isoToJalali(
+        visit.created_at
+    )
+)}
+</div>
+
+</div>
+
+
+<div class="field">
+
+<div class="label">
+ساعت ورود
+</div>
+
+<div class="value">
+${escapeHTML(
+    visit.entry_time || "-"
+)}
+</div>
+
+</div>
+
+
+<div class="field">
+
+<div class="label">
+ساعت خروج
+</div>
+
+<div class="value">
+${escapeHTML(
+    visit.exit_time || "-"
+)}
+</div>
+
+</div>
+
+
+<div class="field">
+
+<div class="label">
+نام تحویل گیرنده
+</div>
+
+<div class="value">
+${escapeHTML(
+    visit.receiver_name || "-"
+)}
+</div>
+
+</div>
+
+
+</div>
+
 
 <div class="signatures">
+
 
 <div class="signature">
 
@@ -3086,12 +3741,15 @@ ${escapeHTML(visit.receiver_name || "-")}
 </strong>
 
 <div>
-${escapeHTML(visit.receiver_name || "")}
+${escapeHTML(
+    visit.receiver_name || ""
+)}
 </div>
 
 <div class="line"></div>
 
 </div>
+
 
 <div class="signature">
 
@@ -3100,25 +3758,32 @@ ${escapeHTML(visit.receiver_name || "")}
 </strong>
 
 <div>
-${escapeHTML(visit.expert_signature || "")}
+${escapeHTML(
+    visit.expert_signature || ""
+)}
 </div>
 
 <div class="line"></div>
 
 </div>
 
+
 </div>
+
 
 <script>
 
 setTimeout(
     function() {
+
         window.print();
+
     },
     500
 );
 
 <\/script>
+
 
 </body>
 
@@ -3425,56 +4090,6 @@ document.addEventListener(
                 closeModal(
                     "deviceModal"
                 );
-
-            }
-        );
-
-
-        /* =====================================================
-           نمایش کادر نام بخش در صورت انتخاب «سایر»
-        ===================================================== */
-
-        getElement(
-            "newDeviceSection"
-        )?.addEventListener(
-            "change",
-            function() {
-
-                const customField =
-                    getElement(
-                        "customSectionField"
-                    );
-
-                const customInput =
-                    getElement(
-                        "customSectionName"
-                    );
-
-
-                if (
-                    this.value === "سایر"
-                ) {
-
-                    customField?.classList.remove(
-                        "hidden"
-                    );
-
-                    customInput?.focus();
-
-                } else {
-
-                    customField?.classList.add(
-                        "hidden"
-                    );
-
-                    if (customInput) {
-
-                        customInput.value =
-                            "";
-
-                    }
-
-                }
 
             }
         );
