@@ -1,25 +1,50 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>مدیریت مراکز و گزارش کار</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet" href="style.css">
+    <title>
+        مدیریت مراکز و گزارش کار
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
+
 
 <body>
 
-<section id="loginPage" class="login-page">
+
+<!-- =========================
+     LOGIN
+========================= -->
+
+<section
+    id="loginPage"
+    class="login-page"
+>
 
     <div class="login-box">
 
-        <h1>مدیریت مراکز و گزارش کار</h1>
+        <h1>
+            مدیریت مراکز و گزارش کار
+        </h1>
 
-        <p>برای ورود رمز عبور را وارد کنید</p>
+        <p>
+            برای ورود رمز عبور را وارد کنید
+        </p>
 
         <input
             type="password"
@@ -36,635 +61,843 @@
             ورود
         </button>
 
-        <div id="loginMessage" class="login-message"></div>
+        <div
+            id="loginMessage"
+            class="login-message"
+        ></div>
 
     </div>
 
 </section>
 
 
-<main id="app" class="hidden">
 
-    <header class="header">
-        <h1>مدیریت مراکز و گزارش کار</h1>
-    </header>
+<!-- =========================
+     APP
+========================= -->
+
+<main
+    id="app"
+    class="hidden"
+>
 
 
-    <section id="provincePage">
+<header class="header">
 
-        <div class="container">
+    <h1>
+        مدیریت مراکز و گزارش کار
+    </h1>
 
-            <div class="card">
+</header>
 
-                <h2>انتخاب استان</h2>
 
-                <div
-                    id="provinceGrid"
-                    class="province-grid"
-                ></div>
+
+<!-- =========================
+     PROVINCES
+========================= -->
+
+<section id="provincePage">
+
+    <div class="container">
+
+        <div class="card">
+
+            <h2>
+                انتخاب استان
+            </h2>
+
+            <div
+                id="provinceGrid"
+                class="province-grid"
+            ></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================
+     CENTERS
+========================= -->
+
+<section
+    id="centersPage"
+    class="hidden"
+>
+
+    <div class="container">
+
+        <div class="page-toolbar">
+
+            <button
+                type="button"
+                class="btn btn-gray"
+                id="backProvinceBtn"
+            >
+                ← بازگشت
+            </button>
+
+            <h2 id="provinceTitle">
+                مراکز
+            </h2>
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                id="newCenterBtn"
+            >
+                + ثبت مرکز جدید
+            </button>
+
+        </div>
+
+
+        <div class="card search-card">
+
+            <input
+                type="text"
+                id="advancedSearchInput"
+                placeholder="جستجوی نام مرکز..."
+            >
+
+        </div>
+
+
+        <div
+            id="centersGrid"
+            class="centers-grid"
+        ></div>
+
+
+        <div
+            id="emptyCenters"
+            class="empty-message hidden"
+        >
+            هنوز مرکزی ثبت نشده است.
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================
+     CENTER
+========================= -->
+
+<section
+    id="centerPage"
+    class="hidden"
+>
+
+    <div class="container">
+
+        <div class="page-toolbar">
+
+            <button
+                type="button"
+                class="btn btn-gray"
+                id="backCentersBtn"
+            >
+                ← بازگشت
+            </button>
+
+            <h2 id="centerTitle">
+                نام مرکز
+            </h2>
+
+        </div>
+
+
+
+        <!-- ثبت دستگاه جدید -->
+
+        <div class="center-actions">
+
+            <button
+                type="button"
+                class="btn btn-primary big-btn"
+                id="newDeviceBtn"
+            >
+                + ثبت دستگاه جدید
+            </button>
+
+        </div>
+
+
+
+        <!-- بخش‌های مرکز -->
+
+        <div class="card">
+
+            <h2>
+                بخش‌های مرکز
+            </h2>
+
+            <div
+                id="sectionsGrid"
+                class="sections-grid"
+            ></div>
+
+            <div
+                id="emptySections"
+                class="empty-message hidden"
+            >
+                هنوز دستگاهی برای این مرکز ثبت نشده است.
+            </div>
+
+        </div>
+
+
+
+        <!-- حذف مرکز -->
+
+        <div class="center-delete-area">
+
+            <button
+                type="button"
+                class="btn btn-danger"
+                id="deleteCenterBtn"
+            >
+                🗑 حذف این مرکز
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================
+     DEVICES
+========================= -->
+
+<section
+    id="devicesPage"
+    class="hidden"
+>
+
+    <div class="container">
+
+        <div class="page-toolbar">
+
+            <button
+                type="button"
+                class="btn btn-gray"
+                id="backCenterBtn"
+            >
+                ← بازگشت
+            </button>
+
+            <h2 id="sectionTitle">
+                ربات‌ها
+            </h2>
+
+        </div>
+
+
+
+        <div class="center-actions">
+
+            <button
+                type="button"
+                class="btn btn-primary big-btn"
+                id="newRobotBtn"
+            >
+                + ثبت ربات جدید
+            </button>
+
+        </div>
+
+
+
+        <div class="card">
+
+            <div
+                id="devicesGrid"
+                class="devices-grid"
+            ></div>
+
+            <div
+                id="emptyDevices"
+                class="empty-message hidden"
+            >
+                هنوز رباتی در این بخش ثبت نشده است.
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================
+     ROBOT / REPORT
+========================= -->
+
+<section
+    id="robotPage"
+    class="hidden"
+>
+
+    <div class="container">
+
+        <div class="page-toolbar">
+
+            <button
+                type="button"
+                class="btn btn-gray"
+                id="backDevicesBtn"
+            >
+                ← بازگشت
+            </button>
+
+            <h2 id="robotTitle">
+                ربات
+            </h2>
+
+        </div>
+
+
+
+        <!-- اطلاعات ربات -->
+
+        <div class="card">
+
+            <h2>
+                اطلاعات ربات
+            </h2>
+
+            <div class="robot-main-info">
+
+                <div>
+
+                    <strong>
+                        بخش:
+                    </strong>
+
+                    <span id="robotSectionText">
+                        -
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        مدل:
+                    </strong>
+
+                    <span id="robotModelText">
+                        -
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        شماره سریال:
+                    </strong>
+
+                    <span id="robotSerialText">
+                        -
+                    </span>
+
+                </div>
 
             </div>
 
         </div>
 
-    </section>
 
 
-    <section id="centersPage" class="hidden">
+        <!-- ثبت گزارش -->
 
-        <div class="container">
+        <div class="card">
 
-            <div class="page-toolbar">
+            <h2>
+                ثبت گزارش جدید
+            </h2>
 
-                <button
-                    type="button"
-                    class="btn btn-gray"
-                    id="backProvinceBtn"
-                >
-                    ← بازگشت
-                </button>
+            <div class="form-grid">
 
-                <h2 id="provinceTitle">مراکز</h2>
+
+                <div class="field">
+
+                    <label>
+                        تاریخ مراجعه
+                    </label>
+
+                    <input
+                        type="text"
+                        id="visitDate"
+                        placeholder="1405/05/24"
+                        inputmode="numeric"
+                    >
+
+                </div>
+
+
+
+                <div class="field">
+
+                    <label>
+                        موضوع مشکل
+                    </label>
+
+                    <input
+                        type="text"
+                        id="problemSubject"
+                    >
+
+                </div>
+
+
+
+                <div class="field">
+
+                    <label>
+                        گزارش شده توسط
+                    </label>
+
+                    <input
+                        type="text"
+                        id="reportedBy"
+                    >
+
+                </div>
+
+
+
+                <div class="field">
+
+                    <label>
+                        تاریخ اعلام مشکل
+                    </label>
+
+                    <input
+                        type="text"
+                        id="problemDate"
+                        placeholder="1405/05/24"
+                        inputmode="numeric"
+                    >
+
+                </div>
+
+
+
+                <div class="field full-field">
+
+                    <label>
+                        توضیحات
+                    </label>
+
+                    <textarea
+                        id="description"
+                        rows="8"
+                        placeholder="توضیحات گزارش کار را وارد کنید..."
+                    ></textarea>
+
+                </div>
+
+
+
+                <div class="field">
+
+                    <label>
+                        نام کارشناس
+                    </label>
+
+                    <input
+                        type="text"
+                        id="expertName"
+                        value="حیدریانی"
+                    >
+
+                </div>
+
+
+
+                <div class="field">
+
+                    <label>
+                        تاریخ کارشناس
+                    </label>
+
+                    <input
+                        type="text"
+                        id="expertDate"
+                        placeholder="1405/05/24"
+                        inputmode="numeric"
+                    >
+
+                </div>
+
+
+
+                <div class="field">
+
+                    <label>
+                        ساعت ورود
+                    </label>
+
+                    <input
+                        type="time"
+                        id="entryTime"
+                    >
+
+                </div>
+
+
+
+                <div class="field">
+
+                    <label>
+                        ساعت خروج
+                    </label>
+
+                    <input
+                        type="time"
+                        id="exitTime"
+                    >
+
+                </div>
+
+
+
+                <div class="field">
+
+                    <label>
+                        نام تحویل گیرنده
+                    </label>
+
+                    <input
+                        type="text"
+                        id="receiverName"
+                    >
+
+                </div>
+
+
+
+                <div class="field">
+
+                    <label>
+                        نام/امضای کارشناس
+                    </label>
+
+                    <input
+                        type="text"
+                        id="signatureExpertName"
+                        value="حیدریانی"
+                    >
+
+                </div>
+
+            </div>
+
+
+
+            <div class="action-card">
 
                 <button
                     type="button"
                     class="btn btn-primary"
-                    id="newCenterBtn"
+                    id="saveVisitBtn"
                 >
-                    + ثبت مرکز جدید
+                    💾 ذخیره گزارش
                 </button>
-
-            </div>
-
-
-            <div class="card search-card">
-
-                <input
-                    type="text"
-                    id="advancedSearchInput"
-                    placeholder="جستجوی نام مرکز..."
-                >
-
-            </div>
-
-
-            <div
-                id="centersGrid"
-                class="centers-grid"
-            ></div>
-
-
-            <div
-                id="emptyCenters"
-                class="empty-message hidden"
-            >
-                هنوز مرکزی ثبت نشده است.
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <section id="centerPage" class="hidden">
-
-        <div class="container">
-
-            <div class="page-toolbar">
 
                 <button
                     type="button"
-                    class="btn btn-gray"
-                    id="backCentersBtn"
+                    class="btn btn-warning hidden"
+                    id="cancelEditBtn"
                 >
-                    ← بازگشت
-                </button>
-
-                <h2 id="centerTitle">نام مرکز</h2>
-
-            </div>
-
-
-            <div class="center-actions">
-
-                <button
-                    type="button"
-                    class="btn btn-primary big-btn"
-                    id="newDeviceBtn"
-                >
-                    + ثبت دستگاه جدید
-                </button>
-
-            </div>
-
-
-            <div class="card">
-
-                <h2>بخش‌های مرکز</h2>
-
-                <div
-                    id="sectionsGrid"
-                    class="sections-grid"
-                ></div>
-
-                <div
-                    id="emptySections"
-                    class="empty-message hidden"
-                >
-                    هنوز دستگاهی برای این مرکز ثبت نشده است.
-                </div>
-
-            </div>
-
-
-            <div class="center-delete-area">
-
-                <button
-                    type="button"
-                    class="btn btn-danger"
-                    id="deleteCenterBtn"
-                >
-                    🗑 حذف این مرکز
+                    لغو ویرایش
                 </button>
 
             </div>
 
         </div>
 
-    </section>
 
 
-    <section id="devicesPage" class="hidden">
+        <!-- سابقه کار -->
 
-        <div class="container">
+        <div class="card">
 
-            <div class="page-toolbar">
+            <h2>
+                سوابق کار
+            </h2>
 
-                <button
-                    type="button"
-                    class="btn btn-gray"
-                    id="backCenterBtn"
-                >
-                    ← بازگشت
-                </button>
-
-                <h2 id="sectionTitle">ربات‌ها</h2>
-
-            </div>
-
-
-            <div class="center-actions">
-
-                <button
-                    type="button"
-                    class="btn btn-primary big-btn"
-                    id="newRobotBtn"
-                >
-                    + ثبت ربات جدید
-                </button>
-
-            </div>
-
-
-            <div class="card">
-
-                <div
-                    id="devicesGrid"
-                    class="devices-grid"
-                ></div>
-
-                <div
-                    id="emptyDevices"
-                    class="empty-message hidden"
-                >
-                    هنوز رباتی در این بخش ثبت نشده است.
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <section id="robotPage" class="hidden">
-
-        <div class="container">
-
-            <div class="page-toolbar">
-
-                <button
-                    type="button"
-                    class="btn btn-gray"
-                    id="backDevicesBtn"
-                >
-                    ← بازگشت
-                </button>
-
-                <h2 id="robotTitle">ربات</h2>
-
-            </div>
-
-
-            <div class="card">
-
-                <h2>اطلاعات ربات</h2>
-
-                <div class="robot-main-info">
-
-                    <div>
-                        <strong>بخش:</strong>
-                        <span id="robotSectionText">-</span>
-                    </div>
-
-                    <div>
-                        <strong>مدل:</strong>
-                        <span id="robotModelText">-</span>
-                    </div>
-
-                    <div>
-                        <strong>شماره سریال:</strong>
-                        <span id="robotSerialText">-</span>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <h2>ثبت گزارش جدید</h2>
-
-                <div class="form-grid">
-
-                    <div class="field">
-
-                        <label>تاریخ مراجعه</label>
-
-                        <input
-                            type="text"
-                            id="visitDate"
-                            placeholder="1405/05/24"
-                            inputmode="numeric"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>موضوع مشکل</label>
-
-                        <input
-                            type="text"
-                            id="problemSubject"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>گزارش شده توسط</label>
-
-                        <input
-                            type="text"
-                            id="reportedBy"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>تاریخ اعلام مشکل</label>
-
-                        <input
-                            type="text"
-                            id="problemDate"
-                            placeholder="1405/05/24"
-                            inputmode="numeric"
-                        >
-
-                    </div>
-
-
-                    <div class="field full-field">
-
-                        <label>توضیحات</label>
-
-                        <textarea
-                            id="description"
-                            rows="8"
-                            placeholder="توضیحات گزارش کار را وارد کنید..."
-                        ></textarea>
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>نام کارشناس</label>
-
-                        <input
-                            type="text"
-                            id="expertName"
-                            value="حیدریانی"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>تاریخ کارشناس</label>
-
-                        <input
-                            type="text"
-                            id="expertDate"
-                            placeholder="1405/05/24"
-                            inputmode="numeric"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>ساعت ورود</label>
-
-                        <input
-                            type="time"
-                            id="entryTime"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>ساعت خروج</label>
-
-                        <input
-                            type="time"
-                            id="exitTime"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>نام تحویل گیرنده</label>
-
-                        <input
-                            type="text"
-                            id="receiverName"
-                        >
-
-                    </div>
-
-
-                    <div class="field">
-
-                        <label>نام/امضای کارشناس</label>
-
-                        <input
-                            type="text"
-                            id="signatureExpertName"
-                            value="حیدریانی"
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <div class="action-card">
-
-                    <button
-                        type="button"
-                        class="btn btn-primary"
-                        id="saveVisitBtn"
-                    >
-                        💾 ذخیره گزارش
-                    </button>
-
-                    <button
-                        type="button"
-                        class="btn btn-warning hidden"
-                        id="cancelEditBtn"
-                    >
-                        لغو ویرایش
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <h2>سوابق کار</h2>
-
-                <div id="history"></div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <div
-        id="descriptionModal"
-        class="modal hidden"
-    >
-
-        <div class="modal-overlay"></div>
-
-        <div class="modal-box">
-
-            <button
-                type="button"
-                id="closeDescriptionModal"
-                class="modal-close"
-            >
-                ×
-            </button>
-
-            <h2>📝 توضیحات گزارش</h2>
-
-            <div
-                id="descriptionModalContent"
-                class="modal-content"
-            ></div>
+            <div id="history"></div>
 
         </div>
 
     </div>
 
-
-    <div
-        id="deviceModal"
-        class="modal hidden"
-    >
-
-        <div class="modal-overlay"></div>
-
-        <div class="modal-box">
-
-            <button
-                type="button"
-                id="closeDeviceModal"
-                class="modal-close"
-            >
-                ×
-            </button>
-
-            <h2>🤖 ثبت دستگاه جدید</h2>
+</section>
 
 
-            <div class="field">
 
-                <label>بخش</label>
+<!-- =========================
+     DESCRIPTION POPUP
+========================= -->
 
-                <select id="newDeviceSection">
+<div
+    id="descriptionModal"
+    class="modal hidden"
+>
 
-                    <option value="">
-                        انتخاب بخش
-                    </option>
+    <div class="modal-overlay"></div>
 
-                    <option value="تصویربرداری">
-                        تصویربرداری
-                    </option>
+    <div class="modal-box">
 
-                    <option value="CatLab">
-                        CatLab
-                    </option>
+        <button
+            type="button"
+            id="closeDescriptionModal"
+            class="modal-close"
+        >
+            ×
+        </button>
 
-                    <option value="PTscan">
-                        PTscan
-                    </option>
+        <h2>
+            📝 توضیحات گزارش
+        </h2>
 
-                    <option value="MRI">
-                        MRI
-                    </option>
-
-                    <option value="CTscan">
-                        CTscan
-                    </option>
-
-                    <option value="سایر">
-                        سایر
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="field">
-
-                <label>مدل دستگاه</label>
-
-                <select id="newDeviceModel">
-
-                    <option value="">
-                        انتخاب مدل
-                    </option>
-
-                    <option value="4102">
-                        4102
-                    </option>
-
-                    <option value="4202">
-                        4202
-                    </option>
-
-                    <option value="Rimage">
-                        Rimage
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="field">
-
-                <label>شماره سریال</label>
-
-                <input
-                    type="text"
-                    id="newDeviceSerial"
-                >
-
-            </div>
-
-
-            <button
-                type="button"
-                class="btn btn-primary full-btn"
-                id="saveDeviceBtn"
-            >
-                ثبت دستگاه
-            </button>
-
-        </div>
+        <div
+            id="descriptionModalContent"
+            class="modal-content"
+        ></div>
 
     </div>
 
+</div>
 
-    <div
-        id="centerModal"
-        class="modal hidden"
-    >
 
-        <div class="modal-overlay"></div>
 
-        <div class="modal-box">
+<!-- =========================
+     DEVICE MODAL
+========================= -->
 
-            <button
-                type="button"
-                id="closeCenterModal"
-                class="modal-close"
+<div
+    id="deviceModal"
+    class="modal hidden"
+>
+
+    <div class="modal-overlay"></div>
+
+    <div class="modal-box">
+
+        <button
+            type="button"
+            id="closeDeviceModal"
+            class="modal-close"
+        >
+            ×
+        </button>
+
+
+        <h2>
+            🤖 ثبت دستگاه جدید
+        </h2>
+
+
+
+        <!-- بخش -->
+
+        <div class="field">
+
+            <label>
+                بخش
+            </label>
+
+
+            <select id="newDeviceSection">
+
+                <option value="">
+                    انتخاب بخش
+                </option>
+
+                <option value="تصویربرداری">
+                    تصویربرداری
+                </option>
+
+                <option value="CatLab">
+                    CatLab
+                </option>
+
+                <option value="PTscan">
+                    PTscan
+                </option>
+
+                <option value="MRI">
+                    MRI
+                </option>
+
+                <option value="CTscan">
+                    CTscan
+                </option>
+
+                <option value="سایر">
+                    سایر
+                </option>
+
+            </select>
+
+
+
+            <!--
+                فقط وقتی «سایر» انتخاب شود
+                این کادر نمایش داده می‌شود
+            -->
+
+            <input
+                type="text"
+                id="customDeviceSection"
+                class="hidden"
+                placeholder="نام بخش را وارد کنید؛ مثلا CTAngio"
+                autocomplete="off"
             >
-                ×
-            </button>
-
-            <h2>🏥 ثبت مرکز جدید</h2>
-
-
-            <div class="field">
-
-                <label>نام مرکز</label>
-
-                <input
-                    type="text"
-                    id="newCenterName"
-                >
-
-            </div>
-
-
-            <button
-                type="button"
-                class="btn btn-primary full-btn"
-                id="saveCenterBtn"
-            >
-                ثبت مرکز
-            </button>
 
         </div>
 
+
+
+        <!-- مدل دستگاه -->
+
+        <div class="field">
+
+            <label>
+                مدل دستگاه
+            </label>
+
+            <select id="newDeviceModel">
+
+                <option value="">
+                    انتخاب مدل
+                </option>
+
+                <option value="4102">
+                    4102
+                </option>
+
+                <option value="4202">
+                    4202
+                </option>
+
+                <option value="Rimage">
+                    Rimage
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- شماره سریال -->
+
+        <div class="field">
+
+            <label>
+                شماره سریال
+            </label>
+
+            <input
+                type="text"
+                id="newDeviceSerial"
+            >
+
+        </div>
+
+
+
+        <button
+            type="button"
+            class="btn btn-primary full-btn"
+            id="saveDeviceBtn"
+        >
+            ثبت دستگاه
+        </button>
+
     </div>
+
+</div>
+
+
+
+<!-- =========================
+     CENTER MODAL
+========================= -->
+
+<div
+    id="centerModal"
+    class="modal hidden"
+>
+
+    <div class="modal-overlay"></div>
+
+    <div class="modal-box">
+
+        <button
+            type="button"
+            id="closeCenterModal"
+            class="modal-close"
+        >
+            ×
+        </button>
+
+
+        <h2>
+            🏥 ثبت مرکز جدید
+        </h2>
+
+
+        <div class="field">
+
+            <label>
+                نام مرکز
+            </label>
+
+            <input
+                type="text"
+                id="newCenterName"
+            >
+
+        </div>
+
+
+        <button
+            type="button"
+            class="btn btn-primary full-btn"
+            id="saveCenterBtn"
+        >
+            ثبت مرکز
+        </button>
+
+    </div>
+
+</div>
+
 
 </main>
+
 
 
 <script src="app.js"></script>
 
 </body>
+
 </html>
