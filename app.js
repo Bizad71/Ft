@@ -1,6 +1,6 @@
 /* =========================================================
    مدیریت مراکز و گزارش کار
-   نسخه نهایی - Supabase
+   app.js
 ========================================================= */
 
 
@@ -18,13 +18,7 @@ const PASSWORD = "0111";
 
 const MAX_ATTEMPTS = 3;
 
-const LOCK_TIME =
-    30 * 60 * 1000;
-
-
-/* =========================================================
-   لینک فایل‌های ZIP
-========================================================= */
+const LOCK_TIME = 30 * 60 * 1000;
 
 const LABEL_BASE_URL =
     "https://bizad71.github.io/Ft/label/";
@@ -79,26 +73,19 @@ const provinces = [
 
 
 /* =========================================================
-   وضعیت برنامه
+   وضعیت
 ========================================================= */
 
 let database = {
-
     centers: [],
     devices: [],
     visits: []
-
 };
 
-
 let currentProvince = "";
-
 let currentCenter = null;
-
 let currentSection = "";
-
 let currentDevice = null;
-
 let editingVisitId = null;
 
 
@@ -115,32 +102,23 @@ function getElement(id) {
 
 function getValue(id) {
 
-    const el =
-        getElement(id);
+    const el = getElement(id);
 
     if (!el) {
-
         return "";
-
     }
 
-    return String(
-        el.value || ""
-    ).trim();
+    return String(el.value || "").trim();
 
 }
 
 
 function setValue(id, value) {
 
-    const el =
-        getElement(id);
+    const el = getElement(id);
 
     if (el) {
-
-        el.value =
-            value ?? "";
-
+        el.value = value ?? "";
     }
 
 }
@@ -152,55 +130,30 @@ function setValue(id, value) {
 
 function pad2(number) {
 
-    return String(number)
-        .padStart(2, "0");
+    return String(number).padStart(2, "0");
 
 }
 
 
-function gregorianToJalali(
-    gy,
-    gm,
-    gd
-) {
+function gregorianToJalali(gy, gm, gd) {
 
     const gdm = [
-
-        0,
-        31,
-        59,
-        90,
-        120,
-        151,
-        181,
-        212,
-        243,
-        273,
-        304,
-        334
-
+        0, 31, 59, 90, 120, 151,
+        181, 212, 243, 273, 304, 334
     ];
 
     let jy;
 
     if (gy > 1600) {
-
         jy = 979;
-
         gy -= 1600;
-
     } else {
-
         jy = 0;
-
         gy -= 621;
-
     }
 
     const gy2 =
-        gm > 2
-            ? gy + 1
-            : gy;
+        gm > 2 ? gy + 1 : gy;
 
     let days =
         365 * gy +
@@ -212,23 +165,19 @@ function gregorianToJalali(
         gdm[gm - 1];
 
     jy +=
-        33 *
-        Math.floor(days / 12053);
+        33 * Math.floor(days / 12053);
 
     days %= 12053;
 
     jy +=
-        4 *
-        Math.floor(days / 1461);
+        4 * Math.floor(days / 1461);
 
     days %= 1461;
 
     if (days > 365) {
 
         jy +=
-            Math.floor(
-                (days - 1) / 365
-            );
+            Math.floor((days - 1) / 365);
 
         days =
             (days - 1) % 365;
@@ -240,16 +189,12 @@ function gregorianToJalali(
     if (days < 186) {
 
         jm =
-            1 +
-            Math.floor(days / 31);
+            1 + Math.floor(days / 31);
 
     } else {
 
         jm =
-            7 +
-            Math.floor(
-                (days - 186) / 30
-            );
+            7 + Math.floor((days - 186) / 30);
 
     }
 
@@ -261,11 +206,7 @@ function gregorianToJalali(
                 : (days - 186) % 30
         );
 
-    return [
-        jy,
-        jm,
-        jd
-    ];
+    return [jy, jm, jd];
 
 }
 
@@ -273,9 +214,7 @@ function gregorianToJalali(
 function isoToJalali(value) {
 
     if (!value) {
-
         return "";
-
     }
 
     const match =
@@ -284,9 +223,7 @@ function isoToJalali(value) {
         );
 
     if (!match) {
-
         return value;
-
     }
 
     const result =
@@ -307,18 +244,13 @@ function isoToJalali(value) {
 }
 
 
-function jalaliToGregorian(
-    jy,
-    jm,
-    jd
-) {
+function jalaliToGregorian(jy, jm, jd) {
 
     let gy;
 
     if (jy > 979) {
 
         gy = 1600;
-
         jy -= 979;
 
     } else {
@@ -330,9 +262,7 @@ function jalaliToGregorian(
     let days =
         365 * jy +
         Math.floor(jy / 33) * 8 +
-        Math.floor(
-            ((jy % 33) + 3) / 4
-        ) +
+        Math.floor(((jy % 33) + 3) / 4) +
         78 +
         jd +
         (
@@ -342,56 +272,41 @@ function jalaliToGregorian(
         );
 
     gy +=
-        400 *
-        Math.floor(
-            days / 146097
-        );
+        400 * Math.floor(days / 146097);
 
     days %= 146097;
 
     if (days > 36524) {
 
         gy +=
-            100 *
-            Math.floor(
-                --days / 36524
-            );
+            100 * Math.floor(--days / 36524);
 
         days %= 36524;
 
         if (days >= 365) {
-
             days++;
-
         }
 
     }
 
     gy +=
-        4 *
-        Math.floor(
-            days / 1461
-        );
+        4 * Math.floor(days / 1461);
 
     days %= 1461;
 
     if (days > 365) {
 
         gy +=
-            Math.floor(
-                (days - 1) / 365
-            );
+            Math.floor((days - 1) / 365);
 
         days =
             (days - 1) % 365;
 
     }
 
-    let gd =
-        days + 1;
+    let gd = days + 1;
 
     const salA = [
-
         0,
         31,
         (
@@ -411,7 +326,6 @@ function jalaliToGregorian(
         31,
         30,
         31
-
     ];
 
     let gm = 0;
@@ -421,18 +335,12 @@ function jalaliToGregorian(
         gd > salA[gm]
     ) {
 
-        gd -=
-            salA[gm];
-
+        gd -= salA[gm];
         gm++;
 
     }
 
-    return [
-        gy,
-        gm,
-        gd
-    ];
+    return [gy, gm, gd];
 
 }
 
@@ -440,9 +348,7 @@ function jalaliToGregorian(
 function jalaliToISO(value) {
 
     if (!value) {
-
         return null;
-
     }
 
     const normalized =
@@ -456,19 +362,12 @@ function jalaliToISO(value) {
         );
 
     if (!match) {
-
         return null;
-
     }
 
-    const jy =
-        Number(match[1]);
-
-    const jm =
-        Number(match[2]);
-
-    const jd =
-        Number(match[3]);
+    const jy = Number(match[1]);
+    const jm = Number(match[2]);
+    const jd = Number(match[3]);
 
     if (
         jy < 1300 ||
@@ -477,9 +376,7 @@ function jalaliToISO(value) {
         jd < 1 ||
         jd > 31
     ) {
-
         return null;
-
     }
 
     const result =
@@ -502,19 +399,14 @@ function jalaliToISO(value) {
 
 function todayJalali() {
 
-    const now =
-        new Date();
+    const now = new Date();
 
     return isoToJalali(
         now.getFullYear() +
         "-" +
-        pad2(
-            now.getMonth() + 1
-        ) +
+        pad2(now.getMonth() + 1) +
         "-" +
-        pad2(
-            now.getDate()
-        )
+        pad2(now.getDate())
     );
 
 }
@@ -553,9 +445,7 @@ function initSupabase() {
 async function loadDatabase() {
 
     if (!supabaseClient) {
-
         initSupabase();
-
     }
 
     try {
@@ -564,58 +454,51 @@ async function loadDatabase() {
             centersResult,
             devicesResult,
             visitsResult
-        ] =
-            await Promise.all([
+        ] = await Promise.all([
 
-                supabaseClient
-                    .from("centers")
-                    .select("*")
-                    .order(
-                        "created_at",
-                        {
-                            ascending: true
-                        }
-                    ),
+            supabaseClient
+                .from("centers")
+                .select("*")
+                .order(
+                    "created_at",
+                    {
+                        ascending: true
+                    }
+                ),
 
-                supabaseClient
-                    .from("devices")
-                    .select("*")
-                    .order(
-                        "created_at",
-                        {
-                            ascending: true
-                        }
-                    ),
+            supabaseClient
+                .from("devices")
+                .select("*")
+                .order(
+                    "created_at",
+                    {
+                        ascending: true
+                    }
+                ),
 
-                supabaseClient
-                    .from("visits")
-                    .select("*")
-                    .order(
-                        "visit_date",
-                        {
-                            ascending: false
-                        }
-                    )
+            supabaseClient
+                .from("visits")
+                .select("*")
+                .order(
+                    "visit_date",
+                    {
+                        ascending: false
+                    }
+                )
 
-            ]);
+        ]);
 
 
         if (centersResult.error) {
-
             throw centersResult.error;
-
         }
 
         if (devicesResult.error) {
-
             throw devicesResult.error;
-
         }
 
         if (visitsResult.error) {
-
             throw visitsResult.error;
-
         }
 
 
@@ -637,9 +520,7 @@ async function loadDatabase() {
 
     } catch (error) {
 
-        console.error(
-            error
-        );
+        console.error(error);
 
         alert(
             "خطا در دریافت اطلاعات:\n" +
@@ -666,10 +547,7 @@ function checkLogin() {
             ) || 0
         );
 
-    if (
-        Date.now() <
-        lockUntil
-    ) {
+    if (Date.now() < lockUntil) {
 
         showLockMessage();
 
@@ -684,9 +562,7 @@ function checkLogin() {
         );
 
 
-    if (
-        password === PASSWORD
-    ) {
+    if (password === PASSWORD) {
 
         localStorage.removeItem(
             "site_login_attempts"
@@ -696,17 +572,11 @@ function checkLogin() {
             "site_lock_until"
         );
 
-        getElement(
-            "loginPage"
-        )?.classList.add(
-            "hidden"
-        );
+        getElement("loginPage")
+            ?.classList.add("hidden");
 
-        getElement(
-            "app"
-        )?.classList.remove(
-            "hidden"
-        );
+        getElement("app")
+            ?.classList.remove("hidden");
 
         renderProvinces();
 
@@ -725,9 +595,7 @@ function checkLogin() {
     attempts++;
 
 
-    if (
-        attempts >= MAX_ATTEMPTS
-    ) {
+    if (attempts >= MAX_ATTEMPTS) {
 
         localStorage.setItem(
             "site_login_attempts",
@@ -848,11 +716,8 @@ function renderProvinces() {
         );
 
     if (!grid) {
-
         return;
-
     }
-
 
     grid.innerHTML = "";
 
@@ -865,8 +730,7 @@ function renderProvinces() {
                     "button"
                 );
 
-            button.type =
-                "button";
+            button.type = "button";
 
             button.className =
                 "province-card";
@@ -884,9 +748,7 @@ function renderProvinces() {
 
                 };
 
-            grid.appendChild(
-                button
-            );
+            grid.appendChild(button);
 
         }
     );
@@ -894,50 +756,37 @@ function renderProvinces() {
 }
 
 
-/* =========================================================
-   استان
-========================================================= */
-
 async function openProvince(
     key,
     name
 ) {
 
-    currentProvince =
-        key;
+    currentProvince = key;
 
-    currentCenter =
-        null;
+    currentCenter = null;
 
-    currentSection =
-        "";
+    currentSection = "";
 
-    currentDevice =
-        null;
+    currentDevice = null;
 
 
     const ok =
         await loadDatabase();
 
     if (!ok) {
-
         return;
-
     }
 
 
     hideAllPages();
 
-    getElement(
-        "centersPage"
-    )?.classList.remove(
-        "hidden"
-    );
+
+    getElement("centersPage")
+        ?.classList.remove("hidden");
 
 
-    getElement(
-        "provinceTitle"
-    ).textContent =
+    getElement("provinceTitle")
+        .textContent =
         "مراکز " + name;
 
 
@@ -970,9 +819,7 @@ function renderCenters() {
 
 
     if (!grid) {
-
         return;
-
     }
 
 
@@ -985,7 +832,7 @@ function renderCenters() {
         ).toLowerCase();
 
 
-    let centers =
+    const centers =
         database.centers.filter(
             function(center) {
 
@@ -999,9 +846,7 @@ function renderCenters() {
                         center.name || ""
                     )
                         .toLowerCase()
-                        .includes(
-                            query
-                        );
+                        .includes(query);
 
                 return (
                     sameProvince &&
@@ -1045,28 +890,22 @@ function renderCenters() {
                     "button"
                 );
 
-            button.type =
-                "button";
+            button.type = "button";
 
             button.className =
                 "center-name-card";
 
             button.textContent =
-                "🏥 " +
-                center.name;
+                "🏥 " + center.name;
 
             button.onclick =
                 function() {
 
-                    openCenter(
-                        center
-                    );
+                    openCenter(center);
 
                 };
 
-            grid.appendChild(
-                button
-            );
+            grid.appendChild(button);
 
         }
     );
@@ -1078,35 +917,22 @@ function renderCenters() {
    مرکز
 ========================================================= */
 
-function openCenter(
-    center
-) {
+function openCenter(center) {
 
-    currentCenter =
-        center;
+    currentCenter = center;
 
-    currentSection =
-        "";
+    currentSection = "";
 
-    currentDevice =
-        null;
-
+    currentDevice = null;
 
     hideAllPages();
 
+    getElement("centerPage")
+        ?.classList.remove("hidden");
 
-    getElement(
-        "centerPage"
-    )?.classList.remove(
-        "hidden"
-    );
-
-
-    getElement(
-        "centerTitle"
-    ).textContent =
+    getElement("centerTitle")
+        .textContent =
         center.name;
-
 
     renderSections();
 
@@ -1117,19 +943,14 @@ function openCenter(
    بخش‌های مرکز
 ========================================================= */
 
-function getCenterDevices(
-    centerId
-) {
+function getCenterDevices(centerId) {
 
     return database.devices.filter(
         function(device) {
 
             return String(
                 device.center_id
-            ) ===
-            String(
-                centerId
-            );
+            ) === String(centerId);
 
         }
     );
@@ -1151,9 +972,7 @@ function renderSections() {
 
 
     if (!grid) {
-
         return;
-
     }
 
 
@@ -1161,9 +980,7 @@ function renderSections() {
 
 
     if (!currentCenter) {
-
         return;
-
     }
 
 
@@ -1220,8 +1037,7 @@ function renderSections() {
                     "button"
                 );
 
-            button.type =
-                "button";
+            button.type = "button";
 
             button.className =
                 "section-card";
@@ -1232,15 +1048,11 @@ function renderSections() {
             button.onclick =
                 function() {
 
-                    openSection(
-                        section
-                    );
+                    openSection(section);
 
                 };
 
-            grid.appendChild(
-                button
-            );
+            grid.appendChild(button);
 
         }
     );
@@ -1252,34 +1064,20 @@ function renderSections() {
    بخش
 ========================================================= */
 
-function openSection(
-    section
-) {
+function openSection(section) {
 
-    currentSection =
-        section;
+    currentSection = section;
 
-
-    currentDevice =
-        null;
-
+    currentDevice = null;
 
     hideAllPages();
 
+    getElement("devicesPage")
+        ?.classList.remove("hidden");
 
-    getElement(
-        "devicesPage"
-    )?.classList.remove(
-        "hidden"
-    );
-
-
-    getElement(
-        "sectionTitle"
-    ).textContent =
-        "ربات‌های " +
-        section;
-
+    getElement("sectionTitle")
+        .textContent =
+        "ربات‌های " + section;
 
     renderDevices();
 
@@ -1304,9 +1102,7 @@ function renderDevices() {
 
 
     if (!grid) {
-
         return;
-
     }
 
 
@@ -1314,9 +1110,7 @@ function renderDevices() {
 
 
     if (!currentCenter) {
-
         return;
-
     }
 
 
@@ -1325,12 +1119,8 @@ function renderDevices() {
             function(device) {
 
                 return (
-                    String(
-                        device.center_id
-                    ) ===
-                    String(
-                        currentCenter.id
-                    )
+                    String(device.center_id) ===
+                    String(currentCenter.id)
                     &&
                     device.section_name ===
                     currentSection
@@ -1396,8 +1186,7 @@ function renderDevices() {
                     "button"
                 );
 
-            open.type =
-                "button";
+            open.type = "button";
 
             open.className =
                 "btn btn-blue";
@@ -1405,13 +1194,10 @@ function renderDevices() {
             open.textContent =
                 "باز کردن ربات";
 
-
             open.onclick =
                 function() {
 
-                    openDevice(
-                        device
-                    );
+                    openDevice(device);
 
                 };
 
@@ -1439,26 +1225,23 @@ function renderDevices() {
                 "📦 فایل مشخصات";
 
 
-            /* =================================================
-               حذف ربات
-            ================================================= */
+            /* حذف ربات */
 
-            const deleteBtn =
+            const deleteButton =
                 document.createElement(
                     "button"
                 );
 
-            deleteBtn.type =
+            deleteButton.type =
                 "button";
 
-            deleteBtn.className =
+            deleteButton.className =
                 "btn btn-danger";
 
-            deleteBtn.textContent =
+            deleteButton.textContent =
                 "🗑 حذف ربات";
 
-
-            deleteBtn.onclick =
+            deleteButton.onclick =
                 function(event) {
 
                     event.stopPropagation();
@@ -1470,30 +1253,17 @@ function renderDevices() {
                 };
 
 
-            box.appendChild(
-                model
-            );
+            box.appendChild(model);
 
-            box.appendChild(
-                serial
-            );
+            box.appendChild(serial);
 
-            box.appendChild(
-                zipLink
-            );
+            box.appendChild(zipLink);
 
-            box.appendChild(
-                open
-            );
+            box.appendChild(open);
 
-            box.appendChild(
-                deleteBtn
-            );
+            box.appendChild(deleteButton);
 
-
-            grid.appendChild(
-                box
-            );
+            grid.appendChild(box);
 
         }
     );
@@ -1505,14 +1275,14 @@ function renderDevices() {
    لینک ZIP
 ========================================================= */
 
-function getLabelZipUrl(
-    serial
-) {
+function getLabelZipUrl(serial) {
 
     return (
         LABEL_BASE_URL +
         encodeURIComponent(
-            String(serial || "").trim()
+            String(
+                serial || ""
+            ).trim()
         ) +
         ".zip"
     );
@@ -1524,51 +1294,36 @@ function getLabelZipUrl(
    ربات
 ========================================================= */
 
-function openDevice(
-    device
-) {
+function openDevice(device) {
 
-    currentDevice =
-        device;
-
+    currentDevice = device;
 
     hideAllPages();
 
-
-    getElement(
-        "robotPage"
-    )?.classList.remove(
-        "hidden"
-    );
+    getElement("robotPage")
+        ?.classList.remove("hidden");
 
 
-    getElement(
-        "robotTitle"
-    ).textContent =
+    getElement("robotTitle")
+        .textContent =
         device.model +
         " — " +
         device.serial;
 
 
-    getElement(
-        "robotSectionText"
-    ).textContent =
-        device.section_name ||
-        "-";
+    getElement("robotSectionText")
+        .textContent =
+        device.section_name || "-";
 
 
-    getElement(
-        "robotModelText"
-    ).textContent =
-        device.model ||
-        "-";
+    getElement("robotModelText")
+        .textContent =
+        device.model || "-";
 
 
-    getElement(
-        "robotSerialText"
-    ).textContent =
-        device.serial ||
-        "-";
+    getElement("robotSerialText")
+        .textContent =
+        device.serial || "-";
 
 
     const zip =
@@ -1595,6 +1350,113 @@ function openDevice(
 
 
 /* =========================================================
+   حذف ربات
+========================================================= */
+
+async function deleteDevice(id) {
+
+    const device =
+        database.devices.find(
+            function(item) {
+
+                return String(item.id) ===
+                    String(id);
+
+            }
+        );
+
+
+    if (!device) {
+        return;
+    }
+
+
+    if (
+        !confirm(
+            "آیا از حذف این ربات مطمئن هستید؟\n\n" +
+            "تمام گزارش‌های این ربات نیز حذف خواهند شد."
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const visitDelete =
+            await supabaseClient
+                .from("visits")
+                .delete()
+                .eq(
+                    "device_id",
+                    id
+                );
+
+
+        if (visitDelete.error) {
+
+            throw visitDelete.error;
+
+        }
+
+
+        const deviceDelete =
+            await supabaseClient
+                .from("devices")
+                .delete()
+                .eq(
+                    "id",
+                    id
+                );
+
+
+        if (deviceDelete.error) {
+
+            throw deviceDelete.error;
+
+        }
+
+
+        await loadDatabase();
+
+
+        if (
+            currentDevice &&
+            String(
+                currentDevice.id
+            ) === String(id)
+        ) {
+
+            currentDevice = null;
+
+        }
+
+
+        alert(
+            "ربات با موفقیت حذف شد."
+        );
+
+
+        renderDevices();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "حذف ربات انجام نشد:\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
    ثبت مرکز
 ========================================================= */
 
@@ -1605,11 +1467,8 @@ function openCenterModal() {
         ""
     );
 
-    getElement(
-        "centerModal"
-    )?.classList.remove(
-        "hidden"
-    );
+    getElement("centerModal")
+        ?.classList.remove("hidden");
 
 }
 
@@ -1709,7 +1568,6 @@ async function saveNewCenter() {
             "centerModal"
         );
 
-
         renderCenters();
 
 
@@ -1737,6 +1595,11 @@ function openDeviceModal() {
     );
 
     setValue(
+        "newCustomSection",
+        ""
+    );
+
+    setValue(
         "newDeviceModel",
         ""
     );
@@ -1747,11 +1610,59 @@ function openDeviceModal() {
     );
 
 
-    getElement(
-        "deviceModal"
-    )?.classList.remove(
-        "hidden"
-    );
+    getElement("newCustomSection")
+        ?.classList.add("hidden");
+
+
+    getElement("deviceModal")
+        ?.classList.remove("hidden");
+
+}
+
+
+/* =========================================================
+   بخش سفارشی
+========================================================= */
+
+function handleSectionChange() {
+
+    const select =
+        getElement(
+            "newDeviceSection"
+        );
+
+    const customInput =
+        getElement(
+            "newCustomSection"
+        );
+
+
+    if (!select || !customInput) {
+
+        return;
+
+    }
+
+
+    if (
+        select.value === "سایر"
+    ) {
+
+        customInput.classList.remove(
+            "hidden"
+        );
+
+        customInput.focus();
+
+    } else {
+
+        customInput.classList.add(
+            "hidden"
+        );
+
+        customInput.value = "";
+
+    }
 
 }
 
@@ -1759,21 +1670,55 @@ function openDeviceModal() {
 async function saveNewDevice() {
 
     if (!currentCenter) {
-
         return;
-
     }
 
 
-    const section =
+    const sectionSelect =
         getValue(
             "newDeviceSection"
         );
+
+
+    let section =
+        sectionSelect;
+
+
+    /* اگر سایر انتخاب شده باشد
+       نام بخش دستی گرفته می‌شود */
+
+    if (
+        sectionSelect === "سایر"
+    ) {
+
+        section =
+            getValue(
+                "newCustomSection"
+            );
+
+
+        if (!section) {
+
+            alert(
+                "نام بخش را وارد کنید."
+            );
+
+            getElement(
+                "newCustomSection"
+            )?.focus();
+
+            return;
+
+        }
+
+    }
+
 
     const model =
         getValue(
             "newDeviceModel"
         );
+
 
     const serial =
         getValue(
@@ -1827,9 +1772,13 @@ async function saveNewDevice() {
                     )
                     &&
                     String(
-                        device.serial
-                    ).toLowerCase() ===
-                    serial.toLowerCase()
+                        device.serial || ""
+                    )
+                        .trim()
+                        .toLowerCase() ===
+                    serial
+                        .trim()
+                        .toLowerCase()
                 );
 
             }
@@ -1900,6 +1849,8 @@ async function saveNewDevice() {
 
 
     } catch (error) {
+
+        console.error(error);
 
         alert(
             "ثبت دستگاه انجام نشد:\n" +
@@ -1973,8 +1924,7 @@ function clearVisitFields() {
     );
 
 
-    editingVisitId =
-        null;
+    editingVisitId = null;
 
 
     getElement(
@@ -1989,11 +1939,8 @@ function clearVisitFields() {
 function getDeviceVisits() {
 
     if (!currentDevice) {
-
         return [];
-
     }
-
 
     return database.visits.filter(
         function(visit) {
@@ -2112,14 +2059,12 @@ async function saveVisit() {
         entry_time:
             getValue(
                 "entryTime"
-            ) ||
-            null,
+            ) || null,
 
         exit_time:
             getValue(
                 "exitTime"
-            ) ||
-            null,
+            ) || null,
 
         receiver_name:
             getValue(
@@ -2144,9 +2089,7 @@ async function saveVisit() {
             result =
                 await supabaseClient
                     .from("visits")
-                    .update(
-                        payload
-                    )
+                    .update(payload)
                     .eq(
                         "id",
                         editingVisitId
@@ -2159,9 +2102,7 @@ async function saveVisit() {
             result =
                 await supabaseClient
                     .from("visits")
-                    .insert(
-                        payload
-                    )
+                    .insert(payload)
                     .select()
                     .single();
 
@@ -2182,8 +2123,11 @@ async function saveVisit() {
         );
 
 
-        editingVisitId =
-            null;
+        const deviceId =
+            currentDevice.id;
+
+
+        editingVisitId = null;
 
 
         await loadDatabase();
@@ -2196,9 +2140,7 @@ async function saveVisit() {
                     return String(
                         device.id
                     ) ===
-                    String(
-                        currentDevice.id
-                    );
+                    String(deviceId);
 
                 }
             );
@@ -2234,9 +2176,7 @@ function renderHistory() {
 
 
     if (!history) {
-
         return;
-
     }
 
 
@@ -2406,43 +2346,19 @@ function renderHistory() {
                 };
 
 
-            actions.appendChild(
-                view
-            );
-
-            actions.appendChild(
-                edit
-            );
-
-            actions.appendChild(
-                print
-            );
-
-            actions.appendChild(
-                del
-            );
+            actions.appendChild(view);
+            actions.appendChild(edit);
+            actions.appendChild(print);
+            actions.appendChild(del);
 
 
-            box.appendChild(
-                title
-            );
-
-            box.appendChild(
-                subject
-            );
-
-            box.appendChild(
-                reporter
-            );
-
-            box.appendChild(
-                actions
-            );
+            box.appendChild(title);
+            box.appendChild(subject);
+            box.appendChild(reporter);
+            box.appendChild(actions);
 
 
-            history.appendChild(
-                box
-            );
+            history.appendChild(box);
 
         }
     );
@@ -2454,17 +2370,14 @@ function renderHistory() {
    مشاهده گزارش
 ========================================================= */
 
-function findVisit(
-    id
-) {
+function findVisit(id) {
 
     return database.visits.find(
         function(visit) {
 
             return String(
                 visit.id
-            ) ===
-            String(id);
+            ) === String(id);
 
         }
     );
@@ -2472,18 +2385,14 @@ function findVisit(
 }
 
 
-function viewVisit(
-    id
-) {
+function viewVisit(id) {
 
     const visit =
         findVisit(id);
 
 
     if (!visit) {
-
         return;
-
     }
 
 
@@ -2498,12 +2407,17 @@ function viewVisit(
         );
 
 
+    if (!content || !modal) {
+        return;
+    }
+
+
     content.textContent =
         visit.description ||
         "توضیحی برای این گزارش ثبت نشده است.";
 
 
-    modal?.classList.remove(
+    modal.classList.remove(
         "hidden"
     );
 
@@ -2511,21 +2425,17 @@ function viewVisit(
 
 
 /* =========================================================
-   ویرایش
+   ویرایش گزارش
 ========================================================= */
 
-function editVisit(
-    id
-) {
+function editVisit(id) {
 
     const visit =
         findVisit(id);
 
 
     if (!visit) {
-
         return;
-
     }
 
 
@@ -2627,18 +2537,14 @@ function editVisit(
    حذف گزارش
 ========================================================= */
 
-async function deleteVisit(
-    id
-) {
+async function deleteVisit(id) {
 
     const visit =
         findVisit(id);
 
 
     if (!visit) {
-
         return;
-
     }
 
 
@@ -2666,9 +2572,7 @@ async function deleteVisit(
 
 
         if (result.error) {
-
             throw result.error;
-
         }
 
 
@@ -2690,137 +2594,13 @@ async function deleteVisit(
 
 
 /* =========================================================
-   حذف ربات
-========================================================= */
-
-async function deleteDevice(
-    id
-) {
-
-    const device =
-        database.devices.find(
-            function(device) {
-
-                return String(
-                    device.id
-                ) ===
-                String(id);
-
-            }
-        );
-
-
-    if (!device) {
-
-        return;
-
-    }
-
-
-    const confirmed =
-        confirm(
-            "آیا از حذف ربات «" +
-            (
-                device.model ||
-                "ربات"
-            ) +
-            "» با سریال «" +
-            (
-                device.serial ||
-                "-"
-            ) +
-            "» مطمئن هستید؟\n\n" +
-            "تمام گزارش‌های این ربات نیز حذف خواهند شد."
-        );
-
-
-    if (!confirmed) {
-
-        return;
-
-    }
-
-
-    try {
-
-        /* حذف گزارش‌های مربوط به ربات */
-
-        const visitsResult =
-            await supabaseClient
-                .from("visits")
-                .delete()
-                .eq(
-                    "device_id",
-                    id
-                );
-
-
-        if (visitsResult.error) {
-
-            throw visitsResult.error;
-
-        }
-
-
-        /* حذف خود ربات */
-
-        const deviceResult =
-            await supabaseClient
-                .from("devices")
-                .delete()
-                .eq(
-                    "id",
-                    id
-                );
-
-
-        if (deviceResult.error) {
-
-            throw deviceResult.error;
-
-        }
-
-
-        /* بروزرسانی اطلاعات */
-
-        await loadDatabase();
-
-
-        alert(
-            "ربات با موفقیت حذف شد."
-        );
-
-
-        renderDevices();
-
-
-    } catch (error) {
-
-        console.error(
-            error
-        );
-
-
-        alert(
-            "حذف ربات انجام نشد:\n" +
-            error.message
-        );
-
-    }
-
-}
-
-
-/* =========================================================
    حذف مرکز
 ========================================================= */
 
 async function deleteCenter() {
 
     if (!currentCenter) {
-
         return;
-
     }
 
 
@@ -2877,9 +2657,7 @@ async function deleteCenter() {
 
 
             if (result.error) {
-
                 throw result.error;
-
             }
 
         }
@@ -2898,9 +2676,7 @@ async function deleteCenter() {
 
 
             if (result.error) {
-
                 throw result.error;
-
             }
 
         }
@@ -2917,17 +2693,14 @@ async function deleteCenter() {
 
 
         if (result.error) {
-
             throw result.error;
-
         }
 
 
         await loadDatabase();
 
 
-        currentCenter =
-            null;
+        currentCenter = null;
 
 
         alert(
@@ -2938,11 +2711,8 @@ async function deleteCenter() {
         hideAllPages();
 
 
-        getElement(
-            "centersPage"
-        )?.classList.remove(
-            "hidden"
-        );
+        getElement("centersPage")
+            ?.classList.remove("hidden");
 
 
         renderCenters();
@@ -2961,12 +2731,10 @@ async function deleteCenter() {
 
 
 /* =========================================================
-   PDF / چاپ کامل
+   PDF / چاپ
 ========================================================= */
 
-function printVisit(
-    id
-) {
+function printVisit(id) {
 
     const visit =
         findVisit(id);
@@ -3008,26 +2776,20 @@ function printVisit(
     const centerName =
         currentCenter?.name || "-";
 
-
     const section =
         device?.section_name || "-";
-
 
     const model =
         device?.model || "-";
 
-
     const serial =
         device?.serial || "-";
-
 
     const description =
         visit.description || "-";
 
 
-    report.document.write(
-
-        `
+    report.document.write(`
 
 <!DOCTYPE html>
 
@@ -3044,7 +2806,6 @@ function printVisit(
 گزارش کار - ${escapeHTML(centerName)}
 </title>
 
-
 <style>
 
 @page {
@@ -3055,13 +2816,11 @@ function printVisit(
 
 }
 
-
 * {
 
     box-sizing: border-box;
 
 }
-
 
 body {
 
@@ -3078,7 +2837,6 @@ body {
 
 }
 
-
 h1 {
 
     text-align: center;
@@ -3086,7 +2844,6 @@ h1 {
     margin-bottom: 25px;
 
 }
-
 
 .info-grid {
 
@@ -3099,14 +2856,12 @@ h1 {
 
 }
 
-
 .field {
 
     border:
         1px solid #333;
 
 }
-
 
 .label {
 
@@ -3121,7 +2876,6 @@ h1 {
 
 }
 
-
 .value {
 
     padding: 9px;
@@ -3129,7 +2883,6 @@ h1 {
     min-height: 35px;
 
 }
-
 
 .description {
 
@@ -3139,7 +2892,6 @@ h1 {
         1px solid #333;
 
 }
-
 
 .description-title {
 
@@ -3154,7 +2906,6 @@ h1 {
 
 }
 
-
 .description-text {
 
     min-height: 180px;
@@ -3164,7 +2915,6 @@ h1 {
     white-space: pre-wrap;
 
 }
-
 
 .signatures {
 
@@ -3177,7 +2927,6 @@ h1 {
 
 }
 
-
 .signature {
 
     width: 40%;
@@ -3185,7 +2934,6 @@ h1 {
     text-align: center;
 
 }
-
 
 .line {
 
@@ -3196,22 +2944,17 @@ h1 {
 
 }
 
-
 </style>
 
 </head>
 
-
 <body>
-
 
 <h1>
 گزارش کار
 </h1>
 
-
 <div class="info-grid">
-
 
 <div class="field">
 
@@ -3225,7 +2968,6 @@ ${escapeHTML(centerName)}
 
 </div>
 
-
 <div class="field">
 
 <div class="label">
@@ -3237,7 +2979,6 @@ ${escapeHTML(section)}
 </div>
 
 </div>
-
 
 <div class="field">
 
@@ -3255,7 +2996,6 @@ ${escapeHTML(
 
 </div>
 
-
 <div class="field">
 
 <div class="label">
@@ -3268,7 +3008,6 @@ ${escapeHTML(model)}
 
 </div>
 
-
 <div class="field">
 
 <div class="label">
@@ -3280,7 +3019,6 @@ ${escapeHTML(serial)}
 </div>
 
 </div>
-
 
 <div class="field">
 
@@ -3296,7 +3034,6 @@ ${escapeHTML(
 
 </div>
 
-
 <div class="field">
 
 <div class="label">
@@ -3310,7 +3047,6 @@ ${escapeHTML(
 </div>
 
 </div>
-
 
 <div class="field">
 
@@ -3328,9 +3064,7 @@ ${escapeHTML(
 
 </div>
 
-
 </div>
-
 
 <div class="description">
 
@@ -3344,9 +3078,7 @@ ${escapeHTML(description)}
 
 </div>
 
-
 <div class="info-grid">
-
 
 <div class="field">
 
@@ -3361,7 +3093,6 @@ ${escapeHTML(
 </div>
 
 </div>
-
 
 <div class="field">
 
@@ -3379,7 +3110,6 @@ ${escapeHTML(
 
 </div>
 
-
 <div class="field">
 
 <div class="label">
@@ -3393,7 +3123,6 @@ ${escapeHTML(
 </div>
 
 </div>
-
 
 <div class="field">
 
@@ -3409,7 +3138,6 @@ ${escapeHTML(
 
 </div>
 
-
 <div class="field">
 
 <div class="label">
@@ -3424,12 +3152,9 @@ ${escapeHTML(
 
 </div>
 
-
 </div>
 
-
 <div class="signatures">
-
 
 <div class="signature">
 
@@ -3447,7 +3172,6 @@ ${escapeHTML(
 
 </div>
 
-
 <div class="signature">
 
 <strong>
@@ -3464,9 +3188,7 @@ ${escapeHTML(
 
 </div>
 
-
 </div>
-
 
 <script>
 
@@ -3481,15 +3203,11 @@ setTimeout(
 
 <\/script>
 
-
 </body>
 
 </html>
 
-        `
-
-    );
-
+    `);
 
     report.document.close();
 
@@ -3500,9 +3218,7 @@ setTimeout(
    امنیت HTML
 ========================================================= */
 
-function escapeHTML(
-    value
-) {
+function escapeHTML(value) {
 
     if (
         value === null ||
@@ -3513,33 +3229,12 @@ function escapeHTML(
 
     }
 
-
     return String(value)
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
 }
 
@@ -3551,20 +3246,16 @@ function escapeHTML(
 function hideAllPages() {
 
     [
-
         "provincePage",
         "centersPage",
         "centerPage",
         "devicesPage",
         "robotPage"
-
     ].forEach(
         function(id) {
 
             getElement(id)
-                ?.classList.add(
-                    "hidden"
-                );
+                ?.classList.add("hidden");
 
         }
     );
@@ -3579,9 +3270,7 @@ function hideAllPages() {
 function closeModal(id) {
 
     getElement(id)
-        ?.classList.add(
-            "hidden"
-        );
+        ?.classList.add("hidden");
 
 }
 
@@ -3645,30 +3334,28 @@ document.addEventListener(
 
         /* ورود */
 
-        getElement(
-            "loginBtn"
-        )?.addEventListener(
-            "click",
-            checkLogin
-        );
+        getElement("loginBtn")
+            ?.addEventListener(
+                "click",
+                checkLogin
+            );
 
 
-        getElement(
-            "passwordInput"
-        )?.addEventListener(
-            "keydown",
-            function(event) {
+        getElement("passwordInput")
+            ?.addEventListener(
+                "keydown",
+                function(event) {
 
-                if (
-                    event.key === "Enter"
-                ) {
+                    if (
+                        event.key === "Enter"
+                    ) {
 
-                    checkLogin();
+                        checkLogin();
+
+                    }
 
                 }
-
-            }
-        );
+            );
 
 
         /* استان */
@@ -3678,222 +3365,215 @@ document.addEventListener(
 
         /* بازگشت استان */
 
-        getElement(
-            "backProvinceBtn"
-        )?.addEventListener(
-            "click",
-            function() {
+        getElement("backProvinceBtn")
+            ?.addEventListener(
+                "click",
+                function() {
 
-                hideAllPages();
+                    hideAllPages();
 
-                getElement(
-                    "provincePage"
-                )?.classList.remove(
-                    "hidden"
-                );
+                    getElement(
+                        "provincePage"
+                    )?.classList.remove(
+                        "hidden"
+                    );
 
-            }
-        );
+                }
+            );
 
 
         /* جستجوی مرکز */
 
-        getElement(
-            "advancedSearchInput"
-        )?.addEventListener(
-            "input",
-            renderCenters
-        );
+        getElement("advancedSearchInput")
+            ?.addEventListener(
+                "input",
+                renderCenters
+            );
 
 
         /* مرکز جدید */
 
-        getElement(
-            "newCenterBtn"
-        )?.addEventListener(
-            "click",
-            openCenterModal
-        );
+        getElement("newCenterBtn")
+            ?.addEventListener(
+                "click",
+                openCenterModal
+            );
 
 
-        getElement(
-            "saveCenterBtn"
-        )?.addEventListener(
-            "click",
-            saveNewCenter
-        );
+        getElement("saveCenterBtn")
+            ?.addEventListener(
+                "click",
+                saveNewCenter
+            );
 
 
-        getElement(
-            "closeCenterModal"
-        )?.addEventListener(
-            "click",
-            function() {
+        getElement("closeCenterModal")
+            ?.addEventListener(
+                "click",
+                function() {
 
-                closeModal(
-                    "centerModal"
-                );
+                    closeModal(
+                        "centerModal"
+                    );
 
-            }
-        );
+                }
+            );
 
 
-        /* بازگشت از مرکز */
+        /* بازگشت مرکز */
 
-        getElement(
-            "backCentersBtn"
-        )?.addEventListener(
-            "click",
-            function() {
+        getElement("backCentersBtn")
+            ?.addEventListener(
+                "click",
+                function() {
 
-                hideAllPages();
+                    hideAllPages();
 
-                getElement(
-                    "centersPage"
-                )?.classList.remove(
-                    "hidden"
-                );
+                    getElement(
+                        "centersPage"
+                    )?.classList.remove(
+                        "hidden"
+                    );
 
-                renderCenters();
+                    renderCenters();
 
-            }
-        );
+                }
+            );
 
 
         /* ثبت دستگاه */
 
-        getElement(
-            "newDeviceBtn"
-        )?.addEventListener(
-            "click",
-            openDeviceModal
-        );
+        getElement("newDeviceBtn")
+            ?.addEventListener(
+                "click",
+                openDeviceModal
+            );
 
 
-        getElement(
-            "saveDeviceBtn"
-        )?.addEventListener(
-            "click",
-            saveNewDevice
-        );
+        getElement("saveDeviceBtn")
+            ?.addEventListener(
+                "click",
+                saveNewDevice
+            );
 
 
-        getElement(
-            "closeDeviceModal"
-        )?.addEventListener(
-            "click",
-            function() {
+        getElement("closeDeviceModal")
+            ?.addEventListener(
+                "click",
+                function() {
 
-                closeModal(
-                    "deviceModal"
-                );
+                    closeModal(
+                        "deviceModal"
+                    );
 
-            }
-        );
+                }
+            );
+
+
+        /* انتخاب بخش */
+
+        getElement("newDeviceSection")
+            ?.addEventListener(
+                "change",
+                handleSectionChange
+            );
 
 
         /* بازگشت از بخش */
 
-        getElement(
-            "backCenterBtn"
-        )?.addEventListener(
-            "click",
-            function() {
+        getElement("backCenterBtn")
+            ?.addEventListener(
+                "click",
+                function() {
 
-                openCenter(
-                    currentCenter
-                );
+                    openCenter(
+                        currentCenter
+                    );
 
-            }
-        );
+                }
+            );
 
 
         /* ثبت ربات */
 
-        getElement(
-            "newRobotBtn"
-        )?.addEventListener(
-            "click",
-            openDeviceModal
-        );
+        getElement("newRobotBtn")
+            ?.addEventListener(
+                "click",
+                openDeviceModal
+            );
 
 
         /* بازگشت از ربات */
 
-        getElement(
-            "backDevicesBtn"
-        )?.addEventListener(
-            "click",
-            function() {
+        getElement("backDevicesBtn")
+            ?.addEventListener(
+                "click",
+                function() {
 
-                openSection(
-                    currentSection
-                );
+                    openSection(
+                        currentSection
+                    );
 
-            }
-        );
+                }
+            );
 
 
         /* ذخیره گزارش */
 
-        getElement(
-            "saveVisitBtn"
-        )?.addEventListener(
-            "click",
-            saveVisit
-        );
+        getElement("saveVisitBtn")
+            ?.addEventListener(
+                "click",
+                saveVisit
+            );
 
 
         /* لغو ویرایش */
 
-        getElement(
-            "cancelEditBtn"
-        )?.addEventListener(
-            "click",
-            clearVisitFields
-        );
+        getElement("cancelEditBtn")
+            ?.addEventListener(
+                "click",
+                clearVisitFields
+            );
 
 
         /* حذف مرکز */
 
-        getElement(
-            "deleteCenterBtn"
-        )?.addEventListener(
-            "click",
-            deleteCenter
-        );
+        getElement("deleteCenterBtn")
+            ?.addEventListener(
+                "click",
+                deleteCenter
+            );
 
 
         /* Popup */
 
-        getElement(
-            "closeDescriptionModal"
-        )?.addEventListener(
-            "click",
-            function() {
+        getElement("closeDescriptionModal")
+            ?.addEventListener(
+                "click",
+                function() {
 
-                closeModal(
-                    "descriptionModal"
-                );
+                    closeModal(
+                        "descriptionModal"
+                    );
 
-            }
-        );
+                }
+            );
 
 
-        getElement(
-            "descriptionModal"
-        )?.querySelector(
-            ".modal-overlay"
-        )?.addEventListener(
-            "click",
-            function() {
+        getElement("descriptionModal")
+            ?.querySelector(
+                ".modal-overlay"
+            )
+            ?.addEventListener(
+                "click",
+                function() {
 
-                closeModal(
-                    "descriptionModal"
-                );
+                    closeModal(
+                        "descriptionModal"
+                    );
 
-            }
-        );
+                }
+            );
 
 
         /* تاریخ */
