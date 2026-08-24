@@ -31,6 +31,14 @@ const LABEL_BASE_URL =
 
 
 /* =========================================================
+   ذخیره وضعیت فایل‌های مشخصات
+========================================================= */
+
+const LABEL_CHECKED_STORAGE_KEY =
+    "robot_label_checked";
+
+
+/* =========================================================
    Supabase
 ========================================================= */
 
@@ -142,6 +150,223 @@ function setValue(id, value) {
             value ?? "";
 
     }
+
+}
+
+
+/* =========================================================
+   مدیریت تیک فایل مشخصات
+========================================================= */
+
+function getCheckedLabels() {
+
+    try {
+
+        const saved =
+            localStorage.getItem(
+                LABEL_CHECKED_STORAGE_KEY
+            );
+
+        if (!saved) {
+
+            return {};
+
+        }
+
+        const parsed =
+            JSON.parse(saved);
+
+        if (
+            parsed &&
+            typeof parsed === "object"
+        ) {
+
+            return parsed;
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "خطا در خواندن وضعیت فایل‌ها:",
+            error
+        );
+
+    }
+
+    return {};
+
+}
+
+
+function saveCheckedLabels(data) {
+
+    try {
+
+        localStorage.setItem(
+            LABEL_CHECKED_STORAGE_KEY,
+            JSON.stringify(data)
+        );
+
+    } catch (error) {
+
+        console.error(
+            "خطا در ذخیره وضعیت فایل‌ها:",
+            error
+        );
+
+    }
+
+}
+
+
+function getDeviceCheckKey(device) {
+
+    if (!device) {
+
+        return "";
+
+    }
+
+
+    /*
+       اول از ID استفاده می‌کنیم.
+       چون ID یکتا است و اگر سریال تغییر کند
+       وضعیت فایل با دستگاه اشتباه نمی‌شود.
+    */
+
+    if (
+        device.id !== null &&
+        device.id !== undefined
+    ) {
+
+        return "id:" +
+            String(
+                device.id
+            );
+
+    }
+
+
+    return "serial:" +
+        String(
+            device.serial || ""
+        )
+            .trim()
+            .toLowerCase();
+
+}
+
+
+function isLabelChecked(device) {
+
+    const key =
+        getDeviceCheckKey(
+            device
+        );
+
+    if (!key) {
+
+        return false;
+
+    }
+
+
+    const checked =
+        getCheckedLabels();
+
+    return checked[key] === true;
+
+}
+
+
+function setLabelChecked(
+    device,
+    checked
+) {
+
+    const key =
+        getDeviceCheckKey(
+            device
+        );
+
+    if (!key) {
+
+        return;
+
+    }
+
+
+    const data =
+        getCheckedLabels();
+
+
+    if (checked) {
+
+        data[key] = true;
+
+    } else {
+
+        delete data[key];
+
+    }
+
+
+    saveCheckedLabels(
+        data
+    );
+
+}
+
+
+/* =========================================================
+   بررسی کامل بودن بخش
+========================================================= */
+
+function isSectionCompleted(
+    centerId,
+    sectionName
+) {
+
+    const devices =
+        database.devices.filter(
+            function(device) {
+
+                return (
+                    String(
+                        device.center_id
+                    ) ===
+                    String(centerId)
+                    &&
+                    device.section_name ===
+                    sectionName
+                );
+
+            }
+        );
+
+
+    /*
+       اگر بخش هیچ رباتی نداشته باشد
+       سبز نمی‌شود.
+    */
+
+    if (!devices.length) {
+
+        return false;
+
+    }
+
+
+    return devices.every(
+        function(device) {
+
+            return isLabelChecked(
+                device
+            );
+
+        }
+    );
 
 }
 
@@ -953,6 +1178,78 @@ async function openProvince(
 
 
 /* =========================================================
+   بررسی تطابق جستجو با مرکز
+   نام مرکز + شماره سریال
+========================================================= */
+
+function centerMatchesSearch(
+    center,
+    query
+) {
+
+    if (!query) {
+
+        return true;
+
+    }
+
+
+    const centerName =
+        String(
+            center.name || ""
+        )
+            .trim()
+            .toLowerCase();
+
+
+    if (
+        centerName.includes(
+            query
+        )
+    ) {
+
+        return true;
+
+    }
+
+
+    const centerDevices =
+        database.devices.filter(
+            function(device) {
+
+                return String(
+                    device.center_id
+                ) ===
+                String(
+                    center.id
+                );
+
+            }
+        );
+
+
+    return centerDevices.some(
+        function(device) {
+
+            const serial =
+                String(
+                    device.serial || ""
+                )
+                    .trim()
+                    .toLowerCase();
+
+
+            return serial.includes(
+                query
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
    مراکز
 ========================================================= */
 
@@ -982,10 +1279,11 @@ function renderCenters() {
     const query =
         getValue(
             "advancedSearchInput"
-        ).toLowerCase();
+        )
+            .toLowerCase();
 
 
-    let centers =
+    const centers =
         database.centers.filter(
             function(center) {
 
@@ -994,14 +1292,10 @@ function renderCenters() {
                     currentProvince;
 
                 const matches =
-                    !query ||
-                    String(
-                        center.name || ""
-                    )
-                        .toLowerCase()
-                        .includes(
-                            query
-                        );
+                    centerMatchesSearch(
+                        center,
+                        query
+                    );
 
                 return (
                     sameProvince &&
@@ -1022,7 +1316,7 @@ function renderCenters() {
 
             empty.textContent =
                 query
-                    ? "نتیجه‌ای پیدا نشد."
+                    ? "نتیجه‌ای برای نام مرکز یا شماره سریال پیدا نشد."
                     : "هنوز مرکزی ثبت نشده است.";
 
         }
@@ -1223,11 +1517,37 @@ function renderSections() {
             button.type =
                 "button";
 
+
+            /*
+               اگر تمام ربات‌های بخش
+               فایل مشخصاتشان تیک خورده باشد
+               کلاس completed اضافه می‌شود.
+            */
+
+            const completed =
+                isSectionCompleted(
+                    currentCenter.id,
+                    section
+                );
+
+
             button.className =
-                "section-card";
+                completed
+                    ? "section-card completed"
+                    : "section-card";
+
 
             button.textContent =
-                section;
+                completed
+                    ? "✓ " + section
+                    : section;
+
+
+            button.title =
+                completed
+                    ? "تمام فایل‌های این بخش بررسی شده‌اند"
+                    : "برای سبز شدن، فایل مشخصات تمام ربات‌ها را تیک بزنید";
+
 
             button.onclick =
                 function() {
@@ -1391,6 +1711,163 @@ function renderDevices() {
                 );
 
 
+            /* =================================================
+               لینک فایل مشخصات
+            ================================================= */
+
+            const fileArea =
+                document.createElement(
+                    "div"
+                );
+
+            fileArea.className =
+                "file-check-area";
+
+
+            const checkbox =
+                document.createElement(
+                    "input"
+                );
+
+            checkbox.type =
+                "checkbox";
+
+            checkbox.id =
+                "labelCheck_" +
+                String(
+                    device.id
+                );
+
+
+            const checked =
+                isLabelChecked(
+                    device
+                );
+
+
+            checkbox.checked =
+                checked;
+
+
+            const label =
+                document.createElement(
+                    "label"
+                );
+
+            label.htmlFor =
+                checkbox.id;
+
+            label.textContent =
+                checked
+                    ? "✓ فایل مشخصات بررسی شده"
+                    : "فعال کردن فایل مشخصات";
+
+
+            const zipLink =
+                document.createElement(
+                    "a"
+                );
+
+            zipLink.target =
+                "_blank";
+
+            zipLink.rel =
+                "noopener noreferrer";
+
+            zipLink.href =
+                getLabelZipUrl(
+                    device.serial
+                );
+
+            zipLink.textContent =
+                "📦 فایل مشخصات";
+
+
+            if (!checked) {
+
+                zipLink.classList.add(
+                    "disabled"
+                );
+
+            }
+
+
+            fileArea.classList.toggle(
+                "checked",
+                checked
+            );
+
+
+            checkbox.addEventListener(
+                "change",
+                function() {
+
+                    setLabelChecked(
+                        device,
+                        this.checked
+                    );
+
+
+                    const nowChecked =
+                        this.checked;
+
+
+                    fileArea.classList.toggle(
+                        "checked",
+                        nowChecked
+                    );
+
+
+                    label.textContent =
+                        nowChecked
+                            ? "✓ فایل مشخصات بررسی شده"
+                            : "فعال کردن فایل مشخصات";
+
+
+                    if (nowChecked) {
+
+                        zipLink.classList.remove(
+                            "disabled"
+                        );
+
+                    } else {
+
+                        zipLink.classList.add(
+                            "disabled"
+                        );
+
+                    }
+
+
+                    /*
+                       رنگ بخش را همان لحظه
+                       بدون نیاز به رفتن به صفحه قبل
+                       بررسی می‌کنیم.
+                    */
+
+                    updateCurrentSectionColor();
+
+                }
+            );
+
+
+            fileArea.appendChild(
+                checkbox
+            );
+
+            fileArea.appendChild(
+                label
+            );
+
+            fileArea.appendChild(
+                zipLink
+            );
+
+
+            /* =================================================
+               دکمه باز کردن ربات
+            ================================================= */
+
             const open =
                 document.createElement(
                     "button"
@@ -1414,29 +1891,6 @@ function renderDevices() {
                     );
 
                 };
-
-
-            const zipLink =
-                document.createElement(
-                    "a"
-                );
-
-            zipLink.className =
-                "file-link";
-
-            zipLink.target =
-                "_blank";
-
-            zipLink.rel =
-                "noopener noreferrer";
-
-            zipLink.href =
-                getLabelZipUrl(
-                    device.serial
-                );
-
-            zipLink.textContent =
-                "📦 فایل مشخصات";
 
 
             /* =================================================
@@ -1476,7 +1930,7 @@ function renderDevices() {
             );
 
             box.appendChild(
-                zipLink
+                fileArea
             );
 
             box.appendChild(
@@ -1494,6 +1948,40 @@ function renderDevices() {
 
         }
     );
+
+}
+
+
+/* =========================================================
+   بروزرسانی رنگ بخش
+========================================================= */
+
+function updateCurrentSectionColor() {
+
+    if (
+        !currentCenter ||
+        !currentSection
+    ) {
+
+        return;
+
+    }
+
+
+    const completed =
+        isSectionCompleted(
+            currentCenter.id,
+            currentSection
+        );
+
+
+    /*
+       اگر بعداً خواستی رنگ را در همان صفحه
+       ببینی، این تابع صفحه را دوباره رندر نمی‌کند
+       تا تیک فعلی از بین نرود.
+    */
+
+    return completed;
 
 }
 
@@ -1600,6 +2088,30 @@ async function deleteDevice(
         if (result.error) {
 
             throw result.error;
+
+        }
+
+
+        /*
+           وضعیت تیک مربوط به ربات حذف‌شده
+           نیز پاک شود.
+        */
+
+        const checked =
+            getCheckedLabels();
+
+        const key =
+            getDeviceCheckKey(
+                device
+            );
+
+        if (key) {
+
+            delete checked[key];
+
+            saveCheckedLabels(
+                checked
+            );
 
         }
 
@@ -3226,6 +3738,38 @@ async function deleteCenter() {
         }
 
 
+        /*
+           پاک کردن وضعیت تیک ربات‌های
+           مرکز حذف‌شده
+        */
+
+        const checked =
+            getCheckedLabels();
+
+
+        devices.forEach(
+            function(device) {
+
+                const key =
+                    getDeviceCheckKey(
+                        device
+                    );
+
+                if (key) {
+
+                    delete checked[key];
+
+                }
+
+            }
+        );
+
+
+        saveCheckedLabels(
+            checked
+        );
+
+
         await loadDatabase();
 
 
@@ -3999,7 +4543,8 @@ document.addEventListener(
         );
 
 
-        /* جستجوی مرکز */
+        /* جستجوی مرکز
+           نام مرکز یا شماره سریال */
 
         getElement(
             "advancedSearchInput"
