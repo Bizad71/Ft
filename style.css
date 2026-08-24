@@ -774,3 +774,13 @@ select option {
     }
 
 }
+.section-card.completed {
+    background: #16a34a !important;
+    border-color: #22c55e !important;
+    color: #fff !important;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.45);
+}
+
+.section-card.completed:hover {
+    background: #15803d !important;
+}
