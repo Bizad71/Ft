@@ -3553,3 +3553,871 @@ document.addEventListener(
 
     }
 );
+/* =========================================================
+   گزارش کارها - بخش مستقل
+========================================================= */
+
+function getReportCenter(visit) {
+
+    return database.centers.find(
+        function(center) {
+
+            return String(center.id) ===
+                String(visit.center_id);
+
+        }
+    ) || null;
+
+}
+
+
+function getReportDevice(visit) {
+
+    return database.devices.find(
+        function(device) {
+
+            return String(device.id) ===
+                String(visit.device_id);
+
+        }
+    ) || null;
+
+}
+
+
+function reportSearchText(visit) {
+
+    const center =
+        getReportCenter(visit);
+
+    const device =
+        getReportDevice(visit);
+
+    return [
+
+        center?.name || "",
+
+        center?.province || "",
+
+        device?.section_name || "",
+
+        device?.model || "",
+
+        device?.serial || "",
+
+        visit.problem_subject || "",
+
+        visit.reported_by || "",
+
+        visit.description || "",
+
+        visit.expert_name || "",
+
+        visit.receiver_name || ""
+
+    ]
+        .join(" ")
+        .toLowerCase();
+
+}
+
+
+function openReportsPage() {
+
+    hideAllPages();
+
+    getElement("reportsPage")
+        ?.classList.remove("hidden");
+
+    renderReports();
+
+}
+
+
+function renderReports() {
+
+    const list =
+        getElement("reportsList");
+
+    const empty =
+        getElement("emptyReports");
+
+    const count =
+        getElement("reportsCount");
+
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    let reports =
+        [...database.visits];
+
+
+    /* =====================================================
+       جستجو
+    ===================================================== */
+
+    const query =
+        getValue("reportsSearchInput")
+            .toLowerCase();
+
+
+    if (query) {
+
+        reports =
+            reports.filter(
+                function(visit) {
+
+                    return reportSearchText(
+                        visit
+                    ).includes(query);
+
+                }
+            );
+
+    }
+
+
+    /* =====================================================
+       تاریخ از
+    ===================================================== */
+
+    const fromText =
+        getValue("reportsFromDate");
+
+    const fromDate =
+        fromText
+            ? jalaliToISO(fromText)
+            : null;
+
+
+    if (fromText && fromDate) {
+
+        reports =
+            reports.filter(
+                function(visit) {
+
+                    return String(
+                        visit.visit_date
+                    ) >= String(fromDate);
+
+                }
+            );
+
+    }
+
+
+    /* =====================================================
+       تاریخ تا
+    ===================================================== */
+
+    const toText =
+        getValue("reportsToDate");
+
+    const toDate =
+        toText
+            ? jalaliToISO(toText)
+            : null;
+
+
+    if (toText && toDate) {
+
+        reports =
+            reports.filter(
+                function(visit) {
+
+                    return String(
+                        visit.visit_date
+                    ) <= String(toDate);
+
+                }
+            );
+
+    }
+
+
+    /* =====================================================
+       مرتب‌سازی
+       جدیدترین تاریخ اول
+    ===================================================== */
+
+    reports.sort(
+        function(a, b) {
+
+            return String(
+                b.visit_date || ""
+            ).localeCompare(
+                String(a.visit_date || "")
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       تعداد
+    ===================================================== */
+
+    if (count) {
+
+        count.textContent =
+            reports.length;
+
+    }
+
+
+    /* =====================================================
+       بدون نتیجه
+    ===================================================== */
+
+    if (!reports.length) {
+
+        empty?.classList.remove(
+            "hidden"
+        );
+
+        return;
+
+    }
+
+    empty?.classList.add(
+        "hidden"
+    );
+
+
+    /* =====================================================
+       ساخت گزارش‌ها
+    ===================================================== */
+
+    reports.forEach(
+        function(visit, index) {
+
+            const center =
+                getReportCenter(visit);
+
+            const device =
+                getReportDevice(visit);
+
+
+            const box =
+                document.createElement("div");
+
+            box.className =
+                "report-card";
+
+
+            /* عنوان */
+
+            const header =
+                document.createElement("div");
+
+            header.className =
+                "report-card-header";
+
+
+            const title =
+                document.createElement("h3");
+
+            title.textContent =
+                "گزارش #" +
+                (index + 1);
+
+
+            const date =
+                document.createElement("span");
+
+            date.className =
+                "report-date";
+
+            date.textContent =
+                isoToJalali(
+                    visit.visit_date
+                );
+
+
+            header.appendChild(title);
+            header.appendChild(date);
+
+
+            /* اطلاعات */
+
+            const info =
+                document.createElement("div");
+
+            info.className =
+                "report-info-grid";
+
+
+            addReportInfo(
+                info,
+                "🏥 مرکز",
+                center?.name || "-"
+            );
+
+
+            addReportInfo(
+                info,
+                "📍 بخش",
+                device?.section_name || "-"
+            );
+
+
+            addReportInfo(
+                info,
+                "🤖 مدل",
+                device?.model || "-"
+            );
+
+
+            addReportInfo(
+                info,
+                "🔢 سریال",
+                device?.serial || "-"
+            );
+
+
+            addReportInfo(
+                info,
+                "⚠️ موضوع",
+                visit.problem_subject || "-"
+            );
+
+
+            addReportInfo(
+                info,
+                "👤 گزارش‌دهنده",
+                visit.reported_by || "-"
+            );
+
+
+            addReportInfo(
+                info,
+                "🧑‍🔧 کارشناس",
+                visit.expert_name || "-"
+            );
+
+
+            addReportInfo(
+                info,
+                "⏱ زمان",
+                (
+                    visit.entry_time ||
+                    "-"
+                ) +
+                " تا " +
+                (
+                    visit.exit_time ||
+                    "-"
+                )
+            );
+
+
+            /* توضیحات کوتاه */
+
+            const description =
+                document.createElement("div");
+
+            description.className =
+                "report-description";
+
+
+            const descriptionTitle =
+                document.createElement("strong");
+
+            descriptionTitle.textContent =
+                "توضیحات:";
+
+
+            const descriptionText =
+                document.createElement("p");
+
+            descriptionText.textContent =
+                visit.description ||
+                "توضیحی ثبت نشده است.";
+
+
+            description.appendChild(
+                descriptionTitle
+            );
+
+            description.appendChild(
+                descriptionText
+            );
+
+
+            /* دکمه‌ها */
+
+            const actions =
+                document.createElement("div");
+
+            actions.className =
+                "report-actions";
+
+
+            const view =
+                document.createElement("button");
+
+            view.type = "button";
+            view.className =
+                "btn btn-blue";
+
+            view.textContent =
+                "👁 مشاهده";
+
+            view.onclick =
+                function() {
+
+                    viewVisit(
+                        visit.id
+                    );
+
+                };
+
+
+            const edit =
+                document.createElement("button");
+
+            edit.type = "button";
+            edit.className =
+                "btn btn-warning";
+
+            edit.textContent =
+                "✏️ ویرایش";
+
+            edit.onclick =
+                function() {
+
+                    openReportForEdit(
+                        visit
+                    );
+
+                };
+
+
+            const print =
+                document.createElement("button");
+
+            print.type = "button";
+            print.className =
+                "btn btn-gray";
+
+            print.textContent =
+                "🖨 PDF";
+
+            print.onclick =
+                function() {
+
+                    printGlobalVisit(
+                        visit.id
+                    );
+
+                };
+
+
+            const del =
+                document.createElement("button");
+
+            del.type = "button";
+            del.className =
+                "btn btn-danger";
+
+            del.textContent =
+                "🗑 حذف";
+
+            del.onclick =
+                function() {
+
+                    deleteGlobalVisit(
+                        visit.id
+                    );
+
+                };
+
+
+            actions.appendChild(view);
+            actions.appendChild(edit);
+            actions.appendChild(print);
+            actions.appendChild(del);
+
+
+            box.appendChild(header);
+            box.appendChild(info);
+            box.appendChild(description);
+            box.appendChild(actions);
+
+
+            list.appendChild(box);
+
+        }
+    );
+
+}
+
+
+function addReportInfo(
+    parent,
+    label,
+    value
+) {
+
+    const item =
+        document.createElement("div");
+
+    item.className =
+        "report-info-item";
+
+
+    const title =
+        document.createElement("span");
+
+    title.className =
+        "report-info-label";
+
+    title.textContent =
+        label;
+
+
+    const text =
+        document.createElement("strong");
+
+    text.textContent =
+        value;
+
+
+    item.appendChild(title);
+    item.appendChild(text);
+
+    parent.appendChild(item);
+
+}
+
+
+/* =========================================================
+   ویرایش گزارش از بخش مستقل
+========================================================= */
+
+function openReportForEdit(visit) {
+
+    const center =
+        getReportCenter(visit);
+
+    const device =
+        getReportDevice(visit);
+
+    if (!center || !device) {
+
+        alert(
+            "مرکز یا دستگاه این گزارش پیدا نشد."
+        );
+
+        return;
+
+    }
+
+
+    currentCenter =
+        center;
+
+    currentDevice =
+        device;
+
+    currentSection =
+        device.section_name || "";
+
+
+    hideAllPages();
+
+    getElement("robotPage")
+        ?.classList.remove("hidden");
+
+
+    getElement("robotTitle").textContent =
+        (
+            device.model || "ربات"
+        ) +
+        " — " +
+        (
+            device.serial || "-"
+        );
+
+
+    getElement(
+        "robotSectionText"
+    ).textContent =
+        device.section_name || "-";
+
+
+    getElement(
+        "robotModelText"
+    ).textContent =
+        device.model || "-";
+
+
+    getElement(
+        "robotSerialText"
+    ).textContent =
+        device.serial || "-";
+
+
+    editVisit(
+        visit.id
+    );
+
+}
+
+
+/* =========================================================
+   حذف گزارش از بخش مستقل
+========================================================= */
+
+async function deleteGlobalVisit(id) {
+
+    const visit =
+        findVisit(id);
+
+    if (!visit) return;
+
+
+    const confirmed =
+        confirm(
+            "آیا از حذف این گزارش مطمئن هستید؟"
+        );
+
+
+    if (!confirmed) return;
+
+
+    try {
+
+        const result =
+            await supabaseClient
+                .from("visits")
+                .delete()
+                .eq(
+                    "id",
+                    id
+                );
+
+
+        if (result.error)
+            throw result.error;
+
+
+        await loadDatabase();
+
+
+        renderReports();
+
+
+    } catch (error) {
+
+        alert(
+            "حذف گزارش انجام نشد:\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   چاپ گزارش از بخش مستقل
+========================================================= */
+
+function printGlobalVisit(id) {
+
+    const visit =
+        findVisit(id);
+
+    if (!visit) {
+
+        alert(
+            "گزارش پیدا نشد."
+        );
+
+        return;
+
+    }
+
+
+    const center =
+        getReportCenter(visit);
+
+    const device =
+        getReportDevice(visit);
+
+
+    if (!center || !device) {
+
+        alert(
+            "اطلاعات مرکز یا دستگاه پیدا نشد."
+        );
+
+        return;
+
+    }
+
+
+    const oldCenter =
+        currentCenter;
+
+    const oldDevice =
+        currentDevice;
+
+
+    currentCenter =
+        center;
+
+    currentDevice =
+        device;
+
+
+    printVisit(id);
+
+
+    currentCenter =
+        oldCenter;
+
+    currentDevice =
+        oldDevice;
+
+}
+
+
+/* =========================================================
+   رویدادهای گزارش‌ها
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        getElement("openReportsBtn")
+            ?.addEventListener(
+                "click",
+                openReportsPage
+            );
+
+
+        getElement("backReportsProvinceBtn")
+            ?.addEventListener(
+                "click",
+                function() {
+
+                    hideAllPages();
+
+                    getElement("provincePage")
+                        ?.classList.remove(
+                            "hidden"
+                        );
+
+                }
+            );
+
+
+        getElement("reportsSearchBtn")
+            ?.addEventListener(
+                "click",
+                renderReports
+            );
+
+
+        getElement("reportsClearBtn")
+            ?.addEventListener(
+                "click",
+                function() {
+
+                    setValue(
+                        "reportsSearchInput",
+                        ""
+                    );
+
+                    setValue(
+                        "reportsFromDate",
+                        ""
+                    );
+
+                    setValue(
+                        "reportsToDate",
+                        ""
+                    );
+
+                    renderReports();
+
+                }
+            );
+
+
+        getElement("reportsSearchInput")
+            ?.addEventListener(
+                "input",
+                renderReports
+            );
+
+
+        getElement("reportsFromDate")
+            ?.addEventListener(
+                "input",
+                function() {
+
+                    setupJalaliInputValue(
+                        this
+                    );
+
+                }
+            );
+
+
+        getElement("reportsToDate")
+            ?.addEventListener(
+                "input",
+                function() {
+
+                    setupJalaliInputValue(
+                        this
+                    );
+
+                }
+            );
+
+    }
+);
+
+
+/* =========================================================
+   فرمت تاریخ شمسی
+========================================================= */
+
+function setupJalaliInputValue(input) {
+
+    let value =
+        input.value.replace(
+            /[^0-9/]/g,
+            ""
+        );
+
+
+    if (
+        value.length === 4 ||
+        value.length === 7
+    ) {
+
+        if (
+            !value.endsWith("/")
+        ) {
+
+            value += "/";
+
+        }
+
+    }
+
+
+    input.value =
+        value.substring(
+            0,
+            10
+        );
+
+}
