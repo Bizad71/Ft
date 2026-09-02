@@ -57,7 +57,17 @@
         <div class="container">
 
             <div class="card">
+<div class="reports-main-action">
 
+    <button
+        type="button"
+        class="btn btn-primary big-btn"
+        id="openReportsBtn"
+    >
+        📋 گزارش کارها
+    </button>
+
+</div>
                 <h2>انتخاب استان</h2>
 
                 <div
@@ -71,7 +81,133 @@
 
     </section>
 
+<!-- گزارش کارها -->
 
+<section id="reportsPage" class="hidden">
+
+    <div class="container">
+
+        <div class="page-toolbar">
+
+            <button
+                type="button"
+                class="btn btn-gray"
+                id="backReportsProvinceBtn"
+            >
+                ← بازگشت
+            </button>
+
+            <h2>گزارش کارها</h2>
+
+        </div>
+
+
+        <!-- جستجو و فیلتر -->
+
+        <div class="card reports-filter-card">
+
+            <h2>جستجو و فیلتر گزارش‌ها</h2>
+
+            <div class="reports-filter-grid">
+
+                <div class="field full-field">
+
+                    <label>جستجوی گزارش</label>
+
+                    <input
+                        type="text"
+                        id="reportsSearchInput"
+                        placeholder="مرکز، بخش، مدل، سریال، موضوع، کارشناس، توضیحات..."
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>از تاریخ</label>
+
+                    <input
+                        type="text"
+                        id="reportsFromDate"
+                        placeholder="1405/01/01"
+                        inputmode="numeric"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>تا تاریخ</label>
+
+                    <input
+                        type="text"
+                        id="reportsToDate"
+                        placeholder="1405/12/29"
+                        inputmode="numeric"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="reports-filter-actions">
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="reportsSearchBtn"
+                >
+                    🔎 جستجو
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-gray"
+                    id="reportsClearBtn"
+                >
+                    پاک کردن فیلتر
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- تعداد گزارش -->
+
+        <div class="reports-summary">
+
+            <span>
+                تعداد گزارش‌ها:
+            </span>
+
+            <strong id="reportsCount">
+                0
+            </strong>
+
+        </div>
+
+
+        <!-- لیست گزارش‌ها -->
+
+        <div
+            id="reportsList"
+            class="reports-list"
+        ></div>
+
+
+        <div
+            id="emptyReports"
+            class="empty-message hidden"
+        >
+            گزارشی پیدا نشد.
+        </div>
+
+    </div>
+
+</section>
     <!-- مراکز -->
 
     <section id="centersPage" class="hidden">
